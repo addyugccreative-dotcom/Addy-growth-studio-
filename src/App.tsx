@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useInView, animate } from 'motion/react';
 import { 
   Zap, FileText, Users, Scissors, Cpu, BarChart3, Target, Clock, 
   ChevronRight, CheckCircle2, ArrowRight, Instagram, 
-  Mail, MessageSquare, Menu, X, ArrowLeft, Maximize
+  Mail, MessageSquare, Menu, X, ArrowLeft, Maximize, ChevronDown
 } from 'lucide-react';
 import { PORTFOLIO_NICHES, FEATURE_BLOCKS, PRICING_PLANS } from './constants';
 import { PortfolioNiche } from './types';
@@ -133,8 +133,8 @@ const PositioningStrip = () => (
         </h2>
       </div>
       <div>
-        <p className="text-lg text-white/70 leading-relaxed">
-          At Addy UGC Creative, we specialize in high-converting UGC and commercial product ads built for brands, dropshippers, and scaling e-commerce stores. Every creative is engineered with performance psychology, thumb-stopping hooks, and platform-native storytelling to maximize ROAS and dominate attention.
+        <p className="text-sm md:text-lg text-white/60 leading-relaxed">
+          At <span className="text-white font-bold">Addy UGC Creative</span>, we specialize in <span className="text-brand-teal font-medium">high-converting UGC</span> and commercial product ads built for brands, dropshippers, and scaling e-commerce stores. Every creative is engineered with <span className="text-white font-medium">performance psychology</span>, thumb-stopping hooks, and platform-native storytelling to <span className="text-brand-teal font-medium">maximize ROAS</span> and dominate attention.
         </p>
       </div>
     </div>
@@ -197,6 +197,11 @@ const VideoPlayer = ({ url, coverUrl, title }: { url: string, coverUrl: string, 
   };
 
   const videoId = getYoutubeId(url);
+  
+  // Use YouTube's own high-quality thumbnail if we have a video ID, otherwise fallback to provided coverUrl
+  const displayThumbnail = videoId 
+    ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` 
+    : coverUrl;
 
   const toggleFullScreen = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -213,35 +218,36 @@ const VideoPlayer = ({ url, coverUrl, title }: { url: string, coverUrl: string, 
   return (
     <div 
       ref={containerRef}
-      className="w-full h-full bg-black relative overflow-hidden group rounded-2xl shadow-2xl"
+      className="w-full h-full bg-black relative overflow-hidden group rounded-2xl shadow-2xl border border-white/5"
     >
-      <AnimatePresence>
-        {!isReady && (
-          <motion.img 
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            src={coverUrl} 
-            alt={title} 
-            className="absolute inset-0 w-full h-full object-cover z-10"
-            referrerPolicy="no-referrer"
-          />
-        )}
-      </AnimatePresence>
+      {/* Immediate Thumbnail - Matches the video content */}
+      <img 
+        src={displayThumbnail} 
+        alt={title} 
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isReady ? 'opacity-0' : 'opacity-100'}`}
+        referrerPolicy="no-referrer"
+        onError={(e) => {
+          // Fallback to hqdefault if maxresdefault is not available
+          if (videoId && (e.target as HTMLImageElement).src.includes('maxresdefault')) {
+            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+          }
+        }}
+      />
       
       {videoId && (
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <iframe
             ref={iframeRef}
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&modestbranding=0&rel=0&enablejsapi=1&fs=1&origin=${encodeURIComponent(window.location.origin)}`}
-            className="absolute inset-0 w-full h-full border-0"
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
+            className={`absolute inset-0 w-full h-full border-0 transition-opacity duration-700 ${isReady ? 'opacity-100' : 'opacity-0'}`}
+            allow="autoplay; encrypted-media; fullscreen"
             onLoad={() => setIsReady(true)}
             title={title}
           />
         </div>
       )}
 
-      {/* Custom Fullscreen Button for Mobile/Desktop convenience */}
+      {/* Custom Fullscreen Button */}
       <button 
         onClick={toggleFullScreen}
         className="absolute top-3 right-3 z-20 p-2 rounded-full bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-brand-teal hover:text-brand-dark backdrop-blur-sm"
@@ -251,8 +257,8 @@ const VideoPlayer = ({ url, coverUrl, title }: { url: string, coverUrl: string, 
       </button>
       
       {!isReady && (
-        <div className="absolute inset-0 z-5 flex items-center justify-center bg-brand-dark/20">
-          <div className="w-8 h-8 border-2 border-brand-teal border-t-transparent rounded-full animate-spin" />
+        <div className="absolute inset-0 z-5 flex items-center justify-center bg-brand-dark/10">
+          <div className="w-6 h-6 border-2 border-brand-teal border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>
@@ -603,8 +609,8 @@ const ContactSection = () => {
     <section className="py-24 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20">
       <div>
         <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">Let’s Build Your Next Winning Creative.</h2>
-        <p className="text-xl text-white/60 leading-relaxed mb-12">
-          We help modern e-commerce brands scale with performance-driven creatives engineered for conversions, authority, and growth.
+        <p className="text-sm md:text-xl text-white/60 leading-relaxed mb-12">
+          We help <span className="text-white font-medium">modern e-commerce brands</span> scale with <span className="text-brand-teal font-medium">performance-driven creatives</span> engineered for conversions, authority, and growth.
         </p>
         
         <div className="space-y-8">
@@ -626,9 +632,11 @@ const ContactSection = () => {
         </div>
       </div>
 
-      <div className="p-10 rounded-[40px] glass-card border-white/10">
+      <div className="p-6 md:p-10 rounded-[32px] md:rounded-[40px] glass-card border-white/10 relative overflow-hidden group">
+        <div className="absolute inset-0 bg-linear-to-br from-brand-teal/5 via-transparent to-brand-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        
         {status === 'success' ? (
-          <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12">
+          <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12 relative z-10">
             <div className="w-20 h-20 rounded-full bg-brand-teal/20 flex items-center justify-center text-brand-teal mb-4">
               <CheckCircle2 size={40} />
             </div>
@@ -642,47 +650,58 @@ const ContactSection = () => {
             </button>
           </div>
         ) : (
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-white/60">Name</label>
-                <input name="name" type="text" required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-teal outline-hidden transition-colors" placeholder="John Doe" />
+          <form className="space-y-4 md:space-y-6 relative z-10" onSubmit={handleSubmit}>
+            <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Name</label>
+                <input name="name" type="text" required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all" placeholder="John Doe" />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-white/60">Brand Name</label>
-                <input name="brand" type="text" required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-teal outline-hidden transition-colors" placeholder="Your Brand" />
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-white/60">Project Budget</label>
-                <select name="budget" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-teal outline-hidden transition-colors appearance-none">
-                  <option>$1k - $5k</option>
-                  <option>$5k - $10k</option>
-                  <option>$10k+</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-white/60">Select Service</label>
-                <select name="service" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-teal outline-hidden transition-colors appearance-none">
-                  <option>UGC Ads</option>
-                  <option>Commercial Ads</option>
-                  <option>Full Strategy</option>
-                </select>
+              <div className="space-y-1.5">
+                <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Brand Name</label>
+                <input name="brand" type="text" required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all" placeholder="Your Brand" />
               </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-white/60">Message</label>
-              <textarea name="message" rows={4} required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-teal outline-hidden transition-colors" placeholder="Tell us about your goals..." />
+            <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Project Budget</label>
+                <div className="relative">
+                  <select name="budget" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all appearance-none cursor-pointer">
+                    <option value="500">$500</option>
+                    <option value="1k-5k">$1k - $5k</option>
+                    <option value="5k-10k">$5k - $10k</option>
+                    <option value="10k+">$10k+</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
+                    <ChevronDown size={14} />
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Select Service</label>
+                <div className="relative">
+                  <select name="service" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all appearance-none cursor-pointer">
+                    <option>UGC Ads</option>
+                    <option>Commercial Ads</option>
+                    <option>Full Strategy</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
+                    <ChevronDown size={14} />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Message</label>
+              <textarea name="message" rows={3} required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all resize-none" placeholder="Tell us about your goals..." />
             </div>
             <button 
               disabled={status === 'submitting'}
-              className="w-full py-5 rounded-2xl bg-brand-teal text-brand-dark font-bold text-lg glow-teal hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 md:py-5 rounded-xl md:rounded-2xl bg-brand-teal text-brand-dark font-bold text-base md:text-lg glow-teal hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'submitting' ? 'Sending...' : 'Start Project'}
             </button>
             {status === 'error' && (
-              <p className="text-red-400 text-sm text-center">Something went wrong. Please try again or email us directly.</p>
+              <p className="text-red-400 text-xs text-center">Something went wrong. Please try again or email us directly.</p>
             )}
           </form>
         )}
@@ -754,7 +773,63 @@ const CAROUSEL_VIDEOS = [
   { id: 'c10', url: 'https://youtube.com/shorts/v84LuiHpJrE', coverUrl: 'https://picsum.photos/seed/c10/400/711' },
 ];
 
+const CarouselVideoItem = ({ url, coverUrl, title }: { url: string, coverUrl: string, title: string }) => {
+  const getYoutubeId = (url: string) => {
+    if (!url || url === '#') return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const videoId = getYoutubeId(url);
+  if (!videoId) return null;
+
+  const displayThumbnail = videoId 
+    ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` 
+    : coverUrl;
+
+  return (
+    <div className="w-full h-full bg-brand-dark relative overflow-hidden rounded-2xl shadow-2xl border border-white/5">
+      {/* Immediate Thumbnail - Prevents black boxes during load */}
+      <img 
+        src={displayThumbnail} 
+        alt={title} 
+        className="absolute inset-0 w-full h-full object-cover"
+        referrerPolicy="no-referrer"
+        onError={(e) => {
+          if (videoId && (e.target as HTMLImageElement).src.includes('maxresdefault')) {
+            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+          }
+        }}
+      />
+      
+      <div className="absolute inset-0 w-full h-full">
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1`}
+          className="absolute inset-0 w-full h-full border-0 scale-110 opacity-0 transition-opacity duration-700"
+          allow="autoplay; encrypted-media"
+          title={title}
+          onLoad={(e) => (e.currentTarget as HTMLIFrameElement).style.opacity = '1'}
+        />
+      </div>
+      {/* Overlay to prevent interaction and keep it as a preview */}
+      <div className="absolute inset-0 z-10 bg-transparent" />
+    </div>
+  );
+};
+
 const VideoCarousel = () => {
+  useEffect(() => {
+    // Preconnect to YouTube domains for faster iframe initialization
+    const domains = ['https://www.youtube.com', 'https://www.google.com', 'https://googleads.g.doubleclick.net'];
+    domains.forEach(domain => {
+      const link = document.createElement('link');
+      link.rel = 'preconnect';
+      link.href = domain;
+      document.head.appendChild(link);
+    });
+  }, []);
+
   return (
     <section className="py-24 overflow-hidden bg-brand-dark/30">
       <div className="max-w-7xl mx-auto px-6 mb-12">
@@ -763,7 +838,7 @@ const VideoCarousel = () => {
       </div>
       
       <div className="flex flex-col gap-12">
-        {/* Row 1: Left to Right */}
+        {/* Single Row: Left to Right */}
         <div className="flex overflow-hidden">
           <motion.div 
             className="flex gap-6 px-6"
@@ -775,27 +850,8 @@ const VideoCarousel = () => {
             }}
           >
             {[...CAROUSEL_VIDEOS, ...CAROUSEL_VIDEOS].map((video, idx) => (
-              <div key={`${video.id}-r1-${idx}`} className="w-[160px] md:w-[220px] aspect-[9/16] shrink-0">
-                <VideoPlayer url={video.url} coverUrl={video.coverUrl} title={`Creative ${idx}`} />
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Row 2: Right to Left */}
-        <div className="flex overflow-hidden">
-          <motion.div 
-            className="flex gap-6 px-6"
-            animate={{ x: [-2440, 0] }}
-            transition={{ 
-              duration: 50, 
-              repeat: Infinity, 
-              ease: "linear" 
-            }}
-          >
-            {[...CAROUSEL_VIDEOS, ...CAROUSEL_VIDEOS].map((video, idx) => (
-              <div key={`${video.id}-r2-${idx}`} className="w-[160px] md:w-[220px] aspect-[9/16] shrink-0">
-                <VideoPlayer url={video.url} coverUrl={video.coverUrl} title={`Creative ${idx}`} />
+              <div key={`${video.id}-carousel-${idx}`} className="w-[160px] md:w-[220px] aspect-[9/16] shrink-0">
+                <CarouselVideoItem url={video.url} coverUrl={video.coverUrl} title={`Creative ${idx}`} />
               </div>
             ))}
           </motion.div>
