@@ -184,11 +184,7 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
   </section>
 );
 
-const VideoPlayer = ({ url, coverUrl, title }: { url: string, coverUrl: string, title: string }) => {
-  const [isReady, setIsReady] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
+const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: string }) => {
   const getYoutubeId = (url: string) => {
     if (!url || url === '#') return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
@@ -197,70 +193,16 @@ const VideoPlayer = ({ url, coverUrl, title }: { url: string, coverUrl: string, 
   };
 
   const videoId = getYoutubeId(url);
-  
-  // Use YouTube's own high-quality thumbnail if we have a video ID, otherwise fallback to provided coverUrl
-  const displayThumbnail = videoId 
-    ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` 
-    : coverUrl;
-
-  const toggleFullScreen = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().catch(err => {
-        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
-      });
-    } else {
-      document.exitFullscreen();
-    }
-  };
+  if (!videoId) return null;
 
   return (
-    <div 
-      ref={containerRef}
-      className="w-full h-full bg-black relative overflow-hidden group rounded-2xl shadow-2xl border border-white/5"
-    >
-      {/* Immediate Thumbnail - Matches the video content */}
-      <img 
-        src={displayThumbnail} 
-        alt={title} 
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isReady ? 'opacity-0' : 'opacity-100'}`}
-        referrerPolicy="no-referrer"
-        onError={(e) => {
-          // Fallback to hqdefault if maxresdefault is not available
-          if (videoId && (e.target as HTMLImageElement).src.includes('maxresdefault')) {
-            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-          }
-        }}
+    <div className="w-full relative" style={{ paddingTop: '177.77%' }}>
+      <iframe
+        src={`https://www.youtube.com/embed/${videoId}?controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
+        className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
+        allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+        title={title}
       />
-      
-      {videoId && (
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
-          <iframe
-            ref={iframeRef}
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
-            className={`absolute inset-0 w-full h-full border-0 transition-opacity duration-700 ${isReady ? 'opacity-100' : 'opacity-0'}`}
-            allow="autoplay; encrypted-media; fullscreen"
-            onLoad={() => setIsReady(true)}
-            title={title}
-          />
-        </div>
-      )}
-
-      {/* Custom Fullscreen Button */}
-      <button 
-        onClick={toggleFullScreen}
-        className="absolute top-3 right-3 z-20 p-2 rounded-full bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-brand-teal hover:text-brand-dark backdrop-blur-sm"
-        title="Toggle Fullscreen"
-      >
-        <Maximize size={16} />
-      </button>
-      
-      {!isReady && (
-        <div className="absolute inset-0 z-5 flex items-center justify-center bg-brand-dark/10">
-          <div className="w-6 h-6 border-2 border-brand-teal border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
     </div>
   );
 };
@@ -303,8 +245,8 @@ const NicheDetail = ({ niche, onBack }: { niche: PortfolioNiche, onBack: () => v
 
         <div className="grid grid-cols-2 gap-3 md:gap-4">
           {niche.videos.slice(0, 4).map((video) => (
-            <div key={video.id} className="relative aspect-[9/16] rounded-2xl overflow-hidden group bg-white/5 border border-white/10 shadow-2xl">
-              <VideoPlayer url={video.videoUrl} coverUrl={video.coverUrl} title={video.title} />
+            <div key={video.id} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl">
+              <VideoPlayer url={video.videoUrl} title={video.title} />
             </div>
           ))}
         </div>
@@ -773,7 +715,7 @@ const CAROUSEL_VIDEOS = [
   { id: 'c10', url: 'https://youtube.com/shorts/v84LuiHpJrE', coverUrl: 'https://picsum.photos/seed/c10/400/711' },
 ];
 
-const CarouselVideoItem = ({ url, coverUrl, title }: { url: string, coverUrl: string, title: string }) => {
+const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, title: string }) => {
   const getYoutubeId = (url: string) => {
     if (!url || url === '#') return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
@@ -784,36 +726,14 @@ const CarouselVideoItem = ({ url, coverUrl, title }: { url: string, coverUrl: st
   const videoId = getYoutubeId(url);
   if (!videoId) return null;
 
-  const displayThumbnail = videoId 
-    ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` 
-    : coverUrl;
-
   return (
-    <div className="w-full h-full bg-brand-dark relative overflow-hidden rounded-2xl shadow-2xl border border-white/5">
-      {/* Immediate Thumbnail - Prevents black boxes during load */}
-      <img 
-        src={displayThumbnail} 
-        alt={title} 
-        className="absolute inset-0 w-full h-full object-cover"
-        referrerPolicy="no-referrer"
-        onError={(e) => {
-          if (videoId && (e.target as HTMLImageElement).src.includes('maxresdefault')) {
-            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-          }
-        }}
+    <div className="w-full relative" style={{ paddingTop: '177.77%' }}>
+      <iframe
+        src={`https://www.youtube.com/embed/${videoId}?controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
+        className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
+        allow="autoplay; encrypted-media; fullscreen"
+        title={title}
       />
-      
-      <div className="absolute inset-0 w-full h-full">
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1`}
-          className="absolute inset-0 w-full h-full border-0 scale-110 opacity-0 transition-opacity duration-700"
-          allow="autoplay; encrypted-media"
-          title={title}
-          onLoad={(e) => (e.currentTarget as HTMLIFrameElement).style.opacity = '1'}
-        />
-      </div>
-      {/* Overlay to prevent interaction and keep it as a preview */}
-      <div className="absolute inset-0 z-10 bg-transparent" />
     </div>
   );
 };
