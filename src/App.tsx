@@ -198,7 +198,7 @@ const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: st
   return (
     <div className="w-full relative" style={{ paddingTop: '177.77%' }}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
         className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
         allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
         title={title}
@@ -729,7 +729,7 @@ const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, tit
   return (
     <div className="w-full relative" style={{ paddingTop: '177.77%' }}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
         className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
         allow="autoplay; encrypted-media; fullscreen"
         title={title}
