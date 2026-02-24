@@ -155,8 +155,8 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1 }}
-          viewport={{ once: true }}
-          className="group relative cursor-pointer"
+          viewport={{ once: true, margin: "-50px" }}
+          className="group relative cursor-pointer optimize-gpu"
           onClick={() => onSelectNiche(niche)}
         >
           <div className="relative aspect-square rounded-2xl overflow-hidden mb-4">
@@ -165,6 +165,7 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
               alt={niche.title} 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               referrerPolicy="no-referrer"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-transparent to-transparent opacity-60" />
             
@@ -253,9 +254,9 @@ const NicheDetail = ({ niche, onBack }: { niche: PortfolioNiche, onBack: () => v
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 optimize-gpu">
           {niche.videos.slice(0, 4).map((video, idx) => (
-            <div key={video.id} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl">
+            <div key={video.id} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl optimize-gpu">
               <VideoPlayer url={video.videoUrl} title={video.title} index={idx} />
             </div>
           ))}
@@ -297,7 +298,7 @@ const ScienceSection = () => {
                 transition={{ delay: idx * 0.05 }}
                 viewport={{ once: true }}
                 onClick={() => setExpandedBlock(isExpanded ? null : block.title)}
-                className={`p-5 md:p-6 rounded-2xl glass-card transition-all duration-300 cursor-pointer group flex flex-col items-start relative overflow-hidden ${
+                className={`p-5 md:p-6 rounded-2xl glass-card transition-all duration-300 cursor-pointer group flex flex-col items-start relative overflow-hidden optimize-gpu ${
                   isExpanded ? 'ring-2 ring-brand-teal bg-white/10' : 'hover:bg-white/10'
                 }`}
               >
@@ -781,7 +782,7 @@ const VideoCarousel = () => {
         {/* Single Row: Left to Right */}
         <div className="flex overflow-hidden">
           <motion.div 
-            className="flex gap-6 px-6"
+            className="flex gap-6 px-6 optimize-gpu"
             animate={{ x: [0, -2440] }}
             transition={{ 
               duration: 40, 
@@ -790,7 +791,7 @@ const VideoCarousel = () => {
             }}
           >
             {[...CAROUSEL_VIDEOS, ...CAROUSEL_VIDEOS].map((video, idx) => (
-              <div key={`${video.id}-carousel-${idx}`} className="w-[160px] md:w-[220px] aspect-[9/16] shrink-0">
+              <div key={`${video.id}-carousel-${idx}`} className="w-[160px] md:w-[220px] aspect-[9/16] shrink-0 optimize-gpu">
                 <CarouselVideoItem url={video.url} coverUrl={video.coverUrl} title={`Creative ${idx}`} />
               </div>
             ))}
