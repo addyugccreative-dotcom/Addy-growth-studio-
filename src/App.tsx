@@ -184,7 +184,7 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
   </section>
 );
 
-const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: string }) => {
+const VideoPlayer = ({ url, title, index }: { url: string, coverUrl?: string, title: string, index?: number }) => {
   const getYoutubeId = (url: string) => {
     if (!url || url === '#') return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
@@ -196,13 +196,19 @@ const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: st
   if (!videoId) return null;
 
   return (
-    <div className="w-full relative" style={{ paddingTop: '177.77%' }}>
+    <div className="w-full relative group" style={{ paddingTop: '177.77%' }}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=0&modestbranding=0&enablejsapi=1&widgetid=1`}
         className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
         allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+        allowFullScreen
         title={title}
       />
+      {index !== undefined && (
+        <div className="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-brand-teal text-brand-dark text-[10px] md:text-xs font-bold z-10 shadow-lg pointer-events-none">
+          Video {index + 1}
+        </div>
+      )}
     </div>
   );
 };
@@ -244,9 +250,9 @@ const NicheDetail = ({ niche, onBack }: { niche: PortfolioNiche, onBack: () => v
         </div>
 
         <div className="grid grid-cols-2 gap-3 md:gap-4">
-          {niche.videos.slice(0, 4).map((video) => (
+          {niche.videos.slice(0, 4).map((video, idx) => (
             <div key={video.id} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl">
-              <VideoPlayer url={video.videoUrl} title={video.title} />
+              <VideoPlayer url={video.videoUrl} title={video.title} index={idx} />
             </div>
           ))}
         </div>
@@ -729,9 +735,10 @@ const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, tit
   return (
     <div className="w-full relative" style={{ paddingTop: '177.77%' }}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=0&modestbranding=0&enablejsapi=1&widgetid=1`}
         className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
         allow="autoplay; encrypted-media; fullscreen"
+        allowFullScreen
         title={title}
       />
     </div>
