@@ -172,7 +172,7 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-teal/10 pointer-events-none" />
           </div>
 
-          <h3 className="text-lg md:text-xl font-display font-bold mb-1 group-hover:text-brand-teal transition-colors truncate">{niche.title}</h3>
+          <h3 className="text-base md:text-lg font-display font-bold mb-1 group-hover:text-brand-teal transition-colors truncate">{niche.title}</h3>
           <p className="text-white/60 text-[10px] md:text-xs leading-relaxed line-clamp-2">{niche.description}</p>
           
           <div className="mt-2 flex items-center gap-1 text-brand-teal font-bold text-[10px] md:text-xs">
@@ -184,7 +184,7 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
   </section>
 );
 
-const VideoPlayer = ({ url, title, index }: { url: string, coverUrl?: string, title: string, index?: number }) => {
+const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: string, index?: number }) => {
   const getYoutubeId = (url: string) => {
     if (!url || url === '#') return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
@@ -198,17 +198,12 @@ const VideoPlayer = ({ url, title, index }: { url: string, coverUrl?: string, ti
   return (
     <div className="w-full relative group" style={{ paddingTop: '177.77%' }}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&iv_load_policy=1&t=0s`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&iv_load_policy=1&t=0s`}
         className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
         title={title}
       />
-      {index !== undefined && (
-        <div className="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-brand-teal text-brand-dark text-[10px] md:text-xs font-bold z-10 shadow-lg pointer-events-none">
-          Video {index + 1}
-        </div>
-      )}
       <a 
         href={`https://www.youtube.com/watch?v=${videoId}`}
         target="_blank"
@@ -245,7 +240,7 @@ const NicheDetail = ({ niche, onBack }: { niche: PortfolioNiche, onBack: () => v
       <div className="grid lg:grid-cols-2 gap-16 mb-24">
         <div>
           <span className="gradient-text font-bold uppercase tracking-widest text-sm mb-4 block">{niche.category}</span>
-          <h1 className="text-5xl md:text-6xl font-display font-bold mb-8">{niche.title}</h1>
+          <h1 className="text-3xl md:text-5xl font-display font-bold mb-8">{niche.title}</h1>
           <p className="text-xl text-white/70 leading-relaxed mb-8">
             {niche.description}
           </p>
@@ -744,7 +739,7 @@ const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, tit
   return (
     <div className="w-full relative group" style={{ paddingTop: '177.77%' }}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&iv_load_policy=1&t=0s`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&iv_load_policy=1&t=0s`}
         className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
