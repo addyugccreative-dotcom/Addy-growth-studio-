@@ -198,9 +198,9 @@ const VideoPlayer = ({ url, title, index }: { url: string, coverUrl?: string, ti
   return (
     <div className="w-full relative group" style={{ paddingTop: '177.77%' }}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=0&modestbranding=0&enablejsapi=1&widgetid=1`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&iv_load_policy=1&t=0s`}
         className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
-        allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
         title={title}
       />
@@ -209,6 +209,15 @@ const VideoPlayer = ({ url, title, index }: { url: string, coverUrl?: string, ti
           Video {index + 1}
         </div>
       )}
+      <a 
+        href={`https://www.youtube.com/watch?v=${videoId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute bottom-3 right-3 p-2 rounded-lg bg-black/60 text-white/80 opacity-0 group-hover:opacity-100 transition-opacity z-20 hover:bg-brand-teal hover:text-brand-dark"
+        title="Watch on YouTube"
+      >
+        <Maximize size={14} />
+      </a>
     </div>
   );
 };
@@ -733,14 +742,23 @@ const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, tit
   if (!videoId) return null;
 
   return (
-    <div className="w-full relative" style={{ paddingTop: '177.77%' }}>
+    <div className="w-full relative group" style={{ paddingTop: '177.77%' }}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=0&modestbranding=0&enablejsapi=1&widgetid=1`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&iv_load_policy=1&t=0s`}
         className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
-        allow="autoplay; encrypted-media; fullscreen"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
         title={title}
       />
+      <a 
+        href={`https://www.youtube.com/watch?v=${videoId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute bottom-3 right-3 p-2 rounded-lg bg-black/60 text-white/80 opacity-0 group-hover:opacity-100 transition-opacity z-20 hover:bg-brand-teal hover:text-brand-dark"
+        title="Watch on YouTube"
+      >
+        <Maximize size={14} />
+      </a>
     </div>
   );
 };
