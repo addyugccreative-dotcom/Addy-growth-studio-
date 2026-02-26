@@ -186,7 +186,7 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
   </section>
 );
 
-const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: string, index?: number }) => {
+const VideoPlayer = ({ url, title, onExpand }: { url: string, title: string, onExpand?: (video: {url: string, title: string}) => void }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -223,6 +223,15 @@ const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: st
 
   return (
     <div ref={containerRef} className="w-full relative group" style={{ paddingTop: '177.77%' }}>
+      {onExpand && (
+        <button 
+          onClick={() => onExpand({ url, title })}
+          className="absolute top-3 right-3 z-30 p-2 bg-brand-teal/20 backdrop-blur-md rounded-full border border-brand-teal/30 text-brand-teal hover:bg-brand-teal hover:text-brand-dark transition-all shadow-lg"
+          title="Expand Video"
+        >
+          <Maximize size={16} />
+        </button>
+      )}
       {!isLoaded ? (
         <div className="absolute inset-0 bg-brand-dark/50 flex items-center justify-center rounded-2xl overflow-hidden">
           <img 
@@ -246,7 +255,52 @@ const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: st
   );
 };
 
-const NicheDetail = ({ niche, onBack }: { niche: PortfolioNiche, onBack: () => void }) => {
+const VideoModal = ({ video, onClose }: { video: {url: string, title: string}, onClose: () => void }) => {
+  const getYoutubeId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const videoId = getYoutubeId(video.url);
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-dark/95 backdrop-blur-xl p-4 md:p-8"
+      onClick={onClose}
+    >
+      <button 
+        onClick={onClose}
+        className="absolute top-6 right-6 z-[110] p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+      >
+        <X size={24} />
+      </button>
+
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="relative w-full max-w-[450px] aspect-[9/16] bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {videoId && (
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&rel=0&modestbranding=1&fs=1&playsinline=0`}
+            className="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allowFullScreen
+            title={video.title}
+          />
+        )}
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const NicheDetail = ({ niche, onBack, onExpandVideo }: { niche: PortfolioNiche, onBack: () => void, onExpandVideo: (video: {url: string, title: string}) => void }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -285,7 +339,7 @@ const NicheDetail = ({ niche, onBack }: { niche: PortfolioNiche, onBack: () => v
         <div className="grid grid-cols-2 gap-3 md:gap-4 optimize-gpu">
           {niche.videos.slice(0, 4).map((video, idx) => (
             <div key={video.id} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl optimize-gpu">
-              <VideoPlayer url={video.videoUrl} title={video.title} index={idx} />
+              <VideoPlayer url={video.videoUrl} title={video.title} onExpand={onExpandVideo} />
             </div>
           ))}
         </div>
@@ -754,7 +808,7 @@ const CAROUSEL_VIDEOS = [
   { id: 'c10', url: 'https://youtube.com/shorts/v84LuiHpJrE', coverUrl: 'https://picsum.photos/seed/c10/400/711' },
 ];
 
-const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, title: string }) => {
+const CarouselVideoItem = ({ url, title, onExpand }: { url: string, title: string, onExpand?: (video: {url: string, title: string}) => void }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -791,6 +845,15 @@ const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, tit
 
   return (
     <div ref={containerRef} className="w-full relative group" style={{ paddingTop: '177.77%' }}>
+      {onExpand && (
+        <button 
+          onClick={() => onExpand({ url, title })}
+          className="absolute top-3 right-3 z-30 p-2 bg-brand-teal/20 backdrop-blur-md rounded-full border border-brand-teal/30 text-brand-teal hover:bg-brand-teal hover:text-brand-dark transition-all shadow-lg"
+          title="Expand Video"
+        >
+          <Maximize size={16} />
+        </button>
+      )}
       {!isLoaded ? (
         <div className="absolute inset-0 bg-brand-dark/50 flex items-center justify-center rounded-2xl overflow-hidden">
           <img 
@@ -813,7 +876,7 @@ const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, tit
   );
 };
 
-const VideoCarousel = () => {
+const VideoCarousel = ({ onExpandVideo }: { onExpandVideo: (video: {url: string, title: string}) => void }) => {
   useEffect(() => {
     // Preconnect to YouTube domains for faster iframe initialization
     const domains = ['https://www.youtube.com', 'https://www.google.com', 'https://googleads.g.doubleclick.net'];
@@ -833,10 +896,9 @@ const VideoCarousel = () => {
       </div>
       
       <div className="flex flex-col gap-12">
-        {/* Single Row: Left to Right */}
-        <div className="flex overflow-hidden">
+        <div className="relative overflow-hidden">
           <motion.div 
-            className="flex gap-6 px-6 optimize-gpu"
+            className="flex gap-4"
             animate={{ x: [0, -2440] }}
             transition={{ 
               duration: 40, 
@@ -846,7 +908,7 @@ const VideoCarousel = () => {
           >
             {[...CAROUSEL_VIDEOS, ...CAROUSEL_VIDEOS].map((video, idx) => (
               <div key={`${video.id}-carousel-${idx}`} className="w-[160px] md:w-[220px] aspect-[9/16] shrink-0 optimize-gpu">
-                <CarouselVideoItem url={video.url} coverUrl={video.coverUrl} title={`Creative ${idx}`} />
+                <CarouselVideoItem url={video.url} title={`Creative ${idx}`} onExpand={onExpandVideo} />
               </div>
             ))}
           </motion.div>
@@ -858,6 +920,7 @@ const VideoCarousel = () => {
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'home' | PortfolioNiche>('home');
+  const [modalVideo, setModalVideo] = useState<{url: string, title: string} | null>(null);
 
   return (
     <div className="min-h-screen selection:bg-brand-teal/30">
@@ -873,7 +936,7 @@ export default function App() {
           >
             <Hero />
             <PositioningStrip />
-            <VideoCarousel />
+            <VideoCarousel onExpandVideo={setModalVideo} />
             <PortfolioGrid onSelectNiche={(niche) => setCurrentView(niche)} />
             <ScienceSection />
             <ProvenResults />
@@ -888,8 +951,19 @@ export default function App() {
             <NicheDetail 
               niche={currentView} 
               onBack={() => setCurrentView('home')} 
+              onExpandVideo={setModalVideo}
             />
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Video Modal / Lightbox */}
+      <AnimatePresence>
+        {modalVideo && (
+          <VideoModal 
+            video={modalVideo} 
+            onClose={() => setModalVideo(null)} 
+          />
         )}
       </AnimatePresence>
     </div>
