@@ -165,8 +165,9 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
               alt={niche.title} 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               referrerPolicy="no-referrer"
-              loading={idx < 3 ? "eager" : "lazy"}
-              {...(idx < 3 ? { fetchPriority: "high" } : {})}
+              loading={idx < 4 ? "eager" : "lazy"}
+              decoding="async"
+              {...(idx === 0 ? { fetchPriority: "high" } : idx < 4 ? { fetchPriority: "low" } : {})}
             />
             <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-transparent to-transparent opacity-60" />
             
@@ -209,7 +210,7 @@ const VideoPlayer = ({ url, title, onExpand }: { url: string, title: string, onE
           observer.disconnect();
         }
       },
-      { threshold: 0.1, rootMargin: '200px' }
+      { threshold: 0.01, rootMargin: '400px' }
     );
 
     if (containerRef.current) {
@@ -235,10 +236,11 @@ const VideoPlayer = ({ url, title, onExpand }: { url: string, title: string, onE
       {!isLoaded ? (
         <div className="absolute inset-0 bg-brand-dark/50 flex items-center justify-center rounded-2xl overflow-hidden">
           <img 
-            src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} 
+            src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`} 
             alt={title}
             className="absolute inset-0 w-full h-full object-cover opacity-60"
             loading="lazy"
+            decoding="async"
           />
           <div className="animate-pulse w-12 h-12 bg-brand-teal/20 rounded-full" />
         </div>
@@ -248,6 +250,7 @@ const VideoPlayer = ({ url, title, onExpand }: { url: string, title: string, onE
           className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl z-10"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           allowFullScreen
+          loading="lazy"
           title={title}
         />
       )}
@@ -831,7 +834,7 @@ const CarouselVideoItem = ({ url, title, onExpand }: { url: string, title: strin
           observer.disconnect();
         }
       },
-      { threshold: 0.1, rootMargin: '400px' }
+      { threshold: 0.01, rootMargin: '600px' }
     );
 
     if (containerRef.current) {
@@ -861,6 +864,7 @@ const CarouselVideoItem = ({ url, title, onExpand }: { url: string, title: strin
             alt={title}
             className="absolute inset-0 w-full h-full object-cover opacity-40"
             loading="lazy"
+            decoding="async"
           />
         </div>
       ) : (
@@ -869,6 +873,7 @@ const CarouselVideoItem = ({ url, title, onExpand }: { url: string, title: strin
           className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl z-10"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           allowFullScreen
+          loading="lazy"
           title={title}
         />
       )}
