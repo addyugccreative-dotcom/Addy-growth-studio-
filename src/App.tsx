@@ -165,7 +165,8 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
               alt={niche.title} 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               referrerPolicy="no-referrer"
-              loading="lazy"
+              loading={idx < 3 ? "eager" : "lazy"}
+              {...(idx < 3 ? { fetchPriority: "high" } : {})}
             />
             <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-transparent to-transparent opacity-60" />
             
@@ -173,8 +174,8 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-teal/10 pointer-events-none" />
           </div>
 
-          <h3 className="text-base md:text-lg font-display font-bold mb-1 group-hover:text-brand-teal transition-colors truncate">{niche.title}</h3>
-          <p className="text-white/60 text-[10px] md:text-xs leading-relaxed line-clamp-2">{niche.description}</p>
+          <h3 className="text-sm md:text-base font-display font-bold mb-1 group-hover:text-brand-teal transition-colors truncate">{niche.title}</h3>
+          <p className="text-white/60 text-[9px] md:text-[11px] leading-relaxed line-clamp-2">{niche.description}</p>
           
           <div className="mt-2 flex items-center gap-1 text-brand-teal font-bold text-[10px] md:text-xs">
             View Case Study <ChevronRight size={12} />
@@ -186,6 +187,9 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
 );
 
 const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: string, index?: number }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
   const getYoutubeId = (url: string) => {
     if (!url || url === '#') return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
@@ -194,26 +198,49 @@ const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: st
   };
 
   const videoId = getYoutubeId(url);
+
+  useEffect(() => {
+    if (!videoId) return;
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsLoaded(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: '200px' }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [videoId]);
+
   if (!videoId) return null;
 
   return (
-    <div className="w-full relative group" style={{ paddingTop: '177.77%' }}>
-      <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&iv_load_policy=1&t=0s`}
-        className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-        title={title}
-      />
-      <a 
-        href={`https://www.youtube.com/watch?v=${videoId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute bottom-3 right-3 p-2 rounded-lg bg-black/60 text-white/80 opacity-0 group-hover:opacity-100 transition-opacity z-20 hover:bg-brand-teal hover:text-brand-dark"
-        title="Watch on YouTube"
-      >
-        <Maximize size={14} />
-      </a>
+    <div ref={containerRef} className="w-full relative group" style={{ paddingTop: '177.77%' }}>
+      {!isLoaded ? (
+        <div className="absolute inset-0 bg-brand-dark/50 flex items-center justify-center rounded-2xl overflow-hidden">
+          <img 
+            src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} 
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover opacity-60"
+            loading="lazy"
+          />
+          <div className="animate-pulse w-12 h-12 bg-brand-teal/20 rounded-full" />
+        </div>
+      ) : (
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&fs=0&rel=0&playsinline=1&modestbranding=1&enablejsapi=1&widget_referrer=${encodeURIComponent(window.location.href)}`}
+          className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          title={title}
+        />
+      )}
     </div>
   );
 };
@@ -727,6 +754,9 @@ const CAROUSEL_VIDEOS = [
 ];
 
 const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, title: string }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const getYoutubeId = (url: string) => {
     if (!url || url === '#') return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
@@ -735,26 +765,48 @@ const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, tit
   };
 
   const videoId = getYoutubeId(url);
+
+  useEffect(() => {
+    if (!videoId) return;
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsLoaded(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: '400px' }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [videoId]);
+
   if (!videoId) return null;
 
   return (
-    <div className="w-full relative group" style={{ paddingTop: '177.77%' }}>
-      <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&fs=1&rel=0&playsinline=1&modestbranding=0&enablejsapi=1&iv_load_policy=1&t=0s`}
-        className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-        title={title}
-      />
-      <a 
-        href={`https://www.youtube.com/watch?v=${videoId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute bottom-3 right-3 p-2 rounded-lg bg-black/60 text-white/80 opacity-0 group-hover:opacity-100 transition-opacity z-20 hover:bg-brand-teal hover:text-brand-dark"
-        title="Watch on YouTube"
-      >
-        <Maximize size={14} />
-      </a>
+    <div ref={containerRef} className="w-full relative group" style={{ paddingTop: '177.77%' }}>
+      {!isLoaded ? (
+        <div className="absolute inset-0 bg-brand-dark/50 flex items-center justify-center rounded-2xl overflow-hidden">
+          <img 
+            src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`} 
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+            loading="lazy"
+          />
+        </div>
+      ) : (
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&fs=0&rel=0&playsinline=1&modestbranding=1&enablejsapi=1`}
+          className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          title={title}
+        />
+      )}
     </div>
   );
 };

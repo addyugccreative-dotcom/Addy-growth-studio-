@@ -5,7 +5,7 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     id: "skincare-beauty",
     title: "Skincare / Beauty",
     category: "UGC Ads",
-    description: "High-converting product demo creatives with emotional storytelling and problem-solution hooks designed to increase trust and boost ROAS.",
+    description: "Trust-building product demos with emotional hooks designed to boost ROAS.",
     thumbnailUrl: "https://selfish-orange-q69cnxpywy.edgeone.app/skin%20beauty.png",
     videos: [
       { id: "v1", title: "Morning Routine", coverUrl: "https://picsum.photos/seed/skincare-1/400/711", videoUrl: "https://youtube.com/shorts/2uaYce9ywGM" },
@@ -18,11 +18,11 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     id: "fitness-health",
     title: "Fitness / Health",
     category: "Performance Ads",
-    description: "UGC ads focused on transformation angles, pain-point hooks, and performance-driven scripting for supplement and wellness brands.",
+    description: "Performance-driven transformation angles and pain-point hooks for wellness brands.",
     thumbnailUrl: "https://ultimate-amethyst-lksldcvfzc.edgeone.app/gym.png",
     videos: [
-      { id: "v1", title: "Workout Hook", coverUrl: "https://picsum.photos/seed/fitness-1/400/711", videoUrl: "#" },
-      { id: "v2", title: "Supplement Mix", coverUrl: "https://picsum.photos/seed/fitness-2/400/711", videoUrl: "#" },
+      { id: "v1", title: "Workout Hook", coverUrl: "https://picsum.photos/seed/fitness-1/400/711", videoUrl: "https://youtube.com/shorts/qC9Ms59WRQQ" },
+      { id: "v2", title: "Supplement Mix", coverUrl: "https://picsum.photos/seed/fitness-2/400/711", videoUrl: "https://youtube.com/shorts/XPCa5uOsfsw" },
       { id: "v3", title: "Transformation", coverUrl: "https://picsum.photos/seed/fitness-3/400/711", videoUrl: "#" },
       { id: "v4", title: "Expert Advice", coverUrl: "https://picsum.photos/seed/fitness-4/400/711", videoUrl: "#" },
     ]
@@ -31,12 +31,12 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     id: "tech-gadgets",
     title: "Tech / Gadgets",
     category: "Product Demo",
-    description: "Scroll-stopping review-style ads and feature demonstration creatives built to simplify complex products and increase conversions.",
+    description: "Scroll-stopping reviews and feature demos that simplify complex products.",
     thumbnailUrl: "https://electronic-bronze-1bwqppl3w1.edgeone.app/tech%20g.png",
     videos: [
-      { id: "v1", title: "Unboxing", coverUrl: "https://picsum.photos/seed/tech-1/400/711", videoUrl: "#" },
-      { id: "v2", title: "Feature Highlight", coverUrl: "https://picsum.photos/seed/tech-2/400/711", videoUrl: "#" },
-      { id: "v3", title: "Problem Solver", coverUrl: "https://picsum.photos/seed/tech-3/400/711", videoUrl: "#" },
+      { id: "v1", title: "Unboxing", coverUrl: "https://picsum.photos/seed/tech-1/400/711", videoUrl: "https://youtube.com/shorts/MRBp0-_sYR8" },
+      { id: "v2", title: "Feature Highlight", coverUrl: "https://picsum.photos/seed/tech-2/400/711", videoUrl: "https://youtube.com/shorts/Kaim0ETo3a4" },
+      { id: "v3", title: "Problem Solver", coverUrl: "https://picsum.photos/seed/tech-3/400/711", videoUrl: "https://youtube.com/shorts/Z5UWUoXBFYg" },
       { id: "v4", title: "Tech Review", coverUrl: "https://picsum.photos/seed/tech-4/400/711", videoUrl: "#" },
     ]
   },
@@ -44,7 +44,7 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     id: "fashion-jewelry",
     title: "Fashion / Jewelry",
     category: "Lifestyle Ads",
-    description: "Aesthetic lifestyle-based UGC creatives with premium visual appeal and strong opening hooks.",
+    description: "Aesthetic lifestyle creatives with premium visual appeal and strong hooks.",
     thumbnailUrl: "https://popular-magenta-oftw7eb50a.edgeone.app/ChatGPT%20Image%20Feb%2022,%202026,%2005_51_10%20PM.png",
     videos: [
       { id: "v1", title: "OOTD Hook", coverUrl: "https://picsum.photos/seed/fashion-1/400/711", videoUrl: "https://youtube.com/shorts/-6nk2lzfUiY" },
@@ -57,26 +57,26 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     id: "ecommerce-product-ads",
     title: "Dropshipping / Ecommerce",
     category: "Direct Response",
-    description: "High-converting direct-response ads optimized for Facebook, TikTok, and Instagram. Built with problem-solution structure and emotional triggers.",
+    description: "Direct-response ads optimized for TikTok & Meta with problem-solution structure.",
     thumbnailUrl: "https://combative-gold-jqx3cwbwjx.edgeone.app/ship.png",
     videos: [
       { id: "v1", title: "Hook Test A", coverUrl: "https://picsum.photos/seed/ecommerce-1/400/711", videoUrl: "https://www.youtube.com/embed/k4kGRf6HhWs?autoplay=1&mute=1&loop=1&playlist=k4kGRf6HhWs&modestbranding=1&rel=0" },
       { id: "v2", title: "Social Proof", coverUrl: "https://picsum.photos/seed/ecommerce-2/400/711", videoUrl: "https://youtube.com/shorts/ewP0uFrd48s" },
       { id: "v3", title: "Scarcity Angle", coverUrl: "https://picsum.photos/seed/ecommerce-3/400/711", videoUrl: "https://youtube.com/shorts/BURTRB1d_d4" },
-      { id: "v4", title: "Final Call CTA", coverUrl: "https://picsum.photos/seed/ecommerce-4/400/711", videoUrl: "#" },
+      { id: "v4", title: "Final Call CTA", coverUrl: "https://picsum.photos/seed/ecommerce-4/400/711", videoUrl: "https://youtube.com/shorts/mxRzy6etUbw" },
     ]
   },
   {
     id: "commercial-product-ads",
     title: "Commercial Product Ads",
     category: "Brand Authority",
-    description: "Premium cinematic product ads designed for brand authority and long-term positioning. High-quality visuals and professional editing.",
+    description: "Cinematic brand authority ads with high-end visuals and professional editing.",
     thumbnailUrl: "https://parliamentary-yellow-q708idzt8m.edgeone.app/commercial.png",
     videos: [
       { id: "v1", title: "Cinematic Intro", coverUrl: "https://picsum.photos/seed/commercial-1/400/711", videoUrl: "https://youtube.com/shorts/CrQaD25hJUM" },
       { id: "v2", title: "Brand Vision", coverUrl: "https://picsum.photos/seed/commercial-2/400/711", videoUrl: "https://youtube.com/shorts/v84LuiHpJrE" },
       { id: "v3", title: "Product Macro", coverUrl: "https://picsum.photos/seed/commercial-3/400/711", videoUrl: "https://youtube.com/shorts/0h2U6Kp59-w" },
-      { id: "v4", title: "Authority Message", coverUrl: "https://picsum.photos/seed/commercial-4/400/711", videoUrl: "#" },
+      { id: "v4", title: "Authority Message", coverUrl: "https://picsum.photos/seed/commercial-4/400/711", videoUrl: "https://youtube.com/shorts/qWk_OG3LhdQ" },
     ]
   }
 ];
