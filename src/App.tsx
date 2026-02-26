@@ -235,9 +235,10 @@ const VideoPlayer = ({ url, title }: { url: string, coverUrl?: string, title: st
         </div>
       ) : (
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&fs=0&rel=0&playsinline=1&modestbranding=1&enablejsapi=1&widget_referrer=${encodeURIComponent(window.location.href)}`}
-          className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&fs=1&rel=0&playsinline=1&modestbranding=1&enablejsapi=1&widget_referrer=${encodeURIComponent(window.location.href)}`}
+          className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl z-10"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+          allowFullScreen
           title={title}
         />
       )}
@@ -801,9 +802,10 @@ const CarouselVideoItem = ({ url, title }: { url: string, coverUrl?: string, tit
         </div>
       ) : (
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&fs=0&rel=0&playsinline=1&modestbranding=1&enablejsapi=1`}
-          className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&fs=1&rel=0&playsinline=1&modestbranding=1&enablejsapi=1`}
+          className="absolute top-0 left-0 w-full h-full border-0 rounded-2xl shadow-2xl z-10"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+          allowFullScreen
           title={title}
         />
       )}
