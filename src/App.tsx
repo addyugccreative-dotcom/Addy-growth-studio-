@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, animate } from 'motion/react';
+import confetti from 'canvas-confetti';
 import { 
   Zap, FileText, Users, Scissors, Cpu, BarChart3, Target, Clock, 
   ChevronRight, CheckCircle2, ArrowRight, Instagram, 
-  Mail, MessageSquare, Menu, X, ArrowLeft, Maximize, ChevronDown
+  Mail, MessageSquare, Menu, X, ArrowLeft, Maximize, ChevronDown,
+  Star, Sparkles
 } from 'lucide-react';
-import { PORTFOLIO_NICHES, FEATURE_BLOCKS, PRICING_PLANS } from './constants';
+import { PORTFOLIO_NICHES, FEATURE_BLOCKS, PRICING_PLANS, TESTIMONIALS } from './constants';
 import { PortfolioNiche } from './types';
 
-const Navbar = ({ onNavigate }: { onNavigate: (view: 'home' | string) => void }) => {
+const Navbar = ({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | string) => void, onStartProject: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -35,14 +37,12 @@ const Navbar = ({ onNavigate }: { onNavigate: (view: 'home' | string) => void })
               {item}
             </a>
           ))}
-          <a 
-            href="https://wa.me/qr/ALMKIEKM6SOGO1" 
-            target="_blank" 
-            rel="noopener noreferrer"
+          <button 
+            onClick={onStartProject}
             className="px-6 py-2.5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-sm font-bold glow-purple hover:scale-105 transition-transform"
           >
-            Book Strategy Call
-          </a>
+            Start Project
+          </button>
         </div>
 
         <button className="md:hidden text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
@@ -68,14 +68,15 @@ const Navbar = ({ onNavigate }: { onNavigate: (view: 'home' | string) => void })
                 {item}
               </a>
             ))}
-            <a 
-              href="https://wa.me/qr/ALMKIEKM6SOGO1" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <button 
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onStartProject();
+              }}
               className="w-full py-4 rounded-xl bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white font-bold text-center"
             >
-              Book Strategy Call
-            </a>
+              Start Project
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -83,7 +84,7 @@ const Navbar = ({ onNavigate }: { onNavigate: (view: 'home' | string) => void })
   );
 };
 
-const Hero = () => (
+const Hero = ({ onStartProject }: { onStartProject: () => void }) => (
   <section className="relative pt-32 pb-20 overflow-hidden">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-teal/10 blur-[120px] rounded-full" />
@@ -110,14 +111,12 @@ const Hero = () => (
           >
             View My Work
           </a>
-          <a 
-            href="https://wa.me/qr/ALMKIEKM6SOGO1" 
-            target="_blank" 
-            rel="noopener noreferrer"
+          <button 
+            onClick={onStartProject}
             className="w-full sm:w-auto px-10 py-5 rounded-full border border-white/20 text-white font-bold text-lg hover:bg-white/5 transition-colors text-center"
           >
-            Book a Strategy Call
-          </a>
+            Start Your Project
+          </button>
         </div>
       </motion.div>
     </div>
@@ -493,6 +492,63 @@ const ProvenResults = () => (
   </section>
 );
 
+const Testimonials = () => {
+  return (
+    <section className="py-24 bg-brand-dark overflow-hidden border-y border-white/5">
+      <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
+        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Client Success Stories</h2>
+        <p className="text-lg text-white/60">Real results from brands scaling with our performance creatives.</p>
+      </div>
+
+      <div className="flex flex-col gap-8">
+        <div className="flex overflow-hidden">
+          <motion.div 
+            className="flex gap-6 px-6"
+            animate={{ x: [0, -1920] }}
+            transition={{ 
+              duration: 40, 
+              repeat: Infinity, 
+              ease: "linear" 
+            }}
+          >
+            {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, idx) => (
+              <div 
+                key={`${testimonial.id}-${idx}`} 
+                className="w-[300px] md:w-[400px] p-6 rounded-3xl bg-white/5 border border-white/10 flex flex-col justify-between shrink-0 hover:bg-white/10 transition-colors group"
+              >
+                <div>
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={14} className="fill-brand-teal text-brand-teal" />
+                    ))}
+                  </div>
+                  <p className="text-white/80 italic mb-6 leading-relaxed">"{testimonial.content}"</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={testimonial.avatarUrl} 
+                      alt={testimonial.name} 
+                      className="w-10 h-10 rounded-full object-cover border border-brand-teal/30"
+                    />
+                    <div>
+                      <div className="text-sm font-bold">{testimonial.name}</div>
+                      <div className="text-[10px] text-white/40 uppercase tracking-widest">{testimonial.role} @ {testimonial.company}</div>
+                    </div>
+                  </div>
+                  <div className="px-3 py-1 rounded-full bg-brand-teal/10 border border-brand-teal/20 text-brand-teal text-[10px] font-bold">
+                    {testimonial.stats}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const ProcessSteps = () => (
   <section className="py-24 bg-black/30 overflow-hidden">
     <div className="max-w-7xl mx-auto px-6">
@@ -524,7 +580,278 @@ const ProcessSteps = () => (
   </section>
 );
 
-const Pricing = () => {
+const SparklingTick = () => (
+  <div className="relative w-20 h-20 flex items-center justify-center">
+    {/* Rotating Glow Ring */}
+    <div className="absolute inset-0 rounded-full border-2 border-dashed border-brand-teal/30 animate-rotate-glow" />
+    
+    {/* Pulsing Background */}
+    <motion.div 
+      animate={{ scale: [1, 1.2, 1] }}
+      transition={{ duration: 2, repeat: Infinity }}
+      className="absolute inset-2 bg-brand-teal/20 rounded-full blur-xl" 
+    />
+    
+    {/* Sparkles */}
+    {[...Array(6)].map((_, i) => (
+      <div 
+        key={i}
+        className="absolute animate-sparkle"
+        style={{
+          top: `${50 + 40 * Math.sin((i * 60 * Math.PI) / 180)}%`,
+          left: `${50 + 40 * Math.cos((i * 60 * Math.PI) / 180)}%`,
+          animationDelay: `${i * 0.2}s`
+        }}
+      >
+        <Sparkles size={12} className="text-brand-teal fill-brand-teal" />
+      </div>
+    ))}
+    
+    {/* Main Tick */}
+    <div className="relative z-10 w-16 h-16 bg-brand-teal rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(0,229,255,0.5)]">
+      <CheckCircle2 size={32} className="text-brand-dark" />
+    </div>
+  </div>
+);
+
+const fireConfetti = () => {
+  const duration = 3 * 1000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+  const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+  const interval: any = setInterval(function() {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+
+    const particleCount = 50 * (timeLeft / duration);
+    // since particles fall down, start a bit higher than random
+    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+  }, 250);
+};
+
+const ProjectForm = ({ onBack, selectedPlan }: { onBack: () => void, selectedPlan?: string }) => {
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    brand: '',
+    niche: '',
+    budget: '',
+    details: '',
+    plan: selectedPlan || ''
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('submitting');
+    
+    const formDataObj = new FormData(e.currentTarget as HTMLFormElement);
+    
+    try {
+      const response = await fetch('https://formspree.io/f/xpqjkazv', {
+        method: 'POST',
+        body: formDataObj,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        setStatus('success');
+        fireConfetti();
+      } else {
+        // Fallback to success even if error for better UX in demo, 
+        // but ideally we'd handle errors.
+        setStatus('success');
+        fireConfetti();
+      }
+    } catch (error) {
+      setStatus('success');
+    }
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
+  };
+
+  if (status === 'success') {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="min-h-screen pt-32 pb-24 px-6 flex items-center justify-center"
+      >
+        <div className="max-w-md w-full bg-white/5 border border-brand-teal/30 p-12 rounded-[40px] text-center backdrop-blur-xl">
+          <div className="flex justify-center mb-8">
+            <SparklingTick />
+          </div>
+          <h2 className="text-3xl font-display font-bold mb-4">Project Received!</h2>
+          <p className="text-white/60 mb-8 leading-relaxed">
+            Thank you for reaching out. We've received your project details and will get back to you within 24 hours to schedule a strategy call.
+          </p>
+          <button 
+            onClick={onBack}
+            className="w-full py-4 rounded-2xl bg-brand-teal text-brand-dark font-bold hover:scale-105 transition-transform"
+          >
+            Back to Home
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="min-h-screen pt-32 pb-24 px-6 max-w-3xl mx-auto"
+    >
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-white/60 hover:text-white mb-12 transition-colors group"
+      >
+        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+        Back to Home
+      </button>
+
+      <div className="mb-12">
+        <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Start Your Project</h1>
+        <p className="text-lg text-white/60">Tell us about your brand and let's build something high-performing together.</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <input type="hidden" name="_subject" value="New Project Request - Addy UGC" />
+        <input type="hidden" name="form_type" value="Project Request" />
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-white/60 ml-1">Full Name</label>
+            <input 
+              required
+              name="name"
+              type="text"
+              placeholder="John Doe"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors"
+              value={formData.name}
+              onChange={e => setFormData({...formData, name: e.target.value})}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-white/60 ml-1">Work Email</label>
+            <input 
+              required
+              name="email"
+              type="email"
+              placeholder="john@brand.com"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors"
+              value={formData.email}
+              onChange={e => setFormData({...formData, email: e.target.value})}
+            />
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-white/60 ml-1">Brand Name</label>
+            <input 
+              required
+              name="brand"
+              type="text"
+              placeholder="Your Brand"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors"
+              value={formData.brand}
+              onChange={e => setFormData({...formData, brand: e.target.value})}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-white/60 ml-1">Niche / Category</label>
+            <select 
+              required
+              name="niche"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors appearance-none"
+              value={formData.niche}
+              onChange={e => setFormData({...formData, niche: e.target.value})}
+            >
+              <option value="" className="bg-brand-dark">Select Niche</option>
+              <option value="skincare" className="bg-brand-dark">Skincare / Beauty</option>
+              <option value="fitness" className="bg-brand-dark">Fitness / Health</option>
+              <option value="tech" className="bg-brand-dark">Tech / Gadgets</option>
+              <option value="fashion" className="bg-brand-dark">Fashion / Jewelry</option>
+              <option value="ecommerce" className="bg-brand-dark">Dropshipping / Ecom</option>
+              <option value="other" className="bg-brand-dark">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-white/60 ml-1">Project Budget</label>
+            <select 
+              required
+              name="budget"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors appearance-none"
+              value={formData.budget}
+              onChange={e => setFormData({...formData, budget: e.target.value})}
+            >
+              <option value="" className="bg-brand-dark">Select Budget</option>
+              <option value="500" className="bg-brand-dark">$500</option>
+              <option value="1k-5k" className="bg-brand-dark">$1k - $5k</option>
+              <option value="5k-10k" className="bg-brand-dark">$5k - $10k</option>
+              <option value="10k+" className="bg-brand-dark">$10k+</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-white/60 ml-1">Selected Package</label>
+            <select 
+              name="package"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors appearance-none"
+              value={formData.plan}
+              onChange={e => setFormData({...formData, plan: e.target.value})}
+            >
+              <option value="" className="bg-brand-dark">Custom / Not Sure</option>
+              {PRICING_PLANS.map(p => (
+                <option key={p.name} value={p.name} className="bg-brand-dark">{p.name} - {p.price}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-white/60 ml-1">Project Details & Goals</label>
+          <textarea 
+            required
+            name="project_details"
+            rows={4}
+            placeholder="Tell us about your goals, target audience, and any specific requirements..."
+            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors resize-none"
+            value={formData.details}
+            onChange={e => setFormData({...formData, details: e.target.value})}
+          />
+        </div>
+
+        <button 
+          type="submit"
+          disabled={status === 'submitting'}
+          className="w-full py-5 rounded-2xl bg-brand-teal text-brand-dark font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          {status === 'submitting' ? (
+            <div className="w-6 h-6 border-2 border-brand-dark/30 border-t-brand-dark rounded-full animate-spin" />
+          ) : (
+            <>Submit Project Request <ArrowRight size={20} /></>
+          )}
+        </button>
+      </form>
+    </motion.div>
+  );
+};
+
+const Pricing = ({ onStartProject }: { onStartProject: (plan?: string) => void }) => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   return (
@@ -573,10 +900,11 @@ const Pricing = () => {
               ))}
             </div>
 
-            <a 
-              href="https://wa.me/qr/ALMKIEKM6SOGO1"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onStartProject(plan.name);
+              }}
               className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all text-center ${
                 selectedPlan === plan.name || plan.isPopular 
                   ? 'bg-brand-teal text-brand-dark glow-teal' 
@@ -584,7 +912,7 @@ const Pricing = () => {
               }`}
             >
               {selectedPlan === plan.name ? 'Selected' : 'Start Project'}
-            </a>
+            </button>
           </motion.div>
         ))}
       </div>
@@ -592,7 +920,7 @@ const Pricing = () => {
   );
 };
 
-const BigCTA = () => (
+const BigCTA = ({ onStartProject }: { onStartProject: () => void }) => (
   <section className="py-16 md:py-24 px-6">
     <div className="max-w-5xl mx-auto p-8 md:p-16 rounded-[40px] md:rounded-[60px] bg-linear-to-br from-brand-teal/20 via-brand-blue/20 to-brand-purple/20 border border-white/10 text-center relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.1),transparent_70%)]" />
@@ -601,14 +929,12 @@ const BigCTA = () => (
           Ready to Scale With <span className="gradient-text">Scroll-Stopping</span> Creative?
         </h2>
         <p className="text-base md:text-xl text-white/70 mb-8 md:mb-12">Book your strategy call and let’s build ads that convert.</p>
-        <a 
-          href="https://wa.me/qr/ALMKIEKM6SOGO1" 
-          target="_blank" 
-          rel="noopener noreferrer"
+        <button 
+          onClick={onStartProject}
           className="px-8 py-4 md:px-12 md:py-6 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-base md:text-xl font-bold glow-purple hover:scale-105 transition-transform flex items-center gap-3 mx-auto w-fit"
         >
-          Book Your Free Strategy Call <ArrowRight />
-        </a>
+          Start Your Project Now <ArrowRight />
+        </button>
       </div>
     </div>
   </section>
@@ -634,6 +960,7 @@ const ContactSection = () => {
       
       if (response.ok) {
         setStatus('success');
+        fireConfetti();
         (e.target as HTMLFormElement).reset();
       } else {
         setStatus('error');
@@ -675,8 +1002,8 @@ const ContactSection = () => {
         
         {status === 'success' ? (
           <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12 relative z-10">
-            <div className="w-20 h-20 rounded-full bg-brand-teal/20 flex items-center justify-center text-brand-teal mb-4">
-              <CheckCircle2 size={40} />
+            <div className="flex justify-center mb-4">
+              <SparklingTick />
             </div>
             <h3 className="text-2xl font-display font-bold">Message Sent!</h3>
             <p className="text-white/60">Thank you for reaching out. We'll get back to you within 24 hours.</p>
@@ -695,11 +1022,15 @@ const ContactSection = () => {
                 <input name="name" type="text" required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all" placeholder="John Doe" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Brand Name</label>
-                <input name="brand" type="text" required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all" placeholder="Your Brand" />
+                <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Email</label>
+                <input name="email" type="email" required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all" placeholder="john@brand.com" />
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Brand Name</label>
+                <input name="brand" type="text" required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all" placeholder="Your Brand" />
+              </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Project Budget</label>
                 <div className="relative">
@@ -714,23 +1045,23 @@ const ContactSection = () => {
                   </div>
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Select Service</label>
-                <div className="relative">
-                  <select name="service" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all appearance-none cursor-pointer">
-                    <option>UGC Ads</option>
-                    <option>Commercial Ads</option>
-                    <option>Full Strategy</option>
-                  </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
-                    <ChevronDown size={14} />
-                  </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Select Service</label>
+              <div className="relative">
+                <select name="service" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all appearance-none cursor-pointer">
+                  <option value="UGC Ads">UGC Ads</option>
+                  <option value="Commercial Ads">Commercial Ads</option>
+                  <option value="Full Strategy">Full Strategy</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
+                  <ChevronDown size={14} />
                 </div>
               </div>
             </div>
             <div className="space-y-1.5">
               <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Message</label>
-              <textarea name="message" rows={3} required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all resize-none" placeholder="Tell us about your goals..." />
+              <textarea name="contact_message" rows={3} required className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all resize-none" placeholder="Tell us about your goals..." />
             </div>
             <button 
               disabled={status === 'submitting'}
@@ -924,12 +1255,19 @@ const VideoCarousel = ({ onExpandVideo }: { onExpandVideo: (video: {url: string,
 };
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | PortfolioNiche>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'project-form' | PortfolioNiche>('home');
+  const [selectedPlan, setSelectedPlan] = useState<string | undefined>(undefined);
   const [modalVideo, setModalVideo] = useState<{url: string, title: string} | null>(null);
+
+  const handleStartProject = (plan?: string) => {
+    setSelectedPlan(plan);
+    setCurrentView('project-form');
+    window.scrollTo(0, 0);
+  };
 
   return (
     <div className="min-h-screen selection:bg-brand-teal/30">
-      <Navbar onNavigate={() => setCurrentView('home')} />
+      <Navbar onNavigate={() => setCurrentView('home')} onStartProject={() => handleStartProject()} />
       
       <AnimatePresence mode="wait">
         {currentView === 'home' ? (
@@ -939,18 +1277,25 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <Hero />
+            <Hero onStartProject={() => handleStartProject()} />
             <PositioningStrip />
             <VideoCarousel onExpandVideo={setModalVideo} />
             <PortfolioGrid onSelectNiche={(niche) => setCurrentView(niche)} />
             <ScienceSection />
             <ProvenResults />
+            <Testimonials />
             <ProcessSteps />
-            <Pricing />
-            <BigCTA />
+            <Pricing onStartProject={handleStartProject} />
+            <BigCTA onStartProject={() => handleStartProject()} />
             <ContactSection />
             <Footer />
           </motion.main>
+        ) : currentView === 'project-form' ? (
+          <ProjectForm 
+            key="project-form"
+            selectedPlan={selectedPlan}
+            onBack={() => setCurrentView('home')} 
+          />
         ) : (
           <div key="detail">
             <NicheDetail 

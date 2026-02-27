@@ -28,3 +28,13 @@ export interface PricingPlan {
   features: string[];
   isPopular?: boolean;
 }
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  avatarUrl: string;
+  stats: string;
+}

@@ -1,4 +1,4 @@
-import { PortfolioNiche, FeatureBlock, PricingPlan } from "./types";
+import { PortfolioNiche, FeatureBlock, PricingPlan, Testimonial } from "./types";
 
 export const PORTFOLIO_NICHES: PortfolioNiche[] = [
   {
@@ -157,5 +157,62 @@ export const PRICING_PLANS: PricingPlan[] = [
     price: "$999",
     subtitle: "Built for aggressive ad scales & agencies.",
     features: ["30+ creatives", "Full funnel strategy", "Creative testing framework", "Priority support", "24-48hr Turnaround", "Unlimited minor text revisions"]
+  }
+];
+
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    id: "t1",
+    name: "Sarah Jenkins",
+    role: "Marketing Director",
+    company: "GlowSkin Co.",
+    content: "The ROAS we've seen since switching to Addy's UGC is insane. Our cost per acquisition dropped by 40% in the first month.",
+    avatarUrl: "https://i.pravatar.cc/150?u=sarah",
+    stats: "4.2x ROAS"
+  },
+  {
+    id: "t2",
+    name: "Marcus Chen",
+    role: "Founder",
+    company: "FitFuel",
+    content: "Best creative partner we've worked with. The hooks are actually native to the platform and the conversion rates prove it.",
+    avatarUrl: "https://i.pravatar.cc/150?u=marcus",
+    stats: "+120% ROI"
+  },
+  {
+    id: "t3",
+    name: "Elena Rodriguez",
+    role: "E-com Manager",
+    company: "VibeWear",
+    content: "Our CPC decreased from $1.20 to $0.45. The quality of editing and script writing is top-tier. Highly recommend!",
+    avatarUrl: "https://i.pravatar.cc/150?u=elena",
+    stats: "-62% CPC"
+  },
+  {
+    id: "t4",
+    name: "David Smith",
+    role: "CEO",
+    company: "TechGadget",
+    content: "Scaling our ads was a nightmare until we found this workflow. Now we have fresh winning creatives every single week.",
+    avatarUrl: "https://i.pravatar.cc/150?u=david",
+    stats: "5.8x ROAS"
+  },
+  {
+    id: "t5",
+    name: "Jessica Wu",
+    role: "Growth Lead",
+    company: "PureWellness",
+    content: "The attention to detail in the performance editing is what sets them apart. Every cut is designed to keep people watching.",
+    avatarUrl: "https://i.pravatar.cc/150?u=jessica",
+    stats: "3.5x ROAS"
+  },
+  {
+    id: "t6",
+    name: "Tom Baker",
+    role: "Ad Specialist",
+    company: "ScaleAgency",
+    content: "We use Addy for all our e-commerce clients. The turnaround time and creative strategy are unmatched in the industry.",
+    avatarUrl: "https://i.pravatar.cc/150?u=tom",
+    stats: "+85% Conv. Rate"
   }
 ];
