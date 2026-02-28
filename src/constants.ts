@@ -23,7 +23,7 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     videos: [
       { id: "v1", title: "Workout Hook", coverUrl: "https://picsum.photos/seed/fitness-1/400/711", videoUrl: "https://youtube.com/shorts/qC9Ms59WRQQ" },
       { id: "v2", title: "Supplement Mix", coverUrl: "https://picsum.photos/seed/fitness-2/400/711", videoUrl: "https://youtube.com/shorts/XPCa5uOsfsw" },
-      { id: "v3", title: "Transformation", coverUrl: "https://picsum.photos/seed/fitness-3/400/711", videoUrl: "#" },
+      { id: "v3", title: "Transformation", coverUrl: "https://picsum.photos/seed/fitness-3/400/711", videoUrl: "https://youtube.com/shorts/ijNQDaXRsmk" },
       { id: "v4", title: "Expert Advice", coverUrl: "https://picsum.photos/seed/fitness-4/400/711", videoUrl: "#" },
     ]
   },

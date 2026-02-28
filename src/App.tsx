@@ -10,7 +10,14 @@ import {
 import { PORTFOLIO_NICHES, FEATURE_BLOCKS, PRICING_PLANS, TESTIMONIALS } from './constants';
 import { PortfolioNiche } from './types';
 
-const Navbar = ({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | string) => void, onStartProject: () => void }) => {
+const ButtonSparkle = () => (
+  <div className="button-sparkle-container">
+    <div className="sparkle-particle animate-sparkle-move" />
+    <div className="sparkle-particle animate-sparkle-move" style={{ animationDelay: '1.5s' }} />
+  </div>
+);
+
+const Navbar = ({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | 'about' | string) => void, onStartProject: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -20,27 +27,56 @@ const Navbar = ({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | st
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navItems = ['Work', 'Services', 'About', 'Process'];
+
+  const handleNavClick = (item: string) => {
+    if (item === 'About') {
+      onNavigate('about');
+      window.scrollTo(0, 0);
+    } else {
+      onNavigate('home');
+      // Small delay to ensure we are on home before scrolling
+      setTimeout(() => {
+        const element = document.getElementById(item.toLowerCase());
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.location.hash = `#${item.toLowerCase()}`;
+        }
+      }, 100);
+    }
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-brand-dark/80 backdrop-blur-lg border-b border-white/10 py-4' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <div 
           className="text-2xl font-display font-bold cursor-pointer flex items-center gap-2"
-          onClick={() => onNavigate('home')}
+          onClick={() => {
+            onNavigate('home');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
         >
           <span className="gradient-text">Addy</span>
           <span className="text-white">UGC Creative</span>
         </div>
 
         <div className="hidden md:flex items-center gap-8">
-          {['Work', 'Services', 'About', 'Process'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase()}`} className="text-sm font-medium text-white/70 hover:text-white transition-colors">
+          {navItems.map((item) => (
+            <button 
+              key={item} 
+              onClick={() => handleNavClick(item)}
+              className="text-sm font-medium text-white/70 hover:text-white transition-colors"
+            >
               {item}
-            </a>
+            </button>
           ))}
           <button 
             onClick={onStartProject}
-            className="px-6 py-2.5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-sm font-bold glow-purple hover:scale-105 transition-transform"
+            className="relative px-6 py-2.5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-sm font-bold glow-purple hover:scale-105 transition-transform overflow-hidden"
           >
+            <ButtonSparkle />
             Start Project
           </button>
         </div>
@@ -58,23 +94,23 @@ const Navbar = ({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | st
             exit={{ opacity: 0, y: -20 }}
             className="absolute top-full left-0 right-0 bg-brand-dark border-b border-white/10 p-6 flex flex-col gap-4 md:hidden"
           >
-            {['Work', 'Services', 'About', 'Process'].map((item) => (
-              <a 
+            {navItems.map((item) => (
+              <button 
                 key={item} 
-                href={`#${item.toLowerCase()}`} 
-                className="text-lg font-medium text-white/70"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => handleNavClick(item)}
+                className="text-lg font-medium text-white/70 text-left"
               >
                 {item}
-              </a>
+              </button>
             ))}
             <button 
               onClick={() => {
                 setIsMobileMenuOpen(false);
                 onStartProject();
               }}
-              className="w-full py-4 rounded-xl bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white font-bold text-center"
+              className="relative w-full py-4 rounded-xl bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white font-bold text-center overflow-hidden"
             >
+              <ButtonSparkle />
               Start Project
             </button>
           </motion.div>
@@ -85,17 +121,17 @@ const Navbar = ({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | st
 };
 
 const Hero = ({ onStartProject }: { onStartProject: () => void }) => (
-  <section className="relative pt-32 pb-20 overflow-hidden">
+  <section className="relative pt-32 pb-20 overflow-hidden optimize-gpu">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-teal/10 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-purple/10 blur-[120px] rounded-full" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-teal/10 blur-[120px] rounded-full animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-purple/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
     </div>
 
     <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-tight tracking-tight mb-8">
           We Create <span className="gradient-text drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">Scroll-Stopping</span><br />
@@ -107,14 +143,16 @@ const Hero = ({ onStartProject }: { onStartProject: () => void }) => (
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
           <a 
             href="#work" 
-            className="w-full sm:w-auto px-10 py-5 rounded-full bg-brand-teal text-brand-dark font-bold text-lg glow-teal hover:scale-105 transition-transform text-center"
+            className="relative w-full sm:w-auto px-10 py-5 rounded-full bg-brand-teal text-brand-dark font-bold text-lg glow-teal hover:scale-105 transition-transform text-center overflow-hidden"
           >
+            <ButtonSparkle />
             View My Work
           </a>
           <button 
             onClick={onStartProject}
-            className="w-full sm:w-auto px-10 py-5 rounded-full border border-white/20 text-white font-bold text-lg hover:bg-white/5 transition-colors text-center"
+            className="relative w-full sm:w-auto px-10 py-5 rounded-full border border-white/20 text-white font-bold text-lg hover:bg-white/5 transition-colors text-center overflow-hidden"
           >
+            <ButtonSparkle />
             Start Your Project
           </button>
         </div>
@@ -124,61 +162,99 @@ const Hero = ({ onStartProject }: { onStartProject: () => void }) => (
 );
 
 const PositioningStrip = () => (
-  <section className="py-20 bg-white/5 border-y border-white/10">
+  <section className="py-20 bg-white/5 border-y border-white/10 optimize-gpu">
     <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-      <div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: "circOut" }}
+      >
         <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
           More Than Just Content. <span className="gradient-text">It's Strategy.</span>
         </h2>
-      </div>
-      <div>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: "circOut" }}
+      >
         <p className="text-sm md:text-lg text-white/60 leading-relaxed">
           At <span className="text-white font-bold">Addy UGC Creative</span>, we specialize in <span className="text-brand-teal font-medium">high-converting UGC</span> and commercial product ads built for brands, dropshippers, and scaling e-commerce stores. Every creative is engineered with <span className="text-white font-medium">performance psychology</span>, thumb-stopping hooks, and platform-native storytelling to <span className="text-brand-teal font-medium">maximize ROAS</span> and dominate attention.
         </p>
-      </div>
+      </motion.div>
     </div>
   </section>
 );
 
 const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNiche) => void }) => (
-  <section id="work" className="py-24 max-w-7xl mx-auto px-6">
-    <div className="mb-12">
-      <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">My work</h2>
-      <p className="text-lg text-white/60">Performance-driven creatives across multiple high-converting niches.</p>
+  <section id="work" className="py-24 max-w-7xl mx-auto px-6 optimize-gpu">
+    <div className="mb-16">
+      <motion.span 
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-brand-teal font-bold uppercase tracking-widest text-xs mb-4 block"
+      >
+        Strategic Portfolio
+      </motion.span>
+      <motion.h2 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-3xl md:text-5xl font-display font-bold mb-4"
+      >
+        My Work
+      </motion.h2>
+      <motion.p 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.1 }}
+        className="text-base md:text-lg text-white/60 max-w-2xl"
+      >
+        Performance-driven creatives engineered for <span className="text-white font-medium">maximum ROAS</span> across multiple high-converting niches.
+      </motion.p>
     </div>
 
     <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
       {PORTFOLIO_NICHES.map((niche, idx) => (
         <motion.div
           key={niche.id}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.1 }}
+          transition={{ delay: idx * 0.05, duration: 0.6, ease: "circOut" }}
           viewport={{ once: true, margin: "-50px" }}
           className="group relative cursor-pointer optimize-gpu"
           onClick={() => onSelectNiche(niche)}
         >
-          <div className="relative aspect-square rounded-2xl overflow-hidden mb-4">
+          <div className="relative aspect-square rounded-2xl overflow-hidden mb-6 shadow-2xl">
             <img 
               src={niche.thumbnailUrl} 
               alt={niche.title} 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               referrerPolicy="no-referrer"
               loading={idx < 4 ? "eager" : "lazy"}
               decoding="async"
               {...(idx === 0 ? { fetchPriority: "high" } : idx < 4 ? { fetchPriority: "low" } : {})}
             />
-            <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-transparent to-transparent opacity-60" />
+            <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-brand-dark/20 to-transparent opacity-80" />
             
-            <div className="absolute inset-0 border-2 border-transparent group-hover:border-brand-teal/50 rounded-2xl transition-colors duration-300" />
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-teal/10 pointer-events-none" />
+            <div className="absolute inset-0 border-2 border-white/5 group-hover:border-brand-teal/30 rounded-2xl transition-all duration-500" />
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-brand-teal/5 pointer-events-none" />
+            
+            <div className="absolute bottom-4 left-4 right-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+              <div className="px-4 py-2 rounded-xl bg-brand-teal text-brand-dark font-bold text-[10px] md:text-xs text-center shadow-xl">
+                Explore Case Study
+              </div>
+            </div>
           </div>
 
-          <h3 className="text-sm md:text-base font-display font-bold mb-1 group-hover:text-brand-teal transition-colors truncate">{niche.title}</h3>
-          <p className="text-white/60 text-[9px] md:text-[11px] leading-relaxed line-clamp-2">{niche.description}</p>
-          
-          <div className="mt-2 flex items-center gap-1 text-brand-teal font-bold text-[10px] md:text-xs">
-            View Case Study <ChevronRight size={12} />
+          <div className="px-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-teal/60 mb-2 block">{niche.category}</span>
+            <h3 className="text-sm md:text-lg font-display font-bold mb-2 group-hover:text-brand-teal transition-colors truncate">{niche.title}</h3>
+            <p className="text-white/50 text-[10px] md:text-xs leading-relaxed line-clamp-2 group-hover:text-white/70 transition-colors">{niche.description}</p>
           </div>
         </motion.div>
       ))}
@@ -209,7 +285,7 @@ const VideoPlayer = ({ url, title, onExpand }: { url: string, title: string, onE
           observer.disconnect();
         }
       },
-      { threshold: 0.01, rootMargin: '400px' }
+      { threshold: 0.01, rootMargin: '600px' }
     );
 
     if (containerRef.current) {
@@ -271,7 +347,7 @@ const VideoModal = ({ video, onClose }: { video: {url: string, title: string}, o
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-dark/95 backdrop-blur-xl p-4 md:p-8"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-dark/95 backdrop-blur-xl p-4 md:p-8 optimize-gpu"
       onClick={onClose}
     >
       <button 
@@ -307,52 +383,87 @@ const NicheDetail = ({ niche, onBack, onExpandVideo }: { niche: PortfolioNiche, 
     window.scrollTo(0, 0);
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
     <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial="hidden"
+      animate="visible"
+      exit={{ opacity: 0, x: -20 }}
+      variants={containerVariants}
       className="min-h-screen pt-32 pb-24 px-6 max-w-7xl mx-auto"
     >
-      <button 
+      <motion.button 
+        variants={itemVariants}
         onClick={onBack}
-        className="flex items-center gap-2 text-white/60 hover:text-white mb-12 transition-colors group"
+        className="flex items-center gap-2 text-white/60 hover:text-brand-teal transition-colors mb-12 group text-sm font-bold uppercase tracking-widest"
       >
-        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
         Back to Portfolio
-      </button>
+      </motion.button>
 
       <div className="grid lg:grid-cols-2 gap-16 mb-24">
-        <div>
-          <span className="gradient-text font-bold uppercase tracking-widest text-sm mb-4 block">{niche.category}</span>
+        <motion.div variants={itemVariants}>
+          <span className="gradient-text font-bold uppercase tracking-widest text-xs mb-4 block">{niche.category}</span>
           <h1 className="text-3xl md:text-5xl font-display font-bold mb-8">{niche.title}</h1>
-          <p className="text-xl text-white/70 leading-relaxed mb-8">
-            {niche.description}
+          <p className="text-base md:text-lg text-white/70 leading-relaxed mb-8">
+            {niche.description.split(' ').map((word, i) => (
+              <span key={i} className={i % 5 === 0 ? 'text-white font-medium' : ''}>
+                {word}{' '}
+              </span>
+            ))}
           </p>
-          <div className="flex flex-wrap gap-4">
-            {['Performance Tested', 'UGC Strategy', 'Direct Response'].map(tag => (
-              <span key={tag} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-medium">
-                {tag}
+          <div className="flex flex-wrap gap-3">
+            {[
+              { label: 'Performance Tested', color: 'brand-teal' },
+              { label: 'UGC Strategy', color: 'brand-blue' },
+              { label: 'Direct Response', color: 'brand-purple' }
+            ].map(tag => (
+              <span key={tag.label} className={`px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold hover:border-${tag.color}/30 transition-colors flex items-center gap-2`}>
+                <div className={`w-1 h-1 rounded-full bg-${tag.color}`} />
+                {tag.label}
               </span>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 gap-3 md:gap-4 optimize-gpu">
+        <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3 md:gap-4 optimize-gpu">
           {niche.videos.slice(0, 4).map((video, idx) => (
-            <div key={video.id} className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl optimize-gpu">
+            <motion.div 
+              key={video.id} 
+              whileHover={{ y: -5 }}
+              className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl optimize-gpu group"
+            >
               <VideoPlayer url={video.videoUrl} title={video.title} onExpand={onExpandVideo} />
-            </div>
+              <div className="absolute inset-0 bg-brand-teal/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
-      <div className="p-12 rounded-[40px] bg-linear-to-br from-white/5 to-transparent border border-white/10 text-center">
-        <h2 className="text-3xl font-display font-bold mb-6">Ready to scale your {niche.title.toLowerCase()} brand?</h2>
-        <button className="px-10 py-5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white font-bold glow-purple hover:scale-105 transition-transform">
+      <motion.div 
+        variants={itemVariants}
+        className="p-10 md:p-16 rounded-[40px] bg-linear-to-br from-white/5 to-transparent border border-white/10 text-center relative overflow-hidden group"
+      >
+        <div className="absolute inset-0 bg-linear-to-r from-brand-teal/5 via-transparent to-brand-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <h2 className="text-2xl md:text-4xl font-display font-bold mb-8 relative z-10">Ready to scale your <span className="gradient-text">{niche.title.toLowerCase()}</span> brand?</h2>
+        <button className="relative z-10 px-10 py-5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white font-bold glow-purple hover:scale-105 transition-transform text-sm md:text-base">
           Book Strategy Call
         </button>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
@@ -362,7 +473,7 @@ const ScienceSection = () => {
   const [expandedBlock, setExpandedBlock] = useState<string | null>(null);
   
   return (
-    <section id="process" className="py-24 bg-black/30">
+    <section id="process" className="py-24 bg-black/30 optimize-gpu">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">The Science Behind The Scroll</h2>
@@ -379,8 +490,8 @@ const ScienceSection = () => {
                 key={block.title}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.05 }}
-                viewport={{ once: true }}
+                transition={{ delay: idx * 0.05, duration: 0.4, ease: "circOut" }}
+                viewport={{ once: true, margin: "-50px" }}
                 onClick={() => setExpandedBlock(isExpanded ? null : block.title)}
                 className={`p-5 md:p-6 rounded-2xl glass-card transition-all duration-300 cursor-pointer group flex flex-col items-start relative overflow-hidden optimize-gpu ${
                   isExpanded ? 'ring-2 ring-brand-teal bg-white/10' : 'hover:bg-white/10'
@@ -449,27 +560,54 @@ const Counter = ({ value, suffix = "" }: { value: number, suffix?: string }) => 
 };
 
 const ProvenResults = () => (
-  <section className="py-24 max-w-7xl mx-auto px-6">
-    <div className="text-center mb-20">
+  <section className="py-24 optimize-gpu overflow-hidden">
+    <div className="max-w-7xl mx-auto px-6 text-center mb-20">
       <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Proven Results</h2>
       <p className="text-xl text-white/60">Strategic creatives that drive measurable performance growth.</p>
     </div>
 
-    <div className="grid lg:grid-cols-2 gap-12 items-center">
-      <div className="relative rounded-[40px] overflow-hidden aspect-video group">
-        <img 
-          src="https://defensive-yellow-xvxnk4dfbj.edgeone.app/120.png" 
-          alt="Results" 
-          className="w-full h-full object-cover"
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-0 bg-brand-dark/20" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-full bg-brand-teal shadow-[0_0_20px_rgba(0,229,255,0.8)]" />
-        <div className="absolute top-6 left-6 px-4 py-2 rounded-lg bg-black/60 backdrop-blur-md text-sm font-bold">BEFORE</div>
-        <div className="absolute top-6 right-6 px-4 py-2 rounded-lg bg-brand-teal text-brand-dark text-sm font-bold">AFTER</div>
-      </div>
+    {/* Full-width centered image container */}
+    <div className="w-full max-w-screen-2xl mx-auto px-4 md:px-10 mb-24">
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="relative rounded-[32px] md:rounded-[48px] overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(0,229,255,0.07)] bg-white/5 backdrop-blur-md p-2 md:p-4 group"
+      >
+        {/* Subtle Performance Glow */}
+        <div className="absolute inset-0 bg-linear-to-br from-brand-teal/10 via-transparent to-brand-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+        
+        {/* Performance Proof Badge */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            className="px-6 py-2 rounded-full bg-brand-dark/80 border border-brand-teal/40 backdrop-blur-2xl shadow-2xl"
+          >
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-teal flex items-center gap-3">
+              <Sparkles size={12} className="animate-pulse" /> Performance Proof
+            </span>
+          </motion.div>
+        </div>
 
-      <div className="space-y-8">
+        <div className="relative rounded-[24px] md:rounded-[36px] overflow-hidden bg-brand-dark/60">
+          <img 
+            src="https://picsum.photos/seed/addy-ugc-results/1920/1080" 
+            alt="Performance Results Testimonial Collage" 
+            loading="lazy"
+            className="w-full h-auto object-contain transition-transform duration-1000 group-hover:scale-[1.01]"
+            referrerPolicy="no-referrer"
+          />
+          {/* Premium Bottom Fade */}
+          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-brand-dark via-brand-dark/20 to-transparent pointer-events-none" />
+        </div>
+      </motion.div>
+    </div>
+
+    <div className="max-w-7xl mx-auto px-6">
+      <div className="grid md:grid-cols-3 gap-8">
         <div className="p-8 rounded-3xl bg-linear-to-br from-brand-teal/20 to-transparent border border-brand-teal/30">
           <div className="text-5xl font-display font-bold text-brand-teal mb-2">
             <Counter value={120} suffix="%" />
@@ -478,14 +616,20 @@ const ProvenResults = () => (
           <p className="text-white/70">Average increase in Return on Ad Spend for our long-term partners using our performance-tested framework.</p>
         </div>
         
-        <div className="flex items-start gap-4 p-6 rounded-2xl bg-white/5 border border-white/10">
-          <div className="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal shrink-0">
-            <CheckCircle2 size={20} />
+        <div className="p-8 rounded-3xl bg-white/5 border border-white/10">
+          <div className="text-5xl font-display font-bold text-brand-blue mb-2">
+            <Counter value={15} suffix="M+" />
           </div>
-          <div>
-            <h4 className="font-bold mb-1">Performance-Tested Framework</h4>
-            <p className="text-sm text-white/60">Every creative follows our proprietary 12-point conversion checklist.</p>
+          <div className="text-xl font-bold mb-4">Views Generated</div>
+          <p className="text-white/70">Total organic and paid views across client campaigns this year using our creatives.</p>
+        </div>
+
+        <div className="p-8 rounded-3xl bg-white/5 border border-white/10">
+          <div className="text-5xl font-display font-bold text-brand-purple mb-2">
+            <Counter value={50} suffix="+" />
           </div>
+          <div className="text-xl font-bold mb-4">Brands Scaled</div>
+          <p className="text-white/70">Successful partnerships with brands across 12+ different high-converting niches.</p>
         </div>
       </div>
     </div>
@@ -494,7 +638,7 @@ const ProvenResults = () => (
 
 const Testimonials = () => {
   return (
-    <section className="py-24 bg-brand-dark overflow-hidden border-y border-white/5">
+    <section className="py-24 bg-brand-dark overflow-hidden border-y border-white/5 optimize-gpu">
       <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
         <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Client Success Stories</h2>
         <p className="text-lg text-white/60">Real results from brands scaling with our performance creatives.</p>
@@ -503,7 +647,7 @@ const Testimonials = () => {
       <div className="flex flex-col gap-8">
         <div className="flex overflow-hidden">
           <motion.div 
-            className="flex gap-6 px-6"
+            className="flex gap-6 px-6 optimize-gpu"
             animate={{ x: [0, -1920] }}
             transition={{ 
               duration: 40, 
@@ -514,7 +658,7 @@ const Testimonials = () => {
             {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, idx) => (
               <div 
                 key={`${testimonial.id}-${idx}`} 
-                className="w-[300px] md:w-[400px] p-6 rounded-3xl bg-white/5 border border-white/10 flex flex-col justify-between shrink-0 hover:bg-white/10 transition-colors group"
+                className="w-[300px] md:w-[400px] p-6 rounded-3xl bg-white/5 border border-white/10 flex flex-col justify-between shrink-0 hover:bg-white/10 transition-colors group optimize-gpu"
               >
                 <div>
                   <div className="flex gap-1 mb-4">
@@ -529,6 +673,7 @@ const Testimonials = () => {
                     <img 
                       src={testimonial.avatarUrl} 
                       alt={testimonial.name} 
+                      loading="lazy"
                       className="w-10 h-10 rounded-full object-cover border border-brand-teal/30"
                     />
                     <div>
@@ -549,8 +694,56 @@ const Testimonials = () => {
   );
 };
 
+const BrandShowcase = () => (
+  <section className="py-24 optimize-gpu overflow-hidden">
+    <div className="max-w-7xl mx-auto px-6 text-center mb-16">
+      <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Creative Showcase</h2>
+      <p className="text-lg text-white/60">A preview of high-performing visual assets engineered for conversion.</p>
+    </div>
+
+    <div className="w-full max-w-screen-2xl mx-auto px-4 md:px-10">
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="relative rounded-[32px] md:rounded-[48px] overflow-hidden border border-white/10 shadow-2xl bg-white/5 backdrop-blur-md p-2 md:p-4 group"
+      >
+        {/* Subtle Brand Glow */}
+        <div className="absolute inset-0 bg-linear-to-br from-brand-blue/10 via-transparent to-brand-teal/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+        
+        {/* Creative Badge */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            className="px-6 py-2 rounded-full bg-brand-dark/80 border border-brand-blue/40 backdrop-blur-2xl shadow-2xl"
+          >
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue flex items-center gap-3">
+              <Sparkles size={12} className="animate-pulse" /> Creative Preview
+            </span>
+          </motion.div>
+        </div>
+
+        <div className="relative rounded-[24px] md:rounded-[36px] overflow-hidden bg-brand-dark/60">
+          <img 
+            src="https://picsum.photos/seed/addy-ugc-performance/1920/1080" 
+            alt="Creative Brand Showcase" 
+            loading="lazy"
+            className="w-full h-auto object-contain transition-transform duration-1000 group-hover:scale-[1.01]"
+            referrerPolicy="no-referrer"
+          />
+          {/* Premium Bottom Fade */}
+          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-brand-dark via-brand-dark/20 to-transparent pointer-events-none" />
+        </div>
+      </motion.div>
+    </div>
+  </section>
+);
+
 const ProcessSteps = () => (
-  <section className="py-24 bg-black/30 overflow-hidden">
+  <section className="py-24 bg-black/30 overflow-hidden optimize-gpu">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-20">
         <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">How We Build Winners</h2>
@@ -565,14 +758,21 @@ const ProcessSteps = () => (
             { num: '02', title: 'Strategy & Script', desc: 'We build scroll-stopping hooks, angles, and conversion-focused scripts.' },
             { num: '03', title: 'Production & Launch', desc: 'We produce, edit, test, and deliver creatives optimized for scaling.' }
           ].map((step, idx) => (
-            <div key={step.num} className="text-center">
+            <motion.div 
+              key={step.num} 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1, duration: 0.5, ease: "circOut" }}
+              className="text-center"
+            >
               <div className="w-20 h-20 rounded-full bg-brand-dark border-2 border-brand-teal/30 flex items-center justify-center mx-auto mb-8 relative">
                 <span className="text-2xl font-display font-bold gradient-text">{step.num}</span>
                 <div className="absolute inset-0 rounded-full glow-teal opacity-50" />
               </div>
               <h3 className="text-2xl font-display font-bold mb-4">{step.title}</h3>
               <p className="text-white/60 leading-relaxed">{step.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -855,19 +1055,20 @@ const Pricing = ({ onStartProject }: { onStartProject: (plan?: string) => void }
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   return (
-    <section id="services" className="py-24 max-w-7xl mx-auto px-6 overflow-hidden">
+    <section id="services" className="py-24 max-w-7xl mx-auto px-6 overflow-hidden optimize-gpu">
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Services & Packages</h2>
         <p className="text-lg text-white/60">Scalable creative solutions tailored for growth-focused brands.</p>
       </div>
 
-      <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide">
+      <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide optimize-gpu">
         {PRICING_PLANS.map((plan) => (
           <motion.div 
             key={plan.name} 
-            whileHover={{ y: -5 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setSelectedPlan(plan.name)}
-            className={`relative p-6 md:p-8 rounded-[28px] flex flex-col shrink-0 w-[280px] md:w-auto snap-center cursor-pointer transition-all duration-300 ${
+            className={`relative p-6 md:p-8 rounded-[28px] flex flex-col shrink-0 w-[280px] md:w-auto snap-center cursor-pointer transition-all duration-300 optimize-gpu ${
               selectedPlan === plan.name 
                 ? 'bg-linear-to-br from-brand-teal/20 via-brand-blue/20 to-brand-purple/20 border-2 border-brand-teal shadow-[0_0_30px_rgba(0,229,255,0.2)]' 
                 : plan.isPopular 
@@ -921,8 +1122,8 @@ const Pricing = ({ onStartProject }: { onStartProject: (plan?: string) => void }
 };
 
 const BigCTA = ({ onStartProject }: { onStartProject: () => void }) => (
-  <section className="py-16 md:py-24 px-6">
-    <div className="max-w-5xl mx-auto p-8 md:p-16 rounded-[40px] md:rounded-[60px] bg-linear-to-br from-brand-teal/20 via-brand-blue/20 to-brand-purple/20 border border-white/10 text-center relative overflow-hidden">
+  <section className="py-16 md:py-24 px-6 optimize-gpu">
+    <div className="max-w-5xl mx-auto p-8 md:p-16 rounded-[40px] md:rounded-[60px] bg-linear-to-br from-brand-teal/20 via-brand-blue/20 to-brand-purple/20 border border-white/10 text-center relative overflow-hidden optimize-gpu">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.1),transparent_70%)]" />
       <div className="relative z-10">
         <h2 className="text-2xl md:text-5xl font-display font-bold mb-4 md:mb-6 leading-tight">
@@ -931,8 +1132,9 @@ const BigCTA = ({ onStartProject }: { onStartProject: () => void }) => (
         <p className="text-base md:text-xl text-white/70 mb-8 md:mb-12">Book your strategy call and let’s build ads that convert.</p>
         <button 
           onClick={onStartProject}
-          className="px-8 py-4 md:px-12 md:py-6 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-base md:text-xl font-bold glow-purple hover:scale-105 transition-transform flex items-center gap-3 mx-auto w-fit"
+          className="relative px-8 py-4 md:px-12 md:py-6 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-base md:text-xl font-bold glow-purple hover:scale-105 transition-transform flex items-center gap-3 mx-auto w-fit overflow-hidden"
         >
+          <ButtonSparkle />
           Start Your Project Now <ArrowRight />
         </button>
       </div>
@@ -1079,55 +1281,208 @@ const ContactSection = () => {
   );
 };
 
-const Footer = () => (
-  <footer className="pt-24 pb-12 border-t border-white/5 bg-black/50">
-    <div className="max-w-7xl mx-auto px-6">
-      <div className="grid md:grid-cols-4 gap-12 mb-16">
-        <div className="md:col-span-2">
-          <div className="text-2xl font-display font-bold mb-6">
-            <span className="gradient-text">Addy</span> UGC Creative
-          </div>
-          <p className="text-white/50 max-w-sm leading-relaxed">
-            Performance-driven creative studio for modern e-commerce brands. We engineer ads that convert, scale, and dominate attention.
+const AboutPage = ({ onBack }: { onBack: () => void }) => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      exit={{ opacity: 0, x: -20 }}
+      variants={containerVariants}
+      className="min-h-screen pt-32 pb-20 px-6 max-w-4xl mx-auto"
+    >
+      <motion.button 
+        variants={itemVariants}
+        onClick={onBack}
+        className="flex items-center gap-2 text-white/60 hover:text-brand-teal transition-colors mb-12 group text-sm font-bold uppercase tracking-widest"
+      >
+        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+        Back to Home
+      </motion.button>
+
+      <motion.h1 variants={itemVariants} className="text-3xl md:text-5xl font-display font-bold mb-8 gradient-text">About Addy UGC Creative</motion.h1>
+      
+      <div className="space-y-10 text-sm md:text-base text-white/70 leading-relaxed">
+        <motion.section variants={itemVariants} className="space-y-6">
+          <p className="text-base md:text-lg text-white font-medium leading-snug">
+            Addy UGC Creative is a <span className="text-brand-teal font-bold">performance-oriented creative studio</span> delivering strategic user-generated content and commercial product advertising for <span className="text-brand-blue font-bold">growth-focused brands</span>. We operate at the intersection of <span className="text-brand-purple font-bold">marketing strategy</span>, audience psychology, and high-quality visual execution.
           </p>
-        </div>
-        
-        <div>
-          <h4 className="font-bold mb-6">Navigation</h4>
-          <ul className="space-y-4 text-white/50">
-            <li><a href="#work" className="hover:text-brand-teal transition-colors">Work</a></li>
-            <li><a href="#services" className="hover:text-brand-teal transition-colors">Services</a></li>
-            <li><a href="#about" className="hover:text-brand-teal transition-colors">About</a></li>
-            <li><a href="#process" className="hover:text-brand-teal transition-colors">Process</a></li>
-          </ul>
+          <p>
+            Our objective is clear: to produce <span className="text-white font-bold">structured, platform-native creatives</span> that strengthen brand positioning while driving <span className="text-brand-teal font-bold underline decoration-brand-teal/30 underline-offset-4">measurable performance outcomes</span>.
+          </p>
+        </motion.section>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          <motion.div variants={itemVariants} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/30 transition-all group">
+            <h2 className="text-xl font-bold text-brand-teal mb-4 flex items-center gap-3">
+              <Target size={20} /> Our Expertise
+            </h2>
+            <p className="mb-4 text-xs text-white/40 font-bold uppercase tracking-widest">We develop creative assets across:</p>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                'Skincare & Beauty',
+                'Fitness & Health',
+                'Tech & Gadgets',
+                'Fashion & Jewelry',
+                'Dropshipping & Ecommerce Products',
+                'Commercial Product Campaigns'
+              ].map(item => (
+                <li key={item} className="flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
+                  <div className="w-1 h-1 rounded-full bg-brand-teal" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-[10px] text-white/30 italic border-t border-white/5 pt-4 leading-tight">
+              Each category is approached with industry-specific insights, ensuring that content aligns with both audience expectations and brand objectives.
+            </p>
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-blue/30 transition-all group">
+            <h2 className="text-xl font-bold text-brand-blue mb-4 flex items-center gap-3">
+              <Cpu size={20} /> Our Methodology
+            </h2>
+            <p className="mb-4 text-xs text-white/40 font-bold uppercase tracking-widest">Our process is built on strategic precision:</p>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                'In-depth audience and market understanding',
+                'Platform-specific creative optimization',
+                'Clear messaging frameworks',
+                'Conversion-focused storytelling',
+                'Performance tracking and iterative refinement'
+              ].map(item => (
+                <li key={item} className="flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
+                  <div className="w-1 h-1 rounded-full bg-brand-blue" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-[10px] text-white/30 italic border-t border-white/5 pt-4 leading-tight">
+              We treat every creative asset as a strategic business tool, not just visual content.
+            </p>
+          </motion.div>
         </div>
 
-        <div>
-          <h4 className="font-bold mb-6">Social</h4>
-          <div className="flex gap-4">
+        <motion.section variants={itemVariants} className="p-8 rounded-[32px] bg-linear-to-br from-brand-purple/10 to-transparent border border-white/10 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-5">
+            <CheckCircle2 size={100} />
+          </div>
+          <h2 className="text-2xl font-bold text-brand-purple mb-6 flex items-center gap-3">
+            <CheckCircle2 size={24} /> Our Standard
+          </h2>
+          <p className="mb-6 text-xs text-white/40 font-bold uppercase tracking-widest">We maintain a strong commitment to:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { Icon: Instagram, href: 'https://www.instagram.com/addy_ugc_creative_?igsh=MWVlNnVnaGlxZmlxMw==' },
-              { Icon: Mail, href: 'mailto:hello@addycreative.studio' },
-              { Icon: MessageSquare, href: 'https://wa.me/qr/ALMKIEKM6SOGO1' }
-            ].map((item, i) => (
-              <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-teal hover:text-brand-dark transition-all">
-                <item.Icon size={20} />
-              </a>
+              'Structured creative systems',
+              'Premium production quality',
+              'Brand consistency',
+              'Long-term scalability',
+              'Data-informed decision making'
+            ].map(item => (
+              <div key={item} className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3 text-xs font-bold hover:bg-white/10 transition-colors">
+                <div className="w-1 h-1 rounded-full bg-brand-purple" />
+                {item}
+              </div>
             ))}
+          </div>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="pt-10 border-t border-white/10 text-center">
+          <p className="font-display font-medium text-white italic leading-relaxed text-lg md:text-xl max-w-2xl mx-auto">
+            "We believe sustainable growth is achieved when creativity is supported by strategy. Through disciplined execution and refined storytelling, we help brands build authority, improve engagement, and scale with confidence."
+          </p>
+        </motion.section>
+      </div>
+    </motion.div>
+  );
+};
+
+const Footer = ({ onNavigate }: { onNavigate: (view: string) => void }) => {
+  const handleNavClick = (item: string) => {
+    if (item === 'About') {
+      onNavigate('about');
+      window.scrollTo(0, 0);
+    } else {
+      onNavigate('home');
+      setTimeout(() => {
+        const element = document.getElementById(item.toLowerCase());
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
+
+  return (
+    <footer className="pt-24 pb-12 border-t border-white/5 bg-black/50">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid md:grid-cols-4 gap-12 mb-16">
+          <div className="md:col-span-2">
+            <div className="text-2xl font-display font-bold mb-6">
+              <span className="gradient-text">Addy</span> UGC Creative
+            </div>
+            <p className="text-white/50 max-w-sm leading-relaxed">
+              Performance-driven creative studio for modern e-commerce brands. We engineer ads that convert, scale, and dominate attention.
+            </p>
+          </div>
+          
+          <div>
+            <h4 className="font-bold mb-6">Navigation</h4>
+            <ul className="space-y-4 text-white/50">
+              {['Work', 'Services', 'About', 'Process'].map((item) => (
+                <li key={item}>
+                  <button 
+                    onClick={() => handleNavClick(item)}
+                    className="hover:text-brand-teal transition-colors"
+                  >
+                    {item}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-bold mb-6">Social</h4>
+            <div className="flex gap-4">
+              {[
+                { Icon: Instagram, href: 'https://www.instagram.com/addy_ugc_creative_?igsh=MWVlNnVnaGlxZmlxMw==' },
+                { Icon: Mail, href: 'mailto:hello@addycreative.studio' },
+                { Icon: MessageSquare, href: 'https://wa.me/qr/ALMKIEKM6SOGO1' }
+              ].map((item, i) => (
+                <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-teal hover:text-brand-dark transition-all">
+                  <item.Icon size={20} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/30">
+          <p>© 2026 Addy UGC Creative. All rights reserved.</p>
+          <div className="flex gap-8">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
           </div>
         </div>
       </div>
-      
-      <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/30">
-        <p>© 2026 Addy UGC Creative. All rights reserved.</p>
-        <div className="flex gap-8">
-          <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 const CAROUSEL_VIDEOS = [
   { id: 'c1', url: 'https://youtube.com/shorts/CrQaD25hJUM', coverUrl: 'https://picsum.photos/seed/c1/400/711' },
@@ -1255,7 +1610,7 @@ const VideoCarousel = ({ onExpandVideo }: { onExpandVideo: (video: {url: string,
 };
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'project-form' | PortfolioNiche>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'project-form' | 'about' | PortfolioNiche>('home');
   const [selectedPlan, setSelectedPlan] = useState<string | undefined>(undefined);
   const [modalVideo, setModalVideo] = useState<{url: string, title: string} | null>(null);
 
@@ -1265,9 +1620,15 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleNavigate = (view: string) => {
+    if (view === 'home') setCurrentView('home');
+    else if (view === 'about') setCurrentView('about');
+    else setCurrentView(view as any);
+  };
+
   return (
-    <div className="min-h-screen selection:bg-brand-teal/30">
-      <Navbar onNavigate={() => setCurrentView('home')} onStartProject={() => handleStartProject()} />
+    <div className="min-h-screen selection:bg-brand-teal/30 smooth-scroll overflow-x-hidden">
+      <Navbar onNavigate={handleNavigate} onStartProject={() => handleStartProject()} />
       
       <AnimatePresence mode="wait">
         {currentView === 'home' ? (
@@ -1276,19 +1637,22 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: "circOut" }}
+            className="optimize-gpu"
           >
             <Hero onStartProject={() => handleStartProject()} />
-            <PositioningStrip />
-            <VideoCarousel onExpandVideo={setModalVideo} />
-            <PortfolioGrid onSelectNiche={(niche) => setCurrentView(niche)} />
-            <ScienceSection />
-            <ProvenResults />
-            <Testimonials />
-            <ProcessSteps />
-            <Pricing onStartProject={handleStartProject} />
-            <BigCTA onStartProject={() => handleStartProject()} />
-            <ContactSection />
-            <Footer />
+            <div className="section-optimize" id="work"><PositioningStrip /></div>
+            <div className="section-optimize"><VideoCarousel onExpandVideo={setModalVideo} /></div>
+            <div className="section-optimize"><PortfolioGrid onSelectNiche={(niche) => setCurrentView(niche)} /></div>
+            <div className="section-optimize" id="services"><ScienceSection /></div>
+            <div className="section-optimize"><ProvenResults /></div>
+            <div className="section-optimize"><Testimonials /></div>
+            <div className="section-optimize"><BrandShowcase /></div>
+            <div className="section-optimize" id="process"><ProcessSteps /></div>
+            <div className="section-optimize"><Pricing onStartProject={handleStartProject} /></div>
+            <div className="section-optimize"><BigCTA onStartProject={() => handleStartProject()} /></div>
+            <div className="section-optimize"><ContactSection /></div>
+            <Footer onNavigate={handleNavigate} />
           </motion.main>
         ) : currentView === 'project-form' ? (
           <ProjectForm 
@@ -1296,8 +1660,13 @@ export default function App() {
             selectedPlan={selectedPlan}
             onBack={() => setCurrentView('home')} 
           />
+        ) : currentView === 'about' ? (
+          <AboutPage 
+            key="about" 
+            onBack={() => setCurrentView('home')} 
+          />
         ) : (
-          <div key="detail">
+          <div key="detail" className="optimize-gpu">
             <NicheDetail 
               niche={currentView} 
               onBack={() => setCurrentView('home')} 

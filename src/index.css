@@ -21,10 +21,25 @@
 }
 
 .optimize-gpu {
-  transform: translateZ(0);
+  @apply transform-gpu;
   backface-visibility: hidden;
   perspective: 1000px;
   will-change: transform, opacity;
+}
+
+.section-optimize {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
+
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .gradient-text {
@@ -86,6 +101,29 @@
   animation: sparkle 1.5s ease-in-out infinite;
 }
 
-.animate-rotate-glow {
-  animation: rotate-glow 4s linear infinite;
+@keyframes sparkle-move {
+  0% { left: -20%; top: -20%; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { left: 120%; top: 120%; opacity: 0; }
+}
+
+.animate-sparkle-move {
+  animation: sparkle-move 3s linear infinite;
+}
+
+.button-sparkle-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.sparkle-particle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.4) 0%, transparent 70%);
+  filter: blur(4px);
 }
