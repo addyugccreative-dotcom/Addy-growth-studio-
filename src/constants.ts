@@ -24,7 +24,7 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
       { id: "v1", title: "Workout Hook", coverUrl: "https://picsum.photos/seed/fitness-1/400/711", videoUrl: "https://youtube.com/shorts/qC9Ms59WRQQ" },
       { id: "v2", title: "Supplement Mix", coverUrl: "https://picsum.photos/seed/fitness-2/400/711", videoUrl: "https://youtube.com/shorts/XPCa5uOsfsw" },
       { id: "v3", title: "Transformation", coverUrl: "https://picsum.photos/seed/fitness-3/400/711", videoUrl: "https://youtube.com/shorts/ijNQDaXRsmk" },
-      { id: "v4", title: "Expert Advice", coverUrl: "https://picsum.photos/seed/fitness-4/400/711", videoUrl: "#" },
+      { id: "v4", title: "Expert Advice", coverUrl: "https://picsum.photos/seed/fitness-4/400/711", videoUrl: "https://youtube.com/shorts/Pzps3mF7jgE" },
     ]
   },
   {
@@ -37,7 +37,7 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
       { id: "v1", title: "Unboxing", coverUrl: "https://picsum.photos/seed/tech-1/400/711", videoUrl: "https://youtube.com/shorts/MRBp0-_sYR8" },
       { id: "v2", title: "Feature Highlight", coverUrl: "https://picsum.photos/seed/tech-2/400/711", videoUrl: "https://youtube.com/shorts/Kaim0ETo3a4" },
       { id: "v3", title: "Problem Solver", coverUrl: "https://picsum.photos/seed/tech-3/400/711", videoUrl: "https://youtube.com/shorts/Z5UWUoXBFYg" },
-      { id: "v4", title: "Tech Review", coverUrl: "https://picsum.photos/seed/tech-4/400/711", videoUrl: "#" },
+      { id: "v4", title: "Tech Review", coverUrl: "https://picsum.photos/seed/tech-4/400/711", videoUrl: "https://youtube.com/shorts/W06Mac7GTto" },
     ]
   },
   {

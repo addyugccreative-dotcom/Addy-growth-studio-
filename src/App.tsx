@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, memo } from 'react';
 import { motion, AnimatePresence, useInView, animate } from 'motion/react';
 import confetti from 'canvas-confetti';
 import { 
   Zap, FileText, Users, Scissors, Cpu, BarChart3, Target, Clock, 
   ChevronRight, CheckCircle2, ArrowRight, Instagram, 
   Mail, MessageSquare, Menu, X, ArrowLeft, Maximize, ChevronDown,
-  Star, Sparkles
+  Star, Sparkles, ExternalLink
 } from 'lucide-react';
 import { PORTFOLIO_NICHES, FEATURE_BLOCKS, PRICING_PLANS, TESTIMONIALS } from './constants';
 import { PortfolioNiche } from './types';
@@ -17,7 +17,7 @@ const ButtonSparkle = () => (
   </div>
 );
 
-const Navbar = ({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | 'about' | string) => void, onStartProject: () => void }) => {
+const Navbar = memo(({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | 'about' | string) => void, onStartProject: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -118,9 +118,9 @@ const Navbar = ({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | 'a
       </AnimatePresence>
     </nav>
   );
-};
+});
 
-const Hero = ({ onStartProject }: { onStartProject: () => void }) => (
+const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => (
   <section className="relative pt-32 pb-20 overflow-hidden optimize-gpu">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-teal/10 blur-[120px] rounded-full animate-pulse" />
@@ -159,9 +159,9 @@ const Hero = ({ onStartProject }: { onStartProject: () => void }) => (
       </motion.div>
     </div>
   </section>
-);
+));
 
-const PositioningStrip = () => (
+const PositioningStrip = memo(() => (
   <section className="py-20 bg-white/5 border-y border-white/10 optimize-gpu">
     <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
       <motion.div
@@ -186,9 +186,9 @@ const PositioningStrip = () => (
       </motion.div>
     </div>
   </section>
-);
+));
 
-const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNiche) => void }) => (
+const PortfolioGrid = memo(({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNiche) => void }) => (
   <section id="work" className="py-24 max-w-7xl mx-auto px-6 optimize-gpu">
     <div className="mb-16">
       <motion.span 
@@ -260,9 +260,9 @@ const PortfolioGrid = ({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNich
       ))}
     </div>
   </section>
-);
+));
 
-const VideoPlayer = ({ url, title, onExpand }: { url: string, title: string, onExpand?: (video: {url: string, title: string}) => void }) => {
+const VideoPlayer = memo(({ url, title, onExpand }: { url: string, title: string, onExpand?: (video: {url: string, title: string}) => void }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -331,9 +331,9 @@ const VideoPlayer = ({ url, title, onExpand }: { url: string, title: string, onE
       )}
     </div>
   );
-};
+});
 
-const VideoModal = ({ video, onClose }: { video: {url: string, title: string}, onClose: () => void }) => {
+const VideoModal = memo(({ video, onClose }: { video: {url: string, title: string}, onClose: () => void }) => {
   const getYoutubeId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
     const match = url.match(regExp);
@@ -376,9 +376,9 @@ const VideoModal = ({ video, onClose }: { video: {url: string, title: string}, o
       </motion.div>
     </motion.div>
   );
-};
+});
 
-const NicheDetail = ({ niche, onBack, onExpandVideo }: { niche: PortfolioNiche, onBack: () => void, onExpandVideo: (video: {url: string, title: string}) => void }) => {
+const NicheDetail = memo(({ niche, onBack, onExpandVideo }: { niche: PortfolioNiche, onBack: () => void, onExpandVideo: (video: {url: string, title: string}) => void }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -466,9 +466,9 @@ const NicheDetail = ({ niche, onBack, onExpandVideo }: { niche: PortfolioNiche, 
       </motion.div>
     </motion.div>
   );
-};
+});
 
-const ScienceSection = () => {
+const ScienceSection = memo(() => {
   const icons: Record<string, any> = { Zap, FileText, Users, Scissors, Cpu, BarChart3, Target, Clock };
   const [expandedBlock, setExpandedBlock] = useState<string | null>(null);
   
@@ -538,7 +538,7 @@ const ScienceSection = () => {
       </div>
     </section>
   );
-};
+});
 
 const Counter = ({ value, suffix = "" }: { value: number, suffix?: string }) => {
   const [displayValue, setDisplayValue] = useState(0);
@@ -559,51 +559,28 @@ const Counter = ({ value, suffix = "" }: { value: number, suffix?: string }) => 
   return <span ref={ref}>{displayValue}{suffix}</span>;
 };
 
-const ProvenResults = () => (
+const ProvenResults = memo(() => (
   <section className="py-24 optimize-gpu overflow-hidden">
     <div className="max-w-7xl mx-auto px-6 text-center mb-20">
       <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Proven Results</h2>
       <p className="text-xl text-white/60">Strategic creatives that drive measurable performance growth.</p>
     </div>
 
-    {/* Full-width centered image container */}
-    <div className="w-full max-w-screen-2xl mx-auto px-4 md:px-10 mb-24">
-      <motion.div 
-        initial={{ opacity: 0, y: 40 }}
+    {/* View Full Result Button */}
+    <div className="flex justify-center mb-24">
+      <motion.a
+        href="https://drive.google.com/file/d/1D3V2LUZZj2Yq3rN47icTWNVwRRMEEsD4/view?usp=sharing"
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="relative rounded-[32px] md:rounded-[48px] overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(0,229,255,0.07)] bg-white/5 backdrop-blur-md p-2 md:p-4 group"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="px-8 py-4 rounded-full bg-brand-teal text-brand-dark font-bold text-lg flex items-center gap-3 shadow-[0_0_30px_rgba(0,229,255,0.3)] hover:shadow-[0_0_50px_rgba(0,229,255,0.5)] transition-all"
       >
-        {/* Subtle Performance Glow */}
-        <div className="absolute inset-0 bg-linear-to-br from-brand-teal/10 via-transparent to-brand-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-        
-        {/* Performance Proof Badge */}
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="px-6 py-2 rounded-full bg-brand-dark/80 border border-brand-teal/40 backdrop-blur-2xl shadow-2xl"
-          >
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-teal flex items-center gap-3">
-              <Sparkles size={12} className="animate-pulse" /> Performance Proof
-            </span>
-          </motion.div>
-        </div>
-
-        <div className="relative rounded-[24px] md:rounded-[36px] overflow-hidden bg-brand-dark/60">
-          <img 
-            src="https://picsum.photos/seed/addy-ugc-results/1920/1080" 
-            alt="Performance Results Testimonial Collage" 
-            loading="lazy"
-            className="w-full h-auto object-contain transition-transform duration-1000 group-hover:scale-[1.01]"
-            referrerPolicy="no-referrer"
-          />
-          {/* Premium Bottom Fade */}
-          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-brand-dark via-brand-dark/20 to-transparent pointer-events-none" />
-        </div>
-      </motion.div>
+        View Full Client Result <ExternalLink size={20} />
+      </motion.a>
     </div>
 
     <div className="max-w-7xl mx-auto px-6">
@@ -634,9 +611,9 @@ const ProvenResults = () => (
       </div>
     </div>
   </section>
-);
+));
 
-const Testimonials = () => {
+const Testimonials = memo(() => {
   return (
     <section className="py-24 bg-brand-dark overflow-hidden border-y border-white/5 optimize-gpu">
       <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
@@ -648,6 +625,7 @@ const Testimonials = () => {
         <div className="flex overflow-hidden">
           <motion.div 
             className="flex gap-6 px-6 optimize-gpu"
+            style={{ willChange: 'transform' }}
             animate={{ x: [0, -1920] }}
             transition={{ 
               duration: 40, 
@@ -692,57 +670,10 @@ const Testimonials = () => {
       </div>
     </section>
   );
-};
+});
 
-const BrandShowcase = () => (
-  <section className="py-24 optimize-gpu overflow-hidden">
-    <div className="max-w-7xl mx-auto px-6 text-center mb-16">
-      <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Creative Showcase</h2>
-      <p className="text-lg text-white/60">A preview of high-performing visual assets engineered for conversion.</p>
-    </div>
 
-    <div className="w-full max-w-screen-2xl mx-auto px-4 md:px-10">
-      <motion.div 
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="relative rounded-[32px] md:rounded-[48px] overflow-hidden border border-white/10 shadow-2xl bg-white/5 backdrop-blur-md p-2 md:p-4 group"
-      >
-        {/* Subtle Brand Glow */}
-        <div className="absolute inset-0 bg-linear-to-br from-brand-blue/10 via-transparent to-brand-teal/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-        
-        {/* Creative Badge */}
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="px-6 py-2 rounded-full bg-brand-dark/80 border border-brand-blue/40 backdrop-blur-2xl shadow-2xl"
-          >
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue flex items-center gap-3">
-              <Sparkles size={12} className="animate-pulse" /> Creative Preview
-            </span>
-          </motion.div>
-        </div>
-
-        <div className="relative rounded-[24px] md:rounded-[36px] overflow-hidden bg-brand-dark/60">
-          <img 
-            src="https://picsum.photos/seed/addy-ugc-performance/1920/1080" 
-            alt="Creative Brand Showcase" 
-            loading="lazy"
-            className="w-full h-auto object-contain transition-transform duration-1000 group-hover:scale-[1.01]"
-            referrerPolicy="no-referrer"
-          />
-          {/* Premium Bottom Fade */}
-          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-brand-dark via-brand-dark/20 to-transparent pointer-events-none" />
-        </div>
-      </motion.div>
-    </div>
-  </section>
-);
-
-const ProcessSteps = () => (
+const ProcessSteps = memo(() => (
   <section className="py-24 bg-black/30 overflow-hidden optimize-gpu">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-20">
@@ -778,9 +709,9 @@ const ProcessSteps = () => (
       </div>
     </div>
   </section>
-);
+));
 
-const SparklingTick = () => (
+const SparklingTick = memo(() => (
   <div className="relative w-20 h-20 flex items-center justify-center">
     {/* Rotating Glow Ring */}
     <div className="absolute inset-0 rounded-full border-2 border-dashed border-brand-teal/30 animate-rotate-glow" />
@@ -812,7 +743,7 @@ const SparklingTick = () => (
       <CheckCircle2 size={32} className="text-brand-dark" />
     </div>
   </div>
-);
+));
 
 const fireConfetti = () => {
   const duration = 3 * 1000;
@@ -835,7 +766,7 @@ const fireConfetti = () => {
   }, 250);
 };
 
-const ProjectForm = ({ onBack, selectedPlan }: { onBack: () => void, selectedPlan?: string }) => {
+const ProjectForm = memo(({ onBack, selectedPlan }: { onBack: () => void, selectedPlan?: string }) => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [formData, setFormData] = useState({
     name: '',
@@ -1049,9 +980,9 @@ const ProjectForm = ({ onBack, selectedPlan }: { onBack: () => void, selectedPla
       </form>
     </motion.div>
   );
-};
+});
 
-const Pricing = ({ onStartProject }: { onStartProject: (plan?: string) => void }) => {
+const Pricing = memo(({ onStartProject }: { onStartProject: (plan?: string) => void }) => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   return (
@@ -1119,9 +1050,9 @@ const Pricing = ({ onStartProject }: { onStartProject: (plan?: string) => void }
       </div>
     </section>
   );
-};
+});
 
-const BigCTA = ({ onStartProject }: { onStartProject: () => void }) => (
+const BigCTA = memo(({ onStartProject }: { onStartProject: () => void }) => (
   <section className="py-16 md:py-24 px-6 optimize-gpu">
     <div className="max-w-5xl mx-auto p-8 md:p-16 rounded-[40px] md:rounded-[60px] bg-linear-to-br from-brand-teal/20 via-brand-blue/20 to-brand-purple/20 border border-white/10 text-center relative overflow-hidden optimize-gpu">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.1),transparent_70%)]" />
@@ -1140,9 +1071,9 @@ const BigCTA = ({ onStartProject }: { onStartProject: () => void }) => (
       </div>
     </div>
   </section>
-);
+));
 
-const ContactSection = () => {
+const ContactSection = memo(() => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -1182,7 +1113,7 @@ const ContactSection = () => {
         
         <div className="space-y-8">
           {[
-            { icon: Mail, label: 'Email Us', value: 'hello@addycreative.studio', href: 'mailto:hello@addycreative.studio' },
+            { icon: Mail, label: 'Email Us', value: 'addyugccreative@gmail.com', href: 'mailto:addyugccreative@gmail.com' },
             { icon: Instagram, label: 'Instagram', value: '@addy_ugc_creative_', href: 'https://www.instagram.com/addy_ugc_creative_?igsh=MWVlNnVnaGlxZmlxMw==' },
             { icon: MessageSquare, label: 'WhatsApp', value: 'Chat with us', href: 'https://wa.me/qr/ALMKIEKM6SOGO1' }
           ].map(item => (
@@ -1272,16 +1203,16 @@ const ContactSection = () => {
               {status === 'submitting' ? 'Sending...' : 'Start Project'}
             </button>
             {status === 'error' && (
-              <p className="text-red-400 text-xs text-center">Something went wrong. Please try again or email us directly.</p>
+              <p className="text-red-400 text-xs text-center">Something went wrong. Please try again or email us directly at <a href="mailto:addyugccreative@gmail.com" className="underline hover:text-white transition-colors">addyugccreative@gmail.com</a></p>
             )}
           </form>
         )}
       </div>
     </section>
   );
-};
+});
 
-const AboutPage = ({ onBack }: { onBack: () => void }) => {
+const AboutPage = memo(({ onBack }: { onBack: () => void }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -1409,12 +1340,18 @@ const AboutPage = ({ onBack }: { onBack: () => void }) => {
       </div>
     </motion.div>
   );
-};
+});
 
-const Footer = ({ onNavigate }: { onNavigate: (view: string) => void }) => {
+const Footer = memo(({ onNavigate }: { onNavigate: (view: string) => void }) => {
   const handleNavClick = (item: string) => {
     if (item === 'About') {
       onNavigate('about');
+      window.scrollTo(0, 0);
+    } else if (item === 'Privacy Policy') {
+      onNavigate('privacy');
+      window.scrollTo(0, 0);
+    } else if (item === 'Terms of Service') {
+      onNavigate('terms');
       window.scrollTo(0, 0);
     } else {
       onNavigate('home');
@@ -1461,7 +1398,7 @@ const Footer = ({ onNavigate }: { onNavigate: (view: string) => void }) => {
             <div className="flex gap-4">
               {[
                 { Icon: Instagram, href: 'https://www.instagram.com/addy_ugc_creative_?igsh=MWVlNnVnaGlxZmlxMw==' },
-                { Icon: Mail, href: 'mailto:hello@addycreative.studio' },
+                { Icon: Mail, href: 'mailto:addyugccreative@gmail.com' },
                 { Icon: MessageSquare, href: 'https://wa.me/qr/ALMKIEKM6SOGO1' }
               ].map((item, i) => (
                 <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-teal hover:text-brand-dark transition-all">
@@ -1475,14 +1412,14 @@ const Footer = ({ onNavigate }: { onNavigate: (view: string) => void }) => {
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/30">
           <p>© 2026 Addy UGC Creative. All rights reserved.</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <button onClick={() => handleNavClick('Privacy Policy')} className="hover:text-white transition-colors">Privacy Policy</button>
+            <button onClick={() => handleNavClick('Terms of Service')} className="hover:text-white transition-colors">Terms of Service</button>
           </div>
         </div>
       </div>
     </footer>
   );
-};
+});
 
 const CAROUSEL_VIDEOS = [
   { id: 'c1', url: 'https://youtube.com/shorts/CrQaD25hJUM', coverUrl: 'https://picsum.photos/seed/c1/400/711' },
@@ -1497,7 +1434,7 @@ const CAROUSEL_VIDEOS = [
   { id: 'c10', url: 'https://youtube.com/shorts/v84LuiHpJrE', coverUrl: 'https://picsum.photos/seed/c10/400/711' },
 ];
 
-const CarouselVideoItem = ({ url, title, onExpand }: { url: string, title: string, onExpand?: (video: {url: string, title: string}) => void }) => {
+const CarouselVideoItem = memo(({ url, title, onExpand }: { url: string, title: string, onExpand?: (video: {url: string, title: string}) => void }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -1565,9 +1502,9 @@ const CarouselVideoItem = ({ url, title, onExpand }: { url: string, title: strin
       )}
     </div>
   );
-};
+});
 
-const VideoCarousel = ({ onExpandVideo }: { onExpandVideo: (video: {url: string, title: string}) => void }) => {
+const VideoCarousel = memo(({ onExpandVideo }: { onExpandVideo: (video: {url: string, title: string}) => void }) => {
   useEffect(() => {
     // Preconnect to YouTube domains for faster iframe initialization
     const domains = ['https://www.youtube.com', 'https://www.google.com', 'https://googleads.g.doubleclick.net'];
@@ -1589,7 +1526,8 @@ const VideoCarousel = ({ onExpandVideo }: { onExpandVideo: (video: {url: string,
       <div className="flex flex-col gap-12">
         <div className="relative overflow-hidden">
           <motion.div 
-            className="flex gap-4"
+            className="flex gap-4 optimize-gpu"
+            style={{ willChange: 'transform' }}
             animate={{ x: [0, -2440] }}
             transition={{ 
               duration: 40, 
@@ -1607,10 +1545,320 @@ const VideoCarousel = ({ onExpandVideo }: { onExpandVideo: (video: {url: string,
       </div>
     </section>
   );
-};
+});
+
+const PrivacyPolicy = memo(({ onBack }: { onBack: () => void }) => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="min-h-screen pt-32 pb-24 px-6 max-w-4xl mx-auto"
+    >
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-white/60 hover:text-white mb-12 transition-colors group"
+      >
+        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+        Back to Home
+      </button>
+
+      <motion.div variants={itemVariants} className="mb-12">
+        <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">Privacy Policy</h1>
+        <p className="text-white/40 font-mono text-sm uppercase tracking-widest">Last Updated: 2 Mar, 2026</p>
+      </motion.div>
+
+      <div className="space-y-12 text-white/70 leading-relaxed">
+        <motion.section variants={itemVariants}>
+          <p className="text-lg mb-6">Welcome to Addy UGC Creative (“we,” “our,” or “us”).</p>
+          <p>Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your information when you visit our website or contact us regarding our AI-powered UGC and performance ad creative services.</p>
+          <p className="mt-4">By using this website, you agree to the terms outlined in this Privacy Policy.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">1. Information We Collect</h2>
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-brand-teal">A. Personal Information</h3>
+            <p>When you contact us through forms, email, or direct messages, we may collect:</p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Your name</li>
+              <li>Email address</li>
+              <li>Business or brand name</li>
+              <li>Project details or requirements</li>
+              <li>Any additional information you voluntarily provide</li>
+            </ul>
+            <p className="italic text-sm">We only collect personal information that you choose to share with us.</p>
+          </div>
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-brand-teal">B. Non-Personal Information (Usage Data)</h3>
+            <p>We may automatically collect limited non-personal data such as:</p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Browser type</li>
+              <li>Device type</li>
+              <li>IP address</li>
+              <li>Pages visited</li>
+              <li>Time spent on the website</li>
+            </ul>
+            <p className="italic text-sm">This information helps us improve website functionality and user experience.</p>
+          </div>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">2. How We Use Your Information</h2>
+          <p>Addy UGC Creative uses the collected information to:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Respond to inquiries and project requests</li>
+            <li>Provide quotes, proposals, and service information</li>
+            <li>Communicate about ongoing or potential projects</li>
+            <li>Improve our website, services, and portfolio presentation</li>
+            <li>Analyze website performance</li>
+          </ul>
+          <p className="font-bold text-white">We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">3. Cookies</h2>
+          <p>Our website may use cookies or similar tracking technologies to:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Enhance browsing experience</li>
+            <li>Analyze traffic and engagement</li>
+            <li>Improve website functionality</li>
+          </ul>
+          <p>You may disable cookies through your browser settings if preferred.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">4. Data Protection & Security</h2>
+          <p>We implement reasonable technical and organizational measures to protect your personal information.</p>
+          <p>However, no online transmission or storage system can be guaranteed to be 100% secure. By using this website, you acknowledge this risk.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">5. Third-Party Platforms & Links</h2>
+          <p>Our portfolio may include links to third-party platforms such as Instagram, YouTube, or other tools used for showcasing creative work.</p>
+          <p>We are not responsible for the privacy practices or content of these external websites. We recommend reviewing their privacy policies separately.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">6. Client Work & Intellectual Property</h2>
+          <p>Creative samples displayed on this website may include projects developed for brands or conceptual performance demonstrations.</p>
+          <p>All product names, logos, and trademarks belong to their respective owners.</p>
+          <p>AI-generated visuals, creative structures, and editing styles created by Addy UGC Creative remain our intellectual property unless otherwise agreed in writing.</p>
+          <p>Portfolio content is displayed strictly for demonstration and professional showcasing purposes.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">7. Your Rights</h2>
+          <p>You have the right to:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Request access to your personal information</li>
+            <li>Request correction of inaccurate data</li>
+            <li>Request deletion of your information</li>
+          </ul>
+          <p>To exercise any of these rights, please contact us at:</p>
+          <a href="mailto:addyugccreative@gmail.com" className="text-brand-teal font-bold hover:underline">Email: addyugccreative@gmail.com</a>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">8. Policy Updates</h2>
+          <p>We may update this Privacy Policy from time to time to reflect changes in services or legal requirements.</p>
+          <p>All updates will be reflected by revising the “Last Updated” date at the top of this page.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6 border-t border-white/10 pt-12">
+          <h2 className="text-2xl font-display font-bold text-white">9. Contact Information</h2>
+          <p>If you have any questions about this Privacy Policy or how your information is handled, please contact:</p>
+          <div className="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-2">
+            <p className="font-bold text-white text-xl">Addy</p>
+            <p className="text-brand-teal">Addy UGC Creative</p>
+            <a href="mailto:addyugccreative@gmail.com" className="flex items-center gap-2 hover:text-brand-teal transition-colors">
+              <Mail size={16} /> addyugccreative@gmail.com
+            </a>
+          </div>
+        </motion.section>
+      </div>
+    </motion.div>
+  );
+});
+
+const TermsOfService = memo(({ onBack }: { onBack: () => void }) => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="min-h-screen pt-32 pb-24 px-6 max-w-4xl mx-auto"
+    >
+      <button 
+        onClick={onBack}
+        className="flex items-center gap-2 text-white/60 hover:text-white mb-12 transition-colors group"
+      >
+        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+        Back to Home
+      </button>
+
+      <motion.div variants={itemVariants} className="mb-12">
+        <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">Terms & Conditions</h1>
+        <p className="text-white/40 font-mono text-sm uppercase tracking-widest">Last Updated: 2 March, 2026</p>
+      </motion.div>
+
+      <div className="space-y-12 text-white/70 leading-relaxed">
+        <motion.section variants={itemVariants}>
+          <p className="text-lg mb-6">Welcome to Addy UGC Creative.</p>
+          <p>By accessing this website or purchasing our services, you agree to the following Terms & Conditions. Please read them carefully.</p>
+          <p className="mt-4 font-bold text-white">If you do not agree with these terms, please do not use our website or services.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">1. Services</h2>
+          <p>Addy UGC Creative provides:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>AI-powered UGC video ads</li>
+            <li>Performance marketing creatives</li>
+            <li>Short-form ad content for social platforms (Meta, Instagram, YouTube, etc.)</li>
+            <li>Creative strategy and scripting</li>
+          </ul>
+          <p>All services are delivered digitally unless otherwise agreed in writing.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">2. Project Process</h2>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Work begins only after project confirmation and payment agreement.</li>
+            <li>Clients must provide necessary product details, references, brand assets, and requirements before production starts.</li>
+            <li>Delays in client communication may affect delivery timelines.</li>
+          </ul>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">3. Pricing & Payments</h2>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>All prices are communicated clearly before project confirmation.</li>
+            <li>Payment terms (full advance or partial advance) will be agreed upon before starting.</li>
+            <li>Payments once made are generally non-refundable unless otherwise discussed.</li>
+            <li>Custom packages or bulk pricing must be agreed upon in writing.</li>
+          </ul>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">4. Revisions Policy</h2>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Each project includes a limited number of revisions (as mentioned in the proposal).</li>
+            <li>Revisions apply to minor edits (text changes, small adjustments).</li>
+            <li>Major changes (new script, new concept, new angle) may require additional charges.</li>
+          </ul>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">5. Intellectual Property</h2>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Final delivered video creatives become the client’s usage asset after full payment.</li>
+            <li>Addy UGC Creative retains the right to showcase completed work in portfolios, social media, or promotional materials unless agreed otherwise in writing.</li>
+            <li>All trademarks, logos, and product names belong to their respective owners.</li>
+          </ul>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">6. No Performance Guarantee</h2>
+          <p>While creatives are designed using performance marketing principles, Addy UGC Creative does not guarantee:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Specific sales results</li>
+            <li>ROAS targets</li>
+            <li>Ad account performance</li>
+          </ul>
+          <p>Results depend on multiple factors including ad spend, targeting, product-market fit, and platform algorithms.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">7. Client Responsibilities</h2>
+          <p>The client agrees to:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Provide accurate product information</li>
+            <li>Ensure they have legal rights to sell and advertise their product</li>
+            <li>Comply with advertising platform policies</li>
+          </ul>
+          <p>Addy UGC Creative is not responsible for ad account bans, policy violations, or product compliance issues.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">8. Limitation of Liability</h2>
+          <p>Addy UGC Creative shall not be held liable for:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Indirect or incidental damages</li>
+            <li>Business losses due to ad performance</li>
+            <li>Platform-related technical issues</li>
+          </ul>
+          <p>Our liability is limited to the amount paid for the specific service.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">9. Third-Party Tools</h2>
+          <p>We may use AI tools, editing software, and third-party platforms to create and deliver services. We are not responsible for outages, tool limitations, or third-party policy changes.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">10. Termination</h2>
+          <p>We reserve the right to refuse or terminate services if:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Misuse of content occurs</li>
+            <li>Payment terms are violated</li>
+            <li>Communication becomes abusive or unprofessional</li>
+          </ul>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white">11. Changes to Terms</h2>
+          <p>These Terms & Conditions may be updated at any time. Updates will be reflected with a revised “Last Updated” date.</p>
+        </motion.section>
+
+        <motion.section variants={itemVariants} className="space-y-6 border-t border-white/10 pt-12">
+          <h2 className="text-2xl font-display font-bold text-white">12. Contact Information</h2>
+          <p>For questions regarding these Terms & Conditions, please contact:</p>
+          <div className="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-2">
+            <p className="font-bold text-white text-xl">Addy</p>
+            <p className="text-brand-teal">Addy UGC Creative</p>
+            <a href="mailto:addyugccreative@gmail.com" className="flex items-center gap-2 hover:text-brand-teal transition-colors">
+              <Mail size={16} /> addyugccreative@gmail.com
+            </a>
+          </div>
+        </motion.section>
+      </div>
+    </motion.div>
+  );
+});
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'project-form' | 'about' | PortfolioNiche>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'project-form' | 'about' | 'privacy' | 'terms' | PortfolioNiche>('home');
   const [selectedPlan, setSelectedPlan] = useState<string | undefined>(undefined);
   const [modalVideo, setModalVideo] = useState<{url: string, title: string} | null>(null);
 
@@ -1623,6 +1871,8 @@ export default function App() {
   const handleNavigate = (view: string) => {
     if (view === 'home') setCurrentView('home');
     else if (view === 'about') setCurrentView('about');
+    else if (view === 'privacy') setCurrentView('privacy');
+    else if (view === 'terms') setCurrentView('terms');
     else setCurrentView(view as any);
   };
 
@@ -1647,7 +1897,6 @@ export default function App() {
             <div className="section-optimize" id="services"><ScienceSection /></div>
             <div className="section-optimize"><ProvenResults /></div>
             <div className="section-optimize"><Testimonials /></div>
-            <div className="section-optimize"><BrandShowcase /></div>
             <div className="section-optimize" id="process"><ProcessSteps /></div>
             <div className="section-optimize"><Pricing onStartProject={handleStartProject} /></div>
             <div className="section-optimize"><BigCTA onStartProject={() => handleStartProject()} /></div>
@@ -1663,6 +1912,16 @@ export default function App() {
         ) : currentView === 'about' ? (
           <AboutPage 
             key="about" 
+            onBack={() => setCurrentView('home')} 
+          />
+        ) : currentView === 'privacy' ? (
+          <PrivacyPolicy 
+            key="privacy" 
+            onBack={() => setCurrentView('home')} 
+          />
+        ) : currentView === 'terms' ? (
+          <TermsOfService 
+            key="terms" 
             onBack={() => setCurrentView('home')} 
           />
         ) : (
