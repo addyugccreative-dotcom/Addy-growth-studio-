@@ -5,7 +5,7 @@ import {
   Zap, FileText, Users, Scissors, Cpu, BarChart3, Target, Clock, 
   ChevronRight, CheckCircle2, ArrowRight, Instagram, 
   Mail, MessageSquare, Menu, X, ArrowLeft, Maximize, ChevronDown,
-  Star, Sparkles, ExternalLink
+  Star, Sparkles, ExternalLink, Check, Plus
 } from 'lucide-react';
 import { PORTFOLIO_NICHES, FEATURE_BLOCKS, PRICING_PLANS, TESTIMONIALS } from './constants';
 import { PortfolioNiche } from './types';
@@ -134,11 +134,10 @@ const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => (
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-tight tracking-tight mb-8">
-          We Create <span className="gradient-text drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">Scroll-Stopping</span><br />
-          UGC Ads That Convert
+          Performance-driven <span className="gradient-text drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">Creative Studio</span> for Modern E-commerce Brands
         </h1>
-        <p className="text-xl md:text-2xl text-white/60 max-w-2xl mx-auto mb-12">
-          Performance-driven creative that turns attention into sales.
+        <p className="text-lg md:text-2xl font-display font-medium text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
+          We engineer ads that <span className="text-brand-teal drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">convert</span>, <span className="text-brand-purple drop-shadow-[0_0_8px_rgba(192,38,255,0.4)]">scale</span>, and <span className="text-brand-blue drop-shadow-[0_0_8px_rgba(123,97,255,0.4)]">dominate attention</span>.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
           <a 
@@ -161,6 +160,111 @@ const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => (
   </section>
 ));
 
+const WhyMyCreativesWork = memo(() => {
+  const points = [
+    { text: "Hook-first structure", highlight: "(strong first 3 seconds)" },
+    { text: "Built for", highlight: "Meta & TikTok ad placements" },
+    { text: "Multiple testing angles", highlight: "(problem, benefit, testimonial)" },
+    { text: "Captions optimized", highlight: "for scroll retention" },
+    { text: "Ad-ready", highlight: "export format" }
+  ];
+
+  return (
+    <section className="py-24 max-w-7xl mx-auto px-6 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-brand-teal/5 blur-[100px] rounded-full" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-brand-purple/5 blur-[100px] rounded-full" />
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-16 items-center relative z-10">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "circOut" }}
+        >
+          <motion.span 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-brand-teal font-bold uppercase tracking-widest text-xs mb-4 block"
+          >
+            Why These Creatives Perform
+          </motion.span>
+          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
+            Why My <span className="gradient-text">Creatives Work</span>
+          </h2>
+          <p className="text-lg md:text-xl font-display font-medium text-white/90 mb-10 leading-relaxed">
+            I don't just make videos; I engineer <span className="text-brand-purple font-bold">performance assets</span>. Every second is calculated to <span className="text-brand-teal font-bold drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">stop the scroll</span> and drive action.
+          </p>
+          <div className="space-y-4">
+            {points.map((point, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="flex items-start gap-4 group"
+              >
+                <div className="mt-1 w-5 h-5 rounded-full bg-brand-teal/10 border border-brand-teal/20 flex items-center justify-center text-brand-teal shrink-0 group-hover:bg-brand-teal group-hover:text-brand-dark transition-all duration-300">
+                  <Check size={12} strokeWidth={3} />
+                </div>
+                <span className="text-base text-white/80 group-hover:text-white transition-colors">
+                  {point.text} <span className="text-brand-teal font-medium">{point.highlight}</span>
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "circOut" }}
+          className="relative lg:pl-12"
+        >
+          <div className="aspect-[4/3] max-w-sm mx-auto rounded-[32px] bg-brand-dark/40 border border-white/10 flex items-center justify-center overflow-hidden group backdrop-blur-xl relative shadow-[0_0_50px_-12px_rgba(0,229,255,0.2)]">
+            {/* Rotating Glow Background */}
+            <div className="absolute inset-[-50%] rotating-glow animate-spin-slow opacity-20 group-hover:opacity-40 transition-opacity duration-700 blur-3xl" />
+            
+            {/* Sparkle effects */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-brand-teal rounded-full animate-ping opacity-60" />
+              <div className="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-brand-purple rounded-full animate-ping opacity-40" style={{ animationDelay: '0.5s' }} />
+              <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-brand-teal rounded-full animate-ping opacity-60" style={{ animationDelay: '1.2s' }} />
+              <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-white rounded-full animate-pulse opacity-70" />
+              <div className="absolute bottom-1/3 right-1/4 w-1.5 h-1.5 bg-brand-teal rounded-full animate-ping opacity-40" style={{ animationDelay: '0.8s' }} />
+              <ButtonSparkle />
+            </div>
+
+            <div className="absolute inset-0 bg-linear-to-br from-brand-teal/10 via-transparent to-brand-purple/10 opacity-40" />
+            
+            <div className="relative z-10 text-center p-8">
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
+                className="text-5xl md:text-6xl font-display font-bold mb-3 gradient-text drop-shadow-[0_0_30px_rgba(0,229,255,0.6)]"
+              >
+                <Counter value={93} suffix="%" />
+              </motion.div>
+              <p className="text-lg font-bold text-brand-teal mb-1 drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]">Average Retention Increase</p>
+              <p className="text-[10px] text-brand-teal/50 uppercase tracking-[0.2em] font-black">Based on client data</p>
+            </div>
+
+            {/* Decorative elements with enhanced blur */}
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-brand-teal/20 blur-[60px] rounded-full animate-pulse" />
+            <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-brand-purple/20 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1.5s' }} />
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+});
+
 const PositioningStrip = memo(() => (
   <section className="py-20 bg-white/5 border-y border-white/10 optimize-gpu">
     <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
@@ -180,8 +284,8 @@ const PositioningStrip = memo(() => (
         viewport={{ once: true }}
         transition={{ duration: 0.6, ease: "circOut" }}
       >
-        <p className="text-sm md:text-lg text-white/60 leading-relaxed">
-          At <span className="text-white font-bold">Addy UGC Creative</span>, we specialize in <span className="text-brand-teal font-medium">high-converting UGC</span> and commercial product ads built for brands, dropshippers, and scaling e-commerce stores. Every creative is engineered with <span className="text-white font-medium">performance psychology</span>, thumb-stopping hooks, and platform-native storytelling to <span className="text-brand-teal font-medium">maximize ROAS</span> and dominate attention.
+        <p className="text-base md:text-xl font-display font-medium text-white/90 leading-relaxed">
+          At <span className="text-brand-teal font-bold drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">Addy UGC Creative</span>, we specialize in <span className="text-brand-teal font-bold">high-converting UGC</span> and commercial product ads built for brands, dropshippers, and scaling e-commerce stores. Every creative is engineered with <span className="text-brand-purple font-bold">performance psychology</span>, thumb-stopping hooks, and platform-native storytelling to <span className="text-brand-blue font-bold">maximize ROAS</span> and dominate attention.
         </p>
       </motion.div>
     </div>
@@ -192,29 +296,30 @@ const PortfolioGrid = memo(({ onSelectNiche }: { onSelectNiche: (niche: Portfoli
   <section id="work" className="py-24 max-w-7xl mx-auto px-6 optimize-gpu">
     <div className="mb-16">
       <motion.span 
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
         className="text-brand-teal font-bold uppercase tracking-widest text-xs mb-4 block"
       >
         Strategic Portfolio
       </motion.span>
       <motion.h2 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
+        transition={{ delay: 0.1 }}
         className="text-3xl md:text-5xl font-display font-bold mb-4"
       >
         My Work
       </motion.h2>
       <motion.p 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.1 }}
-        className="text-base md:text-lg text-white/60 max-w-2xl"
+        transition={{ delay: 0.2 }}
+        className="text-lg md:text-xl font-display font-medium text-white/90 max-w-2xl"
       >
-        Performance-driven creatives engineered for <span className="text-white font-medium">maximum ROAS</span> across multiple high-converting niches.
+        Performance-driven creatives engineered for <span className="text-brand-teal font-bold drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">maximum ROAS</span> across multiple high-converting niches.
       </motion.p>
     </div>
 
@@ -222,9 +327,9 @@ const PortfolioGrid = memo(({ onSelectNiche }: { onSelectNiche: (niche: Portfoli
       {PORTFOLIO_NICHES.map((niche, idx) => (
         <motion.div
           key={niche.id}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.05, duration: 0.6, ease: "circOut" }}
+          initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ delay: idx * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           viewport={{ once: true, margin: "-50px" }}
           className="group relative cursor-pointer optimize-gpu"
           onClick={() => onSelectNiche(niche)}
@@ -476,8 +581,8 @@ const ScienceSection = memo(() => {
     <section id="process" className="py-24 bg-black/30 optimize-gpu">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">The Science Behind The Scroll</h2>
-          <p className="text-lg text-white/60">We combine performance marketing psychology with platform-native storytelling.</p>
+          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">The Science Behind The <span className="text-brand-teal">Scroll</span></h2>
+          <p className="text-lg md:text-xl font-display font-medium text-white/90">We combine <span className="text-brand-teal font-bold">performance marketing psychology</span> with platform-native storytelling.</p>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -562,8 +667,8 @@ const Counter = ({ value, suffix = "" }: { value: number, suffix?: string }) => 
 const ProvenResults = memo(() => (
   <section className="py-24 optimize-gpu overflow-hidden">
     <div className="max-w-7xl mx-auto px-6 text-center mb-20">
-      <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Proven Results</h2>
-      <p className="text-xl text-white/60">Strategic creatives that drive measurable performance growth.</p>
+      <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Proven <span className="text-brand-blue">Results</span></h2>
+      <p className="text-xl md:text-2xl font-display font-medium text-white/90">Strategic creatives that drive <span className="text-brand-teal font-bold">measurable performance growth</span>.</p>
     </div>
 
     {/* View Full Result Button */}
@@ -617,8 +722,8 @@ const Testimonials = memo(() => {
   return (
     <section className="py-24 bg-brand-dark overflow-hidden border-y border-white/5 optimize-gpu">
       <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
-        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Client Success Stories</h2>
-        <p className="text-lg text-white/60">Real results from brands scaling with our performance creatives.</p>
+        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Client <span className="text-brand-purple">Success Stories</span></h2>
+        <p className="text-lg md:text-xl font-display font-medium text-white/90">Real results from brands <span className="text-brand-teal font-bold">scaling</span> with our performance creatives.</p>
       </div>
 
       <div className="flex flex-col gap-8">
@@ -677,7 +782,8 @@ const ProcessSteps = memo(() => (
   <section className="py-24 bg-black/30 overflow-hidden optimize-gpu">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-20">
-        <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">How We Build Winners</h2>
+        <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">How We Build <span className="text-brand-teal">Winners</span></h2>
+        <p className="text-lg md:text-xl font-display font-medium text-white/90 mt-4">Our <span className="text-brand-purple font-bold">performance-driven</span> process for scaling DTC brands.</p>
       </div>
 
       <div className="relative">
@@ -988,8 +1094,8 @@ const Pricing = memo(({ onStartProject }: { onStartProject: (plan?: string) => v
   return (
     <section id="services" className="py-24 max-w-7xl mx-auto px-6 overflow-hidden optimize-gpu">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Services & Packages</h2>
-        <p className="text-lg text-white/60">Scalable creative solutions tailored for growth-focused brands.</p>
+        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Services & <span className="text-brand-teal">Packages</span></h2>
+        <p className="text-lg md:text-xl font-display font-medium text-white/90">Scalable creative solutions tailored for <span className="text-brand-purple font-bold">growth-focused brands</span>.</p>
       </div>
 
       <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide optimize-gpu">
@@ -1052,6 +1158,111 @@ const Pricing = memo(({ onStartProject }: { onStartProject: (plan?: string) => v
   );
 });
 
+const FAQItem = ({ question, answer, index }: { question: string, answer: string, index: number }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
+      className="mb-4"
+    >
+      <div 
+        className={`
+          rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden
+          ${isOpen ? 'bg-white/10 border-brand-teal/30 shadow-[0_0_20px_rgba(0,229,255,0.1)]' : 'bg-white/5 border-white/10 hover:border-brand-teal/20'}
+        `}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="p-6 flex items-center justify-between gap-4">
+          <h3 className="text-base font-bold text-white/90 group-hover:text-brand-teal transition-colors">{question}</h3>
+          <motion.div
+            animate={{ rotate: isOpen ? 45 : 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${isOpen ? 'bg-brand-teal text-brand-dark' : 'bg-white/10 text-white/60'}`}
+          >
+            <Plus size={20} />
+          </motion.div>
+        </div>
+        
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <div className="px-6 pb-6 text-white/60 leading-relaxed border-t border-white/5 pt-4">
+                {answer}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+};
+
+const FAQSection = memo(() => {
+  const faqs = [
+    {
+      question: "When does work begin?",
+      answer: "Work begins after payment confirmation and once final project details are received."
+    },
+    {
+      question: "How many revisions are included?",
+      answer: "Each creative includes 1–2 minor revisions. Major concept or structural changes may require additional charges."
+    },
+    {
+      question: "Do you manage ads?",
+      answer: "No. Addy UGC Creative focuses exclusively on performance-driven creative production. Ad management is not included."
+    },
+    {
+      question: "What is the turnaround time?",
+      answer: "Standard delivery time is 3–4 business days per creative, depending on scope and complexity."
+    }
+  ];
+
+  return (
+    <section className="py-24 bg-[#0f0f0f] relative overflow-hidden">
+      {/* Background Glows */}
+      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-brand-purple/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-brand-teal/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="max-w-[1100px] mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-display font-bold mb-4"
+          >
+            Frequently Asked <span className="text-brand-teal drop-shadow-[0_0_10px_rgba(0,229,255,0.3)]">Questions</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-white/90 text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold"
+          >
+            Everything you need to know before starting a <span className="text-brand-teal">creative project</span>.
+          </motion.p>
+        </div>
+
+        <div className="max-w-3xl mx-auto">
+          {faqs.map((faq, index) => (
+            <FAQItem key={index} {...faq} index={index} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+});
+
 const BigCTA = memo(({ onStartProject }: { onStartProject: () => void }) => (
   <section className="py-16 md:py-24 px-6 optimize-gpu">
     <div className="max-w-5xl mx-auto p-8 md:p-16 rounded-[40px] md:rounded-[60px] bg-linear-to-br from-brand-teal/20 via-brand-blue/20 to-brand-purple/20 border border-white/10 text-center relative overflow-hidden optimize-gpu">
@@ -1060,7 +1271,7 @@ const BigCTA = memo(({ onStartProject }: { onStartProject: () => void }) => (
         <h2 className="text-2xl md:text-5xl font-display font-bold mb-4 md:mb-6 leading-tight">
           Ready to Scale With <span className="gradient-text">Scroll-Stopping</span> Creative?
         </h2>
-        <p className="text-base md:text-xl text-white/70 mb-8 md:mb-12">Book your strategy call and let’s build ads that convert.</p>
+        <p className="text-lg md:text-2xl font-display font-medium text-white/90 mb-8 md:mb-12">Book your strategy call and let’s build <span className="text-brand-teal font-bold">ads that convert</span>.</p>
         <button 
           onClick={onStartProject}
           className="relative px-8 py-4 md:px-12 md:py-6 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-base md:text-xl font-bold glow-purple hover:scale-105 transition-transform flex items-center gap-3 mx-auto w-fit overflow-hidden"
@@ -1106,9 +1317,9 @@ const ContactSection = memo(() => {
   return (
     <section className="py-24 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20">
       <div>
-        <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">Let’s Build Your Next Winning Creative.</h2>
-        <p className="text-sm md:text-xl text-white/60 leading-relaxed mb-12">
-          We help <span className="text-white font-medium">modern e-commerce brands</span> scale with <span className="text-brand-teal font-medium">performance-driven creatives</span> engineered for conversions, authority, and growth.
+        <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">Let’s Build Your Next <span className="text-brand-teal">Winning Creative</span>.</h2>
+        <p className="text-lg md:text-xl font-display font-medium text-white/90 leading-relaxed mb-12">
+          We help <span className="text-brand-purple font-bold">modern e-commerce brands</span> scale with <span className="text-brand-teal font-bold">performance-driven creatives</span> engineered for conversions, authority, and growth.
         </p>
         
         <div className="space-y-8">
@@ -1518,10 +1729,15 @@ const VideoCarousel = memo(({ onExpandVideo }: { onExpandVideo: (video: {url: st
 
   return (
     <section className="py-24 overflow-hidden bg-brand-dark/30">
-      <div className="max-w-7xl mx-auto px-6 mb-12">
-        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Featured Creatives</h2>
-        <p className="text-lg text-white/60">A glimpse into our high-performance video library.</p>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        className="max-w-7xl mx-auto px-6 mb-12"
+      >
+        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Featured <span className="text-brand-purple">Creatives</span></h2>
+        <p className="text-lg md:text-xl font-display font-medium text-white/90">A glimpse into our <span className="text-brand-teal font-bold">high-performance</span> video library.</p>
+      </motion.div>
       
       <div className="flex flex-col gap-12">
         <div className="relative overflow-hidden">
@@ -1891,6 +2107,7 @@ export default function App() {
             className="optimize-gpu"
           >
             <Hero onStartProject={() => handleStartProject()} />
+            <div className="section-optimize"><WhyMyCreativesWork /></div>
             <div className="section-optimize" id="work"><PositioningStrip /></div>
             <div className="section-optimize"><VideoCarousel onExpandVideo={setModalVideo} /></div>
             <div className="section-optimize"><PortfolioGrid onSelectNiche={(niche) => setCurrentView(niche)} /></div>
@@ -1899,6 +2116,7 @@ export default function App() {
             <div className="section-optimize"><Testimonials /></div>
             <div className="section-optimize" id="process"><ProcessSteps /></div>
             <div className="section-optimize"><Pricing onStartProject={handleStartProject} /></div>
+            <div className="section-optimize"><FAQSection /></div>
             <div className="section-optimize"><BigCTA onStartProject={() => handleStartProject()} /></div>
             <div className="section-optimize"><ContactSection /></div>
             <Footer onNavigate={handleNavigate} />
