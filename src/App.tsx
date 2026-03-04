@@ -17,6 +17,28 @@ const ButtonSparkle = () => (
   </div>
 );
 
+const ShopifyIcon = ({ className }: { className?: string }) => (
+  <img 
+    src="https://cdn.worldvectorlogo.com/logos/shopify.svg" 
+    alt="Shopify" 
+    className={className}
+    referrerPolicy="no-referrer"
+  />
+);
+
+const ShopifyBlur = () => (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <motion.div 
+      animate={{ 
+        scale: [1, 1.1, 1],
+        opacity: [0.2, 0.3, 0.2],
+      }}
+      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute top-0 left-1/4 w-[60%] h-[60%] bg-[#96bf48]/20 blur-[120px] rounded-full"
+    />
+  </div>
+);
+
 const Navbar = memo(({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | 'about' | string) => void, onStartProject: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -122,6 +144,33 @@ const Navbar = memo(({ onNavigate, onStartProject }: { onNavigate: (view: 'home'
 
 const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => (
   <section className="relative pt-32 pb-20 overflow-hidden optimize-gpu">
+    <ShopifyBlur />
+    
+    {/* Floating Shopify Icons */}
+    <motion.div 
+      initial={{ opacity: 0, x: -30, rotate: -10 }}
+      animate={{ opacity: 1, x: 0, rotate: 0 }}
+      transition={{ duration: 1, delay: 0.5 }}
+      className="absolute top-24 left-4 md:top-28 md:left-12 z-20"
+    >
+      <div className="relative">
+        <div className="absolute inset-0 bg-[#96bf48]/30 blur-xl rounded-full animate-pulse" />
+        <ShopifyIcon className="w-8 h-8 md:w-14 md:h-14 relative z-10 drop-shadow-[0_0_15px_rgba(150,191,72,0.4)]" />
+      </div>
+    </motion.div>
+
+    <motion.div 
+      initial={{ opacity: 0, x: 30, rotate: 10 }}
+      animate={{ opacity: 1, x: 0, rotate: 0 }}
+      transition={{ duration: 1, delay: 0.7 }}
+      className="absolute top-24 right-4 md:top-28 md:right-12 z-20"
+    >
+      <div className="relative">
+        <div className="absolute inset-0 bg-[#96bf48]/30 blur-xl rounded-full animate-pulse" />
+        <ShopifyIcon className="w-8 h-8 md:w-14 md:h-14 relative z-10 drop-shadow-[0_0_15px_rgba(150,191,72,0.4)]" />
+      </div>
+    </motion.div>
+
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-teal/10 blur-[120px] rounded-full animate-pulse" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-purple/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
@@ -133,11 +182,13 @@ const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => (
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-tight tracking-tight mb-8">
-          Performance-driven <span className="gradient-text drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">Creative Studio</span> for Modern E-commerce Brands
+        <h1 className="text-4xl md:text-7xl lg:text-8xl font-display font-bold leading-tight tracking-tight mb-8">
+          Performance Ad Creatives for <span className="inline-flex items-center gap-2 max-md:text-brand-teal max-md:bg-brand-teal/10 max-md:px-3 max-md:py-1 max-md:rounded-2xl md:gradient-text drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">
+            DTC & Shopify
+          </span> Brands
         </h1>
         <p className="text-lg md:text-2xl font-display font-medium text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
-          We engineer ads that <span className="text-brand-teal drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">convert</span>, <span className="text-brand-purple drop-shadow-[0_0_8px_rgba(192,38,255,0.4)]">scale</span>, and <span className="text-brand-blue drop-shadow-[0_0_8px_rgba(123,97,255,0.4)]">dominate attention</span>.
+          I create <span className="text-brand-teal drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">hook-driven AI UGC</span> & <span className="text-brand-purple drop-shadow-[0_0_8px_rgba(192,38,255,0.4)]">cinematic ad creatives</span> designed to <span className="text-brand-blue drop-shadow-[0_0_8px_rgba(123,97,255,0.4)]">increase CTR</span> and improve paid ad performance.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
           <a 
