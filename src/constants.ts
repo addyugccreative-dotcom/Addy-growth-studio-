@@ -8,10 +8,11 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     description: "Trust-building product demos with emotional hooks designed to boost ROAS.",
     thumbnailUrl: "https://selfish-orange-q69cnxpywy.edgeone.app/skin%20beauty.png",
     videos: [
-      { id: "v1", title: "Morning Routine", coverUrl: "https://picsum.photos/seed/skincare-1/400/711", videoUrl: "https://youtube.com/shorts/2uaYce9ywGM" },
-      { id: "v2", title: "Product Reveal", coverUrl: "https://picsum.photos/seed/skincare-2/400/711", videoUrl: "https://www.youtube.com/watch?v=QNC6QNscRSQ" },
-      { id: "v3", title: "Before & After", coverUrl: "https://picsum.photos/seed/skincare-3/400/711", videoUrl: "https://youtube.com/shorts/SOlfTi_BV8o" },
-      { id: "v4", title: "Customer Review", coverUrl: "https://picsum.photos/seed/skincare-4/400/711", videoUrl: "https://youtube.com/shorts/0Y0g6zEtTpc" },
+      { id: "v0", title: "Skincare Demo", coverUrl: "https://picsum.photos/seed/skincare-0/400/711", videoUrl: "https://youtube.com/shorts/nMFw460QEFQ" },
+      { id: "v1", title: "Customer Review", coverUrl: "https://picsum.photos/seed/skincare-4/400/711", videoUrl: "https://youtube.com/shorts/0Y0g6zEtTpc" },
+      { id: "v2", title: "Morning Routine", coverUrl: "https://picsum.photos/seed/skincare-1/400/711", videoUrl: "https://youtube.com/shorts/2uaYce9ywGM" },
+      { id: "v3", title: "Product Reveal", coverUrl: "https://picsum.photos/seed/skincare-2/400/711", videoUrl: "https://www.youtube.com/watch?v=QNC6QNscRSQ" },
+      { id: "v4", title: "Before & After", coverUrl: "https://picsum.photos/seed/skincare-3/400/711", videoUrl: "https://youtube.com/shorts/SOlfTi_BV8o" },
     ]
   },
   {

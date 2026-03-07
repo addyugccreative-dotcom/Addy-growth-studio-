@@ -1684,6 +1684,7 @@ const Footer = memo(({ onNavigate }: { onNavigate: (view: string) => void }) => 
 });
 
 const CAROUSEL_VIDEOS = [
+  { id: 'c0', url: 'https://youtube.com/shorts/nMFw460QEFQ', coverUrl: 'https://picsum.photos/seed/c0/400/711' },
   { id: 'c1', url: 'https://youtube.com/shorts/CrQaD25hJUM', coverUrl: 'https://picsum.photos/seed/c1/400/711' },
   { id: 'c2', url: 'https://youtube.com/shorts/-6nk2lzfUiY', coverUrl: 'https://picsum.photos/seed/c2/400/711' },
   { id: 'c3', url: 'https://youtube.com/shorts/v84LuiHpJrE', coverUrl: 'https://picsum.photos/seed/c3/400/711' },
