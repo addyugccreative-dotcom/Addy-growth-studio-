@@ -616,9 +616,14 @@ const NicheDetail = memo(({ niche, onBack, onExpandVideo }: { niche: PortfolioNi
       >
         <div className="absolute inset-0 bg-linear-to-r from-brand-teal/5 via-transparent to-brand-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         <h2 className="text-2xl md:text-4xl font-display font-bold mb-8 relative z-10">Ready to scale your <span className="gradient-text">{niche.title.toLowerCase()}</span> brand?</h2>
-        <button className="relative z-10 px-10 py-5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white font-bold glow-purple hover:scale-105 transition-transform text-sm md:text-base">
+        <a 
+          href="https://wa.me/qr/ALMKIEKM6SOGO1" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="inline-block relative z-10 px-10 py-5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white font-bold glow-purple hover:scale-105 transition-transform text-sm md:text-base"
+        >
           Book Strategy Call
-        </button>
+        </a>
       </motion.div>
     </motion.div>
   );
@@ -1323,13 +1328,15 @@ const BigCTA = memo(({ onStartProject }: { onStartProject: () => void }) => (
           Ready to Scale With <span className="gradient-text">Scroll-Stopping</span> Creative?
         </h2>
         <p className="text-lg md:text-2xl font-display font-medium text-white/90 mb-8 md:mb-12">Book your strategy call and let’s build <span className="text-brand-teal font-bold">ads that convert</span>.</p>
-        <button 
-          onClick={onStartProject}
+        <a 
+          href="https://wa.me/qr/ALMKIEKM6SOGO1" 
+          target="_blank" 
+          rel="noopener noreferrer"
           className="relative px-8 py-4 md:px-12 md:py-6 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-base md:text-xl font-bold glow-purple hover:scale-105 transition-transform flex items-center gap-3 mx-auto w-fit overflow-hidden"
         >
           <ButtonSparkle />
-          Start Your Project Now <ArrowRight />
-        </button>
+          Book Your Strategy Call Now <ArrowRight />
+        </a>
       </div>
     </div>
   </section>
