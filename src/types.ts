@@ -24,6 +24,8 @@ export interface FeatureBlock {
 export interface PricingPlan {
   name: string;
   price: string;
+  basePrice: number;
+  inrPrice: number;
   subtitle?: string;
   features: string[];
   isPopular?: boolean;

@@ -10,9 +10,13 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     videos: [
       { id: "v0", title: "Skincare Demo", coverUrl: "https://picsum.photos/seed/skincare-0/400/711", videoUrl: "https://youtube.com/shorts/nMFw460QEFQ" },
       { id: "v1", title: "Customer Review", coverUrl: "https://picsum.photos/seed/skincare-4/400/711", videoUrl: "https://youtube.com/shorts/0Y0g6zEtTpc" },
-      { id: "v2", title: "Morning Routine", coverUrl: "https://picsum.photos/seed/skincare-1/400/711", videoUrl: "https://youtube.com/shorts/2uaYce9ywGM" },
+      { id: "v2", title: "Morning Routine", coverUrl: "https://picsum.photos/seed/skincare-1/400/711", videoUrl: "https://youtube.com/shorts/Za7PkrpeqMU" },
       { id: "v3", title: "Product Reveal", coverUrl: "https://picsum.photos/seed/skincare-2/400/711", videoUrl: "https://www.youtube.com/watch?v=QNC6QNscRSQ" },
       { id: "v4", title: "Before & After", coverUrl: "https://picsum.photos/seed/skincare-3/400/711", videoUrl: "https://youtube.com/shorts/SOlfTi_BV8o" },
+      { id: "v5", title: "Glow Results", coverUrl: "https://picsum.photos/seed/skincare-5/400/711", videoUrl: "https://youtube.com/shorts/iva4Rs1k2ME" },
+      { id: "v6", title: "Night Routine", coverUrl: "https://picsum.photos/seed/skincare-6/400/711", videoUrl: "https://youtube.com/shorts/iHQPQCFxI4g" },
+      { id: "v7", title: "Application Hack", coverUrl: "https://picsum.photos/seed/skincare-7/400/711", videoUrl: "https://youtube.com/shorts/Ni_8PfIgMkU" },
+      { id: "v8", title: "Texture Shot", coverUrl: "https://picsum.photos/seed/skincare-8/400/711", videoUrl: "https://youtube.com/shorts/vdfpEaIKPJE" },
     ]
   },
   {
@@ -136,26 +140,34 @@ export const FEATURE_BLOCKS: FeatureBlock[] = [
 export const PRICING_PLANS: PricingPlan[] = [
   {
     name: "Single Creative",
-    price: "$49",
+    price: "$25",
+    basePrice: 25,
+    inrPrice: 799,
     subtitle: "Perfect for brands testing new concepts.",
     features: ["1 UGC Ad (15 sec)", "Script writing", "Hook optimization", "Basic editing", "1 revision", "3–4 day delivery"]
   },
   {
     name: "Starter Testing",
-    price: "$299",
+    price: "$199",
+    basePrice: 199,
+    inrPrice: 6399,
     subtitle: "Best for new brands testing multiple angles.",
     features: ["8 UGC ads", "2 ad angles per week", "Hook variations", "Script strategy", "2 revisions", "Priority support"]
   },
   {
     name: "Growth Plan",
-    price: "$499",
+    price: "$349",
+    basePrice: 349,
+    inrPrice: 11199,
     subtitle: "Designed for active Shopify brands running Meta/TikTok ads.",
     isPopular: true,
     features: ["15 creatives", "Multiple hooks", "AI-enhanced workflow", "Strategy call", "Advanced editing", "Weekly creative refresh"]
   },
   {
     name: "Scale Plan",
-    price: "$999",
+    price: "$699",
+    basePrice: 699,
+    inrPrice: 22399,
     subtitle: "Built for aggressive ad scales & agencies.",
     features: ["30+ creatives", "Full funnel strategy", "Creative testing framework", "Priority support", "24-48hr Turnaround", "Unlimited minor text revisions"]
   }

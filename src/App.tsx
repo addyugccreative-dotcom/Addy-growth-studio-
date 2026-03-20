@@ -39,7 +39,15 @@ const ShopifyBlur = () => (
   </div>
 );
 
-const Navbar = memo(({ onNavigate, onStartProject }: { onNavigate: (view: 'home' | 'about' | string) => void, onStartProject: () => void }) => {
+import { useCurrency, CurrencyCode, Currency } from './hooks/useCurrency';
+import CurrencySwitcher from './components/CurrencySwitcher';
+
+const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyChange }: { 
+  onNavigate: (view: 'home' | 'about' | string) => void, 
+  onStartProject: () => void,
+  currentCurrency: CurrencyCode,
+  onCurrencyChange: (code: CurrencyCode) => void
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -94,6 +102,12 @@ const Navbar = memo(({ onNavigate, onStartProject }: { onNavigate: (view: 'home'
               {item}
             </button>
           ))}
+          
+          <CurrencySwitcher 
+            currentCurrency={currentCurrency} 
+            onCurrencyChange={onCurrencyChange} 
+          />
+
           <button 
             onClick={onStartProject}
             className="relative px-6 py-2.5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-sm font-bold glow-purple hover:scale-105 transition-transform overflow-hidden"
@@ -103,9 +117,15 @@ const Navbar = memo(({ onNavigate, onStartProject }: { onNavigate: (view: 'home'
           </button>
         </div>
 
-        <button className="md:hidden text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
+        <div className="flex items-center gap-4 md:hidden">
+          <CurrencySwitcher 
+            currentCurrency={currentCurrency} 
+            onCurrencyChange={onCurrencyChange} 
+          />
+          <button className="text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -597,12 +617,15 @@ const NicheDetail = memo(({ niche, onBack, onExpandVideo }: { niche: PortfolioNi
         </motion.div>
 
         <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3 md:gap-4 optimize-gpu">
-          {niche.videos.slice(0, 4).map((video, idx) => (
+          {niche.videos.slice(0, 12).map((video, idx) => (
             <motion.div 
               key={video.id} 
               whileHover={{ y: -5 }}
               className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl optimize-gpu group"
             >
+              <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white/90 uppercase tracking-wider pointer-events-none">
+                Video {idx + 1}
+              </div>
               <VideoPlayer url={video.videoUrl} title={video.title} onExpand={onExpandVideo} />
               <div className="absolute inset-0 bg-brand-teal/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             </motion.div>
@@ -718,6 +741,34 @@ const Counter = ({ value, suffix = "" }: { value: number, suffix?: string }) => 
   }, [isInView, value]);
 
   return <span ref={ref}>{displayValue}{suffix}</span>;
+};
+
+const PriceCounter = ({ basePrice, inrPrice, currency }: { basePrice: number, inrPrice: number, currency: Currency }) => {
+  const targetValue = currency.code === 'INR' ? inrPrice : basePrice;
+  const [displayValue, setDisplayValue] = useState(targetValue);
+  const prevValueRef = useRef(targetValue);
+
+  useEffect(() => {
+    const controls = animate(prevValueRef.current, targetValue, {
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (latest) => setDisplayValue(Math.round(latest))
+    });
+    prevValueRef.current = targetValue;
+    return () => controls.stop();
+  }, [targetValue]);
+
+  return (
+    <motion.span
+      key={currency.code}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="inline-block"
+    >
+      {currency.symbol}{displayValue.toLocaleString()}
+    </motion.span>
+  );
 };
 
 const ProvenResults = memo(() => (
@@ -928,7 +979,11 @@ const fireConfetti = () => {
   }, 250);
 };
 
-const ProjectForm = memo(({ onBack, selectedPlan }: { onBack: () => void, selectedPlan?: string }) => {
+const ProjectForm = memo(({ onBack, selectedPlan, formatPrice }: { 
+  onBack: () => void, 
+  selectedPlan?: string,
+  formatPrice: (basePrice: number) => string
+}) => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [formData, setFormData] = useState({
     name: '',
@@ -1093,10 +1148,10 @@ const ProjectForm = memo(({ onBack, selectedPlan }: { onBack: () => void, select
               onChange={e => setFormData({...formData, budget: e.target.value})}
             >
               <option value="" className="bg-brand-dark">Select Budget</option>
-              <option value="500" className="bg-brand-dark">$500</option>
-              <option value="1k-5k" className="bg-brand-dark">$1k - $5k</option>
-              <option value="5k-10k" className="bg-brand-dark">$5k - $10k</option>
-              <option value="10k+" className="bg-brand-dark">$10k+</option>
+              <option value="500" className="bg-brand-dark">{formatPrice(500)}</option>
+              <option value="1k-5k" className="bg-brand-dark">{formatPrice(1000)} - {formatPrice(5000)}</option>
+              <option value="5k-10k" className="bg-brand-dark">{formatPrice(5000)} - {formatPrice(10000)}</option>
+              <option value="10k+" className="bg-brand-dark">{formatPrice(10000)}+</option>
             </select>
           </div>
           <div className="space-y-2">
@@ -1109,7 +1164,7 @@ const ProjectForm = memo(({ onBack, selectedPlan }: { onBack: () => void, select
             >
               <option value="" className="bg-brand-dark">Custom / Not Sure</option>
               {PRICING_PLANS.map(p => (
-                <option key={p.name} value={p.name} className="bg-brand-dark">{p.name} - {p.price}</option>
+                <option key={p.name} value={p.name} className="bg-brand-dark">{p.name} - {formatPrice(p.basePrice)}</option>
               ))}
             </select>
           </div>
@@ -1144,7 +1199,11 @@ const ProjectForm = memo(({ onBack, selectedPlan }: { onBack: () => void, select
   );
 });
 
-const Pricing = memo(({ onStartProject }: { onStartProject: (plan?: string) => void }) => {
+const Pricing = memo(({ onStartProject, formatPrice, currency }: { 
+  onStartProject: (plan?: string) => void,
+  formatPrice: (basePrice: number) => string,
+  currency: Currency
+}) => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   return (
@@ -1178,7 +1237,9 @@ const Pricing = memo(({ onStartProject }: { onStartProject: (plan?: string) => v
             <div className="mb-6">
               <h3 className="text-lg font-display font-bold mb-1">{plan.name}</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-display font-bold gradient-text">{plan.price}</span>
+                <span className="text-3xl font-display font-bold gradient-text">
+                  <PriceCounter basePrice={plan.basePrice} inrPrice={plan.inrPrice} currency={currency} />
+                </span>
                 <span className="text-white/40 text-xs">/pkg</span>
               </div>
             </div>
@@ -1342,7 +1403,7 @@ const BigCTA = memo(({ onStartProject }: { onStartProject: () => void }) => (
   </section>
 ));
 
-const ContactSection = memo(() => {
+const ContactSection = memo(({ formatPrice }: { formatPrice: (basePrice: number) => string }) => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -1437,10 +1498,10 @@ const ContactSection = memo(() => {
                 <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Project Budget</label>
                 <div className="relative">
                   <select name="budget" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all appearance-none cursor-pointer">
-                    <option value="500">$500</option>
-                    <option value="1k-5k">$1k - $5k</option>
-                    <option value="5k-10k">$5k - $10k</option>
-                    <option value="10k+">$10k+</option>
+                    <option value="500">{formatPrice(500)}</option>
+                    <option value="1k-5k">{formatPrice(1000)} - {formatPrice(5000)}</option>
+                    <option value="5k-10k">{formatPrice(5000)} - {formatPrice(10000)}</option>
+                    <option value="10k+">{formatPrice(10000)}+</option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
                     <ChevronDown size={14} />
@@ -2133,6 +2194,7 @@ const TermsOfService = memo(({ onBack }: { onBack: () => void }) => {
 });
 
 export default function App() {
+  const { currency, setCurrency, formatPrice } = useCurrency();
   const [currentView, setCurrentView] = useState<'home' | 'project-form' | 'about' | 'privacy' | 'terms' | PortfolioNiche>('home');
   const [selectedPlan, setSelectedPlan] = useState<string | undefined>(undefined);
   const [modalVideo, setModalVideo] = useState<{url: string, title: string} | null>(null);
@@ -2153,7 +2215,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen selection:bg-brand-teal/30 smooth-scroll overflow-x-hidden">
-      <Navbar onNavigate={handleNavigate} onStartProject={() => handleStartProject()} />
+      <Navbar 
+        onNavigate={handleNavigate} 
+        onStartProject={() => handleStartProject()} 
+        currentCurrency={currency.code}
+        onCurrencyChange={setCurrency}
+      />
       
       <AnimatePresence mode="wait">
         {currentView === 'home' ? (
@@ -2174,16 +2241,17 @@ export default function App() {
             <div className="section-optimize"><ProvenResults /></div>
             <div className="section-optimize"><Testimonials /></div>
             <div className="section-optimize" id="process"><ProcessSteps /></div>
-            <div className="section-optimize"><Pricing onStartProject={handleStartProject} /></div>
+            <div className="section-optimize"><Pricing onStartProject={handleStartProject} formatPrice={formatPrice} currency={currency} /></div>
             <div className="section-optimize"><FAQSection /></div>
             <div className="section-optimize"><BigCTA onStartProject={() => handleStartProject()} /></div>
-            <div className="section-optimize"><ContactSection /></div>
+            <div className="section-optimize"><ContactSection formatPrice={formatPrice} /></div>
             <Footer onNavigate={handleNavigate} />
           </motion.main>
         ) : currentView === 'project-form' ? (
           <ProjectForm 
             key="project-form"
             selectedPlan={selectedPlan}
+            formatPrice={formatPrice}
             onBack={() => setCurrentView('home')} 
           />
         ) : currentView === 'about' ? (
