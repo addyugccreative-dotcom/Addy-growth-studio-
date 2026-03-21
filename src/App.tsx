@@ -42,36 +42,41 @@ const ShopifyBlur = () => (
 import { useCurrency, CurrencyCode, Currency } from './hooks/useCurrency';
 import CurrencySwitcher from './components/CurrencySwitcher';
 
-const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyChange }: { 
-  onNavigate: (view: 'home' | 'about' | string) => void, 
+const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyChange, activeSection }: { 
+  onNavigate: (view: 'home' | 'about' | string, shouldScrollToTop?: boolean) => void, 
   onStartProject: () => void,
   currentCurrency: CurrencyCode,
-  onCurrencyChange: (code: CurrencyCode) => void
+  onCurrencyChange: (code: CurrencyCode) => void,
+  activeSection?: string
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['Work', 'Services', 'About', 'Process'];
+  const navItems = [
+    { name: 'Work', id: 'work' },
+    { name: 'Services', id: 'services' },
+    { name: 'About', id: 'about' },
+    { name: 'Process', id: 'process' }
+  ];
 
-  const handleNavClick = (item: string) => {
-    if (item === 'About') {
+  const handleNavClick = (item: { name: string, id: string }) => {
+    if (item.id === 'about') {
       onNavigate('about');
-      window.scrollTo(0, 0);
     } else {
-      onNavigate('home');
+      onNavigate('home', false);
       // Small delay to ensure we are on home before scrolling
       setTimeout(() => {
-        const element = document.getElementById(item.toLowerCase());
+        const element = document.getElementById(item.id);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
         } else {
-          window.location.hash = `#${item.toLowerCase()}`;
+          window.location.hash = `#${item.id}`;
         }
       }, 100);
     }
@@ -84,8 +89,7 @@ const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyCh
         <div 
           className="text-2xl font-display font-bold cursor-pointer flex items-center gap-2"
           onClick={() => {
-            onNavigate('home');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            onNavigate('home', true);
           }}
         >
           <span className="gradient-text">Addy</span>
@@ -95,11 +99,22 @@ const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyCh
         <div className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
             <button 
-              key={item} 
+              key={item.id} 
               onClick={() => handleNavClick(item)}
-              className="text-sm font-medium text-white/70 hover:text-white transition-colors"
+              className={`text-sm font-medium transition-all duration-300 relative ${
+                activeSection === item.id 
+                  ? 'text-brand-teal' 
+                  : 'text-white/70 hover:text-white'
+              }`}
             >
-              {item}
+              {item.name}
+              {activeSection === item.id && (
+                <motion.div 
+                  layoutId="activeNav"
+                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand-teal rounded-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
           ))}
           
@@ -138,11 +153,13 @@ const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyCh
           >
             {navItems.map((item) => (
               <button 
-                key={item} 
+                key={item.id} 
                 onClick={() => handleNavClick(item)}
-                className="text-lg font-medium text-white/70 text-left"
+                className={`text-lg font-medium text-left transition-colors ${
+                  activeSection === item.id ? 'text-brand-teal' : 'text-white/70'
+                }`}
               >
-                {item}
+                {item.name}
               </button>
             ))}
             <button 
@@ -982,7 +999,7 @@ const fireConfetti = () => {
 const ProjectForm = memo(({ onBack, selectedPlan, formatPrice }: { 
   onBack: () => void, 
   selectedPlan?: string,
-  formatPrice: (basePrice: number) => string
+  formatPrice: (usdPrice: number, inrPrice?: number) => string
 }) => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [formData, setFormData] = useState({
@@ -1148,10 +1165,10 @@ const ProjectForm = memo(({ onBack, selectedPlan, formatPrice }: {
               onChange={e => setFormData({...formData, budget: e.target.value})}
             >
               <option value="" className="bg-brand-dark">Select Budget</option>
-              <option value="500" className="bg-brand-dark">{formatPrice(500)}</option>
-              <option value="1k-5k" className="bg-brand-dark">{formatPrice(1000)} - {formatPrice(5000)}</option>
-              <option value="5k-10k" className="bg-brand-dark">{formatPrice(5000)} - {formatPrice(10000)}</option>
-              <option value="10k+" className="bg-brand-dark">{formatPrice(10000)}+</option>
+              <option value="500" className="bg-brand-dark">{formatPrice(500, 15999)}</option>
+              <option value="1k-5k" className="bg-brand-dark">{formatPrice(1000, 31999)} - {formatPrice(5000, 159999)}</option>
+              <option value="5k-10k" className="bg-brand-dark">{formatPrice(5000, 159999)} - {formatPrice(10000, 319999)}</option>
+              <option value="10k+" className="bg-brand-dark">{formatPrice(10000, 319999)}+</option>
             </select>
           </div>
           <div className="space-y-2">
@@ -1164,7 +1181,7 @@ const ProjectForm = memo(({ onBack, selectedPlan, formatPrice }: {
             >
               <option value="" className="bg-brand-dark">Custom / Not Sure</option>
               {PRICING_PLANS.map(p => (
-                <option key={p.name} value={p.name} className="bg-brand-dark">{p.name} - {formatPrice(p.basePrice)}</option>
+                <option key={p.name} value={p.name} className="bg-brand-dark">{p.name} - {formatPrice(p.basePrice, p.inrPrice)}</option>
               ))}
             </select>
           </div>
@@ -1199,9 +1216,8 @@ const ProjectForm = memo(({ onBack, selectedPlan, formatPrice }: {
   );
 });
 
-const Pricing = memo(({ onStartProject, formatPrice, currency }: { 
+const Pricing = memo(({ onStartProject, currency }: { 
   onStartProject: (plan?: string) => void,
-  formatPrice: (basePrice: number) => string,
   currency: Currency
 }) => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -1403,7 +1419,7 @@ const BigCTA = memo(({ onStartProject }: { onStartProject: () => void }) => (
   </section>
 ));
 
-const ContactSection = memo(({ formatPrice }: { formatPrice: (basePrice: number) => string }) => {
+const ContactSection = memo(({ formatPrice }: { formatPrice: (usdPrice: number, inrPrice?: number) => string }) => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -1498,10 +1514,10 @@ const ContactSection = memo(({ formatPrice }: { formatPrice: (basePrice: number)
                 <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Project Budget</label>
                 <div className="relative">
                   <select name="budget" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all appearance-none cursor-pointer">
-                    <option value="500">{formatPrice(500)}</option>
-                    <option value="1k-5k">{formatPrice(1000)} - {formatPrice(5000)}</option>
-                    <option value="5k-10k">{formatPrice(5000)} - {formatPrice(10000)}</option>
-                    <option value="10k+">{formatPrice(10000)}+</option>
+                    <option value="500">{formatPrice(500, 15999)}</option>
+                    <option value="1k-5k">{formatPrice(1000, 31999)} - {formatPrice(5000, 159999)}</option>
+                    <option value="5k-10k">{formatPrice(5000, 159999)} - {formatPrice(10000, 319999)}</option>
+                    <option value="10k+">{formatPrice(10000, 319999)}+</option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
                     <ChevronDown size={14} />
@@ -1672,19 +1688,16 @@ const AboutPage = memo(({ onBack }: { onBack: () => void }) => {
   );
 });
 
-const Footer = memo(({ onNavigate }: { onNavigate: (view: string) => void }) => {
+const Footer = memo(({ onNavigate }: { onNavigate: (view: string, shouldScrollToTop?: boolean) => void }) => {
   const handleNavClick = (item: string) => {
     if (item === 'About') {
       onNavigate('about');
-      window.scrollTo(0, 0);
     } else if (item === 'Privacy Policy') {
       onNavigate('privacy');
-      window.scrollTo(0, 0);
     } else if (item === 'Terms of Service') {
       onNavigate('terms');
-      window.scrollTo(0, 0);
     } else {
-      onNavigate('home');
+      onNavigate('home', false);
       setTimeout(() => {
         const element = document.getElementById(item.toLowerCase());
         if (element) {
@@ -2198,20 +2211,111 @@ export default function App() {
   const [currentView, setCurrentView] = useState<'home' | 'project-form' | 'about' | 'privacy' | 'terms' | PortfolioNiche>('home');
   const [selectedPlan, setSelectedPlan] = useState<string | undefined>(undefined);
   const [modalVideo, setModalVideo] = useState<{url: string, title: string} | null>(null);
+  const [activeSection, setActiveSection] = useState<string>('hero');
+  const scrollPositions = useRef<Record<string, number>>(
+    JSON.parse(sessionStorage.getItem('scrollPositions') || '{}')
+  );
+
+  useEffect(() => {
+    sessionStorage.setItem('scrollPositions', JSON.stringify(scrollPositions.current));
+  }, [currentView]);
+
+  const getViewId = (view: any): string => {
+    if (typeof view === 'string') return view;
+    return view.id;
+  };
+
+  const handleNavigate = (view: string | PortfolioNiche, shouldScrollToTop = true) => {
+    const viewId = getViewId(view);
+    const currentViewId = getViewId(currentView);
+
+    // Save current scroll position before navigating away
+    scrollPositions.current[currentViewId] = window.scrollY;
+    sessionStorage.setItem('scrollPositions', JSON.stringify(scrollPositions.current));
+
+    setCurrentView(view as any);
+    
+    // Update history state
+    const path = viewId === 'home' ? '/' : `/${viewId}`;
+    if (window.location.pathname !== path) {
+      history.pushState({ view: viewId }, '', path);
+    }
+
+    if (shouldScrollToTop) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (scrollPositions.current[viewId] !== undefined) {
+      setTimeout(() => {
+        window.scrollTo({ top: scrollPositions.current[viewId], behavior: 'instant' });
+      }, 0);
+    }
+  };
 
   const handleStartProject = (plan?: string) => {
     setSelectedPlan(plan);
-    setCurrentView('project-form');
-    window.scrollTo(0, 0);
+    handleNavigate('project-form');
   };
 
-  const handleNavigate = (view: string) => {
-    if (view === 'home') setCurrentView('home');
-    else if (view === 'about') setCurrentView('about');
-    else if (view === 'privacy') setCurrentView('privacy');
-    else if (view === 'terms') setCurrentView('terms');
-    else setCurrentView(view as any);
-  };
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const viewId = event.state?.view || 'home';
+      const niche = PORTFOLIO_NICHES.find(n => n.id === viewId);
+      const targetView = niche || viewId;
+      
+      setCurrentView(targetView);
+
+      // Restore scroll position if saved
+      if (scrollPositions.current[viewId] !== undefined) {
+        setTimeout(() => {
+          window.scrollTo({ top: scrollPositions.current[viewId], behavior: 'instant' });
+        }, 0);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    // Set initial history state
+    const initialViewId = getViewId(currentView);
+    history.replaceState({ view: initialViewId }, '', window.location.pathname);
+
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [currentView]);
+
+  // Active section detection
+  useEffect(() => {
+    if (currentView === 'about') {
+      setActiveSection('about');
+      return;
+    }
+    if (currentView !== 'home') return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -70% 0px',
+      threshold: 0
+    };
+
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          setActiveSection(id);
+          
+          // Update hash without reload
+          if (id !== 'hero') {
+            history.replaceState(history.state, '', `#${id}`);
+          } else {
+            history.replaceState(history.state, '', '/');
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+    const sections = document.querySelectorAll('.section-optimize');
+    sections.forEach(section => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [currentView]);
 
   return (
     <div className="min-h-screen selection:bg-brand-teal/30 smooth-scroll overflow-x-hidden">
@@ -2220,6 +2324,7 @@ export default function App() {
         onStartProject={() => handleStartProject()} 
         currentCurrency={currency.code}
         onCurrencyChange={setCurrency}
+        activeSection={activeSection}
       />
       
       <AnimatePresence mode="wait">
@@ -2232,19 +2337,19 @@ export default function App() {
             transition={{ duration: 0.4, ease: "circOut" }}
             className="optimize-gpu"
           >
-            <Hero onStartProject={() => handleStartProject()} />
-            <div className="section-optimize"><WhyMyCreativesWork /></div>
-            <div className="section-optimize" id="work"><PositioningStrip /></div>
-            <div className="section-optimize"><VideoCarousel onExpandVideo={setModalVideo} /></div>
-            <div className="section-optimize"><PortfolioGrid onSelectNiche={(niche) => setCurrentView(niche)} /></div>
-            <div className="section-optimize" id="services"><ScienceSection /></div>
-            <div className="section-optimize"><ProvenResults /></div>
-            <div className="section-optimize"><Testimonials /></div>
-            <div className="section-optimize" id="process"><ProcessSteps /></div>
-            <div className="section-optimize"><Pricing onStartProject={handleStartProject} formatPrice={formatPrice} currency={currency} /></div>
-            <div className="section-optimize"><FAQSection /></div>
-            <div className="section-optimize"><BigCTA onStartProject={() => handleStartProject()} /></div>
-            <div className="section-optimize"><ContactSection formatPrice={formatPrice} /></div>
+            <div id="hero" className="section-optimize"><Hero onStartProject={() => handleStartProject()} /></div>
+            <div id="why" className="section-optimize"><WhyMyCreativesWork /></div>
+            <div id="work" className="section-optimize"><PositioningStrip /></div>
+            <div id="carousel" className="section-optimize"><VideoCarousel onExpandVideo={setModalVideo} /></div>
+            <div id="portfolio" className="section-optimize"><PortfolioGrid onSelectNiche={(niche) => handleNavigate(niche)} /></div>
+            <div id="services" className="section-optimize"><ScienceSection /></div>
+            <div id="results" className="section-optimize"><ProvenResults /></div>
+            <div id="testimonials" className="section-optimize"><Testimonials /></div>
+            <div id="process" className="section-optimize"><ProcessSteps /></div>
+            <div id="pricing" className="section-optimize"><Pricing onStartProject={handleStartProject} currency={currency} /></div>
+            <div id="faq" className="section-optimize"><FAQSection /></div>
+            <div id="cta" className="section-optimize"><BigCTA onStartProject={() => handleStartProject()} /></div>
+            <div id="contact" className="section-optimize"><ContactSection formatPrice={formatPrice} /></div>
             <Footer onNavigate={handleNavigate} />
           </motion.main>
         ) : currentView === 'project-form' ? (
@@ -2252,28 +2357,28 @@ export default function App() {
             key="project-form"
             selectedPlan={selectedPlan}
             formatPrice={formatPrice}
-            onBack={() => setCurrentView('home')} 
+            onBack={() => handleNavigate('home', false)} 
           />
         ) : currentView === 'about' ? (
           <AboutPage 
             key="about" 
-            onBack={() => setCurrentView('home')} 
+            onBack={() => handleNavigate('home', false)} 
           />
         ) : currentView === 'privacy' ? (
           <PrivacyPolicy 
             key="privacy" 
-            onBack={() => setCurrentView('home')} 
+            onBack={() => handleNavigate('home', false)} 
           />
         ) : currentView === 'terms' ? (
           <TermsOfService 
             key="terms" 
-            onBack={() => setCurrentView('home')} 
+            onBack={() => handleNavigate('home', false)} 
           />
         ) : (
           <div key="detail" className="optimize-gpu">
             <NicheDetail 
               niche={currentView} 
-              onBack={() => setCurrentView('home')} 
+              onBack={() => handleNavigate('home', false)} 
               onExpandVideo={setModalVideo}
             />
           </div>

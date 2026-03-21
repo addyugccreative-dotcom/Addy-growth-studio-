@@ -15,10 +15,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px; /* Account for fixed navbar */
   }
   
   body {
     @apply bg-brand-dark text-white font-sans antialiased selection:bg-brand-teal/30;
+    scroll-snap-type: y proximity;
   }
 }
 
@@ -32,6 +34,8 @@
 .section-optimize {
   content-visibility: auto;
   contain-intrinsic-size: 1px 500px;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
 }
 
 .smooth-scroll {
