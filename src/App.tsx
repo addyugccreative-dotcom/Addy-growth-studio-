@@ -6,7 +6,7 @@ import {
   Zap, FileText, Users, Scissors, Cpu, BarChart3, Target, Clock, 
   ChevronRight, CheckCircle2, ArrowRight, Instagram, 
   Mail, MessageSquare, Menu, X, ArrowLeft, Maximize, ChevronDown,
-  Star, Sparkles, ExternalLink, Check, Plus
+  Star, Sparkles, ExternalLink, Check, Plus, Play
 } from 'lucide-react';
 import { PORTFOLIO_NICHES, FEATURE_BLOCKS, PRICING_PLANS, TESTIMONIALS } from './constants';
 import { PortfolioNiche } from './types';
@@ -196,67 +196,69 @@ const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   return (
-    <section ref={containerRef} className="relative min-h-screen flex items-center pt-20 overflow-hidden optimize-gpu">
-      <motion.div 
-        style={{ 
-          y: scrollY, 
-          opacity, 
-          scale,
-          translateX: mousePosition.x,
-          translateY: mousePosition.y
-        }}
-        className="absolute inset-0 z-0"
-      >
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-brand-dark to-transparent z-10" />
-        <div className="w-full h-full opacity-60 md:opacity-100">
-          <Spline scene="https://prod.spline.design/j9pRqjdNekwaWXIs/scene.splinecode" className="w-full h-full" />
-        </div>
-      </motion.div>
-
-      <ShopifyBlur />
-      
+    <section ref={containerRef} className="relative min-h-[90vh] flex items-center pt-24 md:pt-32 pb-16 overflow-hidden optimize-gpu">
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-left"
-        >
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-teal/10 border border-brand-teal/20 mb-8"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-left order-1"
           >
-            <div className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
-            <span className="text-brand-teal text-[10px] font-black uppercase tracking-[0.2em]">Addy Growth Studio</span>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal/10 border border-brand-teal/20 mb-6"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-brand-teal animate-pulse" />
+              <span className="text-brand-teal text-[10px] font-black uppercase tracking-[0.2em]">Skincare Specialist</span>
+            </motion.div>
+
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.1] tracking-tight mb-6 max-w-2xl">
+              Premium Cinematic <br />
+              & UGC Ads for <br />
+              <span className="gradient-text drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]">Skincare</span> Brands.
+            </h1>
+            
+            <p className="text-base md:text-xl font-display font-medium text-white/50 max-w-xl mb-10 leading-relaxed">
+              At <span className="text-white">Addy Growth Studio</span>, we engineer high-converting skincare ads and performance-driven websites that turn attention into revenue.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <button 
+                onClick={onStartProject}
+                className="w-full sm:w-auto px-10 py-5 rounded-xl bg-brand-teal text-brand-dark font-black text-lg shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:scale-105 active:scale-95 transition-all text-center uppercase tracking-widest"
+              >
+                Launch Project
+              </button>
+              <a 
+                href="#work" 
+                className="w-full sm:w-auto px-10 py-5 rounded-xl border border-white/10 bg-white/5 text-white font-black text-lg hover:bg-white/10 hover:border-white/20 transition-all text-center uppercase tracking-widest"
+              >
+                View Work
+              </a>
+            </div>
           </motion.div>
 
-          <h1 className="text-5xl md:text-8xl lg:text-9xl font-display font-bold leading-[0.95] tracking-tight mb-8 max-w-4xl">
-            Future of <br />
-            <span className="gradient-text drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]">Performance</span> <br />
-            Marketing.
-          </h1>
-          
-          <p className="text-lg md:text-2xl font-display font-medium text-white/50 max-w-2xl mb-12 leading-relaxed">
-            At <span className="text-white">Addy Growth Studio</span>, we engineer high-converting cinematic ads and performance-driven websites that turn attention into revenue.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <button 
-              onClick={onStartProject}
-              className="w-full sm:w-auto px-12 py-6 rounded-2xl bg-brand-teal text-brand-dark font-black text-xl shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:scale-105 active:scale-95 transition-all text-center uppercase tracking-widest"
-            >
-              Launch Project
-            </button>
-            <a 
-              href="#work" 
-              className="w-full sm:w-auto px-12 py-6 rounded-2xl border border-white/10 bg-white/5 text-white font-black text-xl hover:bg-white/10 hover:border-white/20 transition-all text-center uppercase tracking-widest"
-            >
-              View Work
-            </a>
-          </div>
-        </motion.div>
+          <motion.div 
+            style={{ 
+              y: scrollY, 
+              opacity, 
+              scale,
+              translateX: mousePosition.x,
+              translateY: mousePosition.y
+            }}
+            className="relative z-0 order-2 flex justify-center lg:justify-end"
+          >
+            <div className="relative w-full max-w-[300px] md:max-w-[450px] aspect-square rounded-full">
+              <div className="absolute inset-0 bg-brand-teal/20 blur-[100px] rounded-full animate-pulse" />
+              <div className="relative w-full h-full">
+                <Spline scene="https://prod.spline.design/j9pRqjdNekwaWXIs/scene.splinecode" className="w-full h-full" />
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -387,85 +389,88 @@ const PositioningStrip = memo(() => (
         transition={{ duration: 0.6, ease: "circOut" }}
       >
         <p className="text-base md:text-xl font-display font-medium text-white/90 leading-relaxed">
-          At <span className="text-brand-teal font-bold drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">Addy Growth Studio</span>, we specialize in <span className="text-brand-teal font-bold">high-converting cinematic ads</span> and high-performance websites built for brands, dropshippers, and scaling e-commerce stores. Every asset is engineered with <span className="text-brand-purple font-bold">performance psychology</span>, thumb-stopping hooks, and platform-native storytelling to <span className="text-brand-blue font-bold">maximize ROAS</span> and dominate attention.
+          At <span className="text-brand-teal font-bold drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">Addy Growth Studio</span>, we specialize in <span className="text-brand-teal font-bold">high-converting cinematic skincare ads</span> and high-performance websites built for niche beauty brands. Every asset is engineered with <span className="text-brand-purple font-bold">performance psychology</span>, aesthetic hooks, and platform-native storytelling to <span className="text-brand-blue font-bold">maximize ROAS</span>.
         </p>
       </motion.div>
     </div>
   </section>
 ));
 
-const PortfolioGrid = memo(({ onSelectNiche }: { onSelectNiche: (niche: PortfolioNiche) => void }) => (
-  <section id="work" className="py-24 max-w-7xl mx-auto px-6 optimize-gpu">
-    <div className="mb-16">
-      <motion.span 
-        initial={{ opacity: 0, x: -30 }}
-        whileInView={{ opacity: 1, x: 0 }}
+const PortfolioGrid = memo(({ onExpandVideo }: { onExpandVideo: (video: {url: string, title: string}) => void }) => (
+  <section id="work" className="py-24 max-w-7xl mx-auto px-6 mb-24 optimize-gpu">
+    <div className="mb-24 text-center">
+      <motion.p 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-brand-teal font-bold uppercase tracking-widest text-xs mb-4 block"
+        className="text-brand-teal font-black uppercase tracking-[0.3em] text-[10px] mb-4"
       >
-        Strategic Portfolio
-      </motion.span>
+        Showcase
+      </motion.p>
       <motion.h2 
-        initial={{ opacity: 0, x: -30 }}
-        whileInView={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.1 }}
-        className="text-3xl md:text-5xl font-display font-bold mb-4"
+        className="text-4xl md:text-6xl font-display font-bold mb-6 italic"
       >
-        My Work
+        Strategy in <span className="gradient-text">Motion.</span>
       </motion.h2>
-      <motion.p 
-        initial={{ opacity: 0, x: -30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2 }}
-        className="text-lg md:text-xl font-display font-medium text-white/90 max-w-2xl"
-      >
-        Performance-driven creatives engineered for <span className="text-brand-teal font-bold drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">maximum ROAS</span> across multiple high-converting niches.
-      </motion.p>
     </div>
 
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-      {PORTFOLIO_NICHES.map((niche, idx) => (
-        <motion.div
-          key={niche.id}
-          initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ delay: idx * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          viewport={{ once: true, margin: "-50px" }}
-          className="group relative cursor-pointer optimize-gpu"
-          onClick={() => onSelectNiche(niche)}
-        >
-          <div className="relative aspect-square rounded-2xl overflow-hidden mb-6 shadow-2xl">
-            <img 
-              src={niche.thumbnailUrl} 
-              alt={niche.title} 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-              referrerPolicy="no-referrer"
-              loading={idx < 4 ? "eager" : "lazy"}
-              decoding="async"
-              {...(idx === 0 ? { fetchPriority: "high" } : idx < 4 ? { fetchPriority: "low" } : {})}
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-brand-dark/20 to-transparent opacity-80" />
-            
-            <div className="absolute inset-0 border-2 border-white/5 group-hover:border-brand-teal/30 rounded-2xl transition-all duration-500" />
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-brand-teal/5 pointer-events-none" />
-            
-            <div className="absolute bottom-4 left-4 right-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-              <div className="px-4 py-2 rounded-xl bg-brand-teal text-brand-dark font-bold text-[10px] md:text-xs text-center shadow-xl">
-                Explore Case Study
+    {PORTFOLIO_NICHES.map((niche, sectIdx) => (
+      <div key={niche.id} className="mb-24 last:mb-0">
+        <div className="mb-8 md:mb-16">
+          <motion.h3 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="text-xl md:text-4xl font-display font-bold mb-2 md:mb-4"
+          >
+            {niche.category}
+          </motion.h3>
+          <motion.p 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-sm md:text-lg text-white/50 max-w-xl leading-relaxed"
+          >
+            {niche.description}
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 max-w-7xl mx-auto">
+          {niche.videos.map((video, vidIdx) => (
+            <motion.div
+              key={video.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: vidIdx * 0.1 }}
+              className="group relative cursor-pointer"
+              onClick={() => onExpandVideo({ url: video.videoUrl, title: video.title })}
+            >
+              <div className="relative aspect-[9/16] rounded-xl md:rounded-3xl overflow-hidden shadow-2xl border-2 border-[#D4AF37]/20 group-hover:border-[#D4AF37] transition-all duration-500">
+                <div className="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors z-10" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 scale-75 md:scale-90 group-hover:scale-100">
+                  <div className="w-12 h-12 md:w-20 md:h-20 rounded-full bg-[#D4AF37] flex items-center justify-center shadow-[0_0_40px_rgba(212,175,55,0.6)]">
+                    <Play size={24} className="text-brand-dark ml-0.5 md:ml-1 md:w-8 md:h-8" fill="currentColor" />
+                  </div>
+                </div>
+                <div className="w-full h-full">
+                  <VideoPlayer url={video.videoUrl} title={video.title} />
+                </div>
+                <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6 z-20 pointer-events-none translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                   <p className="text-[#D4AF37] text-[8px] md:text-[10px] font-black uppercase tracking-widest mb-0.5 md:mb-1">{niche.title}</p>
+                   <h4 className="text-white text-xs md:text-xl font-display font-bold">{video.title}</h4>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div className="px-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-teal/60 mb-2 block">{niche.category}</span>
-            <h3 className="text-sm md:text-lg font-display font-bold mb-2 group-hover:text-brand-teal transition-colors truncate">{niche.title}</h3>
-            <p className="text-white/50 text-[10px] md:text-xs leading-relaxed line-clamp-2 group-hover:text-white/70 transition-colors">{niche.description}</p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    ))}
   </section>
 ));
 
@@ -1142,7 +1147,29 @@ const Pricing = memo(({ onStartProject }: {
         </div>
       </div>
 
-      <div className="overflow-x-auto pb-4 scrollbar-hide">
+      <div className="md:hidden">
+        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-4 bg-white/10 p-3 border-b border-white/10">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-white/50">Qty</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-white/50 text-center">15s</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-white/50 text-center">20-25s</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-white/50 text-center">30s</div>
+          </div>
+          {[1, 3, 5, 10].map((qty) => (
+            <div key={qty} className="grid grid-cols-4 p-3 border-b border-white/5 last:border-0 items-center">
+              <div className="text-xs font-black text-brand-teal">{qty} {qty === 1 ? 'Vid' : 'Vids'}</div>
+              {(activeTab === 'cinematic' ? cinematicPricing : ugcPricing).map((item) => (
+                <div key={item.duration} className="text-[11px] font-bold text-white text-center">
+                  ${item.prices[qty as unknown as keyof typeof item.prices]}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-white/30 mt-4 text-center italic">*All prices in USD. Content usage rights included.</p>
+      </div>
+
+      <div className="hidden md:block overflow-x-auto pb-4 scrollbar-hide">
         <table className="w-full min-w-[800px] border-collapse">
           <thead>
             <tr className="border-b border-white/10">
@@ -1314,15 +1341,16 @@ const ProjectProtocol = memo(() => {
           <p className="text-lg md:text-xl font-display font-medium text-white/50 tracking-wide uppercase text-sm">What to expect when working with Addy Growth Studio</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
           {protocols.map((protocol, idx) => (
-            <div key={idx} className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:border-brand-teal/30 transition-all group">
-              <h3 className="text-brand-teal font-display font-bold text-lg mb-6 uppercase tracking-widest">{protocol.title}</h3>
-              <ul className="space-y-4">
+            <div key={idx} className="bg-white/[0.03] border border-white/10 rounded-2xl md:rounded-[32px] p-4 md:p-8 hover:border-brand-teal/30 transition-all group overflow-hidden">
+              <div className="text-[8px] md:text-[10px] font-black text-brand-teal/40 uppercase mb-2 md:mb-4 tracking-widest">Protocol 0{idx + 1}</div>
+              <h3 className="text-brand-teal font-display font-bold text-xs md:text-lg mb-4 md:mb-6 uppercase tracking-widest leading-tight">{protocol.title}</h3>
+              <ul className="space-y-2 md:space-y-4">
                 {protocol.items.map((item, i) => (
-                  <li key={i} className="flex gap-3 text-sm text-white/60 leading-relaxed font-medium">
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-teal mt-2 shrink-0 opacity-40" />
-                    {item}
+                  <li key={i} className="flex gap-2 md:gap-3 text-[9px] md:text-sm text-white/50 leading-relaxed font-medium">
+                    <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-brand-teal mt-1.5 md:mt-2 shrink-0 opacity-40" />
+                    <span className="line-clamp-2 md:line-clamp-none">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -1612,12 +1640,12 @@ const AboutPage = memo(({ onBack }: { onBack: () => void }) => {
             <p className="mb-4 text-xs text-white/40 font-bold uppercase tracking-widest">We develop creative assets across:</p>
             <ul className="space-y-2.5 text-sm">
               {[
-                'Skincare & Beauty',
-                'Fitness & Health',
-                'Tech & Gadgets',
-                'Fashion & Jewelry',
-                'Dropshipping & Ecommerce Products',
-                'Commercial Product Campaigns'
+                'Vitamin C & Glow Serums',
+                'Hydrating Face Creams',
+                'Cleansers & Facewash',
+                'Night Routine Moisturizers',
+                'Texture & Ingredient Close-ups',
+                'Aesthetic Beauty Campaigns'
               ].map(item => (
                 <li key={item} className="flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
                   <div className="w-1 h-1 rounded-full bg-brand-teal" />
@@ -2338,10 +2366,8 @@ export default function App() {
             <div id="hero" className="section-optimize"><Hero onStartProject={() => handleStartProject()} /></div>
             <div id="why" className="section-optimize"><WhyMyCreativesWork /></div>
             <div id="work" className="section-optimize"><PositioningStrip /></div>
-            <div id="carousel" className="section-optimize"><VideoCarousel onExpandVideo={setModalVideo} /></div>
-            <div id="portfolio" className="section-optimize"><PortfolioGrid onSelectNiche={(niche) => handleNavigate(niche)} /></div>
+            <div id="portfolio" className="section-optimize"><PortfolioGrid onExpandVideo={setModalVideo} /></div>
             <div id="services" className="section-optimize"><ScienceSection /></div>
-            <div id="results" className="section-optimize"><ProvenResults /></div>
             <div id="testimonials" className="section-optimize"><Testimonials /></div>
             <div id="process" className="section-optimize"><ProcessSteps /></div>
             <div id="pricing" className="section-optimize"><Pricing onStartProject={handleStartProject} /></div>
