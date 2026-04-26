@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo, memo } from 'react';
-import { motion, AnimatePresence, useInView, animate } from 'motion/react';
+import { motion, AnimatePresence, useInView, animate, useScroll, useTransform } from 'motion/react';
+import Spline from '@splinetool/react-spline';
 import confetti from 'canvas-confetti';
 import { 
   Zap, FileText, Users, Scissors, Cpu, BarChart3, Target, Clock, 
@@ -42,11 +43,9 @@ const ShopifyBlur = () => (
 import { useCurrency, CurrencyCode, Currency } from './hooks/useCurrency';
 import CurrencySwitcher from './components/CurrencySwitcher';
 
-const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyChange, activeSection }: { 
+const Navbar = memo(({ onNavigate, onStartProject, activeSection }: { 
   onNavigate: (view: 'home' | 'about' | string, shouldScrollToTop?: boolean) => void, 
   onStartProject: () => void,
-  currentCurrency: CurrencyCode,
-  onCurrencyChange: (code: CurrencyCode) => void,
   activeSection?: string
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,9 +59,9 @@ const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyCh
 
   const navItems = [
     { name: 'Work', id: 'work' },
-    { name: 'Services', id: 'services' },
-    { name: 'About', id: 'about' },
-    { name: 'Process', id: 'process' }
+    { name: 'Pricing', id: 'services' },
+    { name: 'Protocol', id: 'protocol' },
+    { name: 'About', id: 'about' }
   ];
 
   const handleNavClick = (item: { name: string, id: string }) => {
@@ -84,63 +83,56 @@ const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyCh
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-brand-dark/80 backdrop-blur-lg border-b border-white/10 py-4' : 'bg-transparent py-6'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-brand-dark/90 backdrop-blur-xl border-b border-brand-teal/20 py-4' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <div 
-          className="text-2xl font-display font-bold cursor-pointer flex items-center gap-2"
+          className="text-2xl font-display font-bold cursor-pointer flex items-center gap-3"
           onClick={() => {
             onNavigate('home', true);
           }}
         >
-          <span className="gradient-text">Addy</span>
-          <span className="text-white">UGC Creative</span>
+          <div className="w-10 h-10 rounded-xl bg-brand-teal flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+            <Cpu size={24} className="text-brand-dark" />
+          </div>
+          <div className="flex flex-col -space-y-1">
+            <span className="text-white text-lg leading-tight italic">Addy</span>
+            <span className="text-brand-teal text-[10px] uppercase tracking-widest font-black">Growth Studio</span>
+          </div>
         </div>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-10">
           {navItems.map((item) => (
             <button 
               key={item.id} 
               onClick={() => handleNavClick(item)}
-              className={`text-sm font-medium transition-all duration-300 relative ${
+              className={`text-xs font-black uppercase tracking-[0.2em] transition-all relative ${
                 activeSection === item.id 
                   ? 'text-brand-teal' 
-                  : 'text-white/70 hover:text-white'
+                  : 'text-white/40 hover:text-white'
               }`}
             >
               {item.name}
               {activeSection === item.id && (
                 <motion.div 
                   layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand-teal rounded-full"
+                  className="absolute -bottom-2 left-0 right-0 h-0.5 bg-brand-teal rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
             </button>
           ))}
           
-          <CurrencySwitcher 
-            currentCurrency={currentCurrency} 
-            onCurrencyChange={onCurrencyChange} 
-          />
-
           <button 
             onClick={onStartProject}
-            className="relative px-6 py-2.5 rounded-full bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple text-white text-sm font-bold glow-purple hover:scale-105 transition-transform overflow-hidden"
+            className="px-8 py-3 rounded-full bg-brand-teal text-brand-dark font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]"
           >
-            <ButtonSparkle />
             Start Project
           </button>
         </div>
 
-        <div className="flex items-center gap-4 md:hidden">
-          <CurrencySwitcher 
-            currentCurrency={currentCurrency} 
-            onCurrencyChange={onCurrencyChange} 
-          />
-          <button className="text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
+        <button className="md:hidden text-white p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
 
       <AnimatePresence>
@@ -179,74 +171,96 @@ const Navbar = memo(({ onNavigate, onStartProject, currentCurrency, onCurrencyCh
   );
 });
 
-const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => (
-  <section className="relative pt-32 pb-20 overflow-hidden optimize-gpu">
-    <ShopifyBlur />
-    
-    {/* Floating Shopify Icons */}
-    <motion.div 
-      initial={{ opacity: 0, x: -30, rotate: -10 }}
-      animate={{ opacity: 1, x: 0, rotate: 0 }}
-      transition={{ duration: 1, delay: 0.5 }}
-      className="absolute top-24 left-4 md:top-28 md:left-12 z-20"
-    >
-      <div className="relative">
-        <div className="absolute inset-0 bg-[#96bf48]/30 blur-xl rounded-full animate-pulse" />
-        <ShopifyIcon className="w-8 h-8 md:w-14 md:h-14 relative z-10 drop-shadow-[0_0_15px_rgba(150,191,72,0.4)]" />
-      </div>
-    </motion.div>
+const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-    <motion.div 
-      initial={{ opacity: 0, x: 30, rotate: 10 }}
-      animate={{ opacity: 1, x: 0, rotate: 0 }}
-      transition={{ duration: 1, delay: 0.7 }}
-      className="absolute top-24 right-4 md:top-28 md:right-12 z-20"
-    >
-      <div className="relative">
-        <div className="absolute inset-0 bg-[#96bf48]/30 blur-xl rounded-full animate-pulse" />
-        <ShopifyIcon className="w-8 h-8 md:w-14 md:h-14 relative z-10 drop-shadow-[0_0_15px_rgba(150,191,72,0.4)]" />
-      </div>
-    </motion.div>
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 40,
+        y: (e.clientY / window.innerHeight - 0.5) * 40
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-teal/10 blur-[120px] rounded-full animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-purple/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
-    </div>
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const scrollY = useTransform(scrollYProgress, [0, 1], [0, 100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
-    <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+  return (
+    <section ref={containerRef} className="relative min-h-screen flex items-center pt-20 overflow-hidden optimize-gpu">
+      <motion.div 
+        style={{ 
+          y: scrollY, 
+          opacity, 
+          scale,
+          translateX: mousePosition.x,
+          translateY: mousePosition.y
+        }}
+        className="absolute inset-0 z-0"
       >
-        <h1 className="text-4xl md:text-7xl lg:text-8xl font-display font-bold leading-tight tracking-tight mb-8">
-          Performance Ad Creatives for <span className="inline-flex items-center gap-2 max-md:text-brand-teal max-md:bg-brand-teal/10 max-md:px-3 max-md:py-1 max-md:rounded-2xl md:gradient-text drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">
-            DTC & Shopify
-          </span> Brands
-        </h1>
-        <p className="text-lg md:text-2xl font-display font-medium text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
-          I create <span className="text-brand-teal drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">hook-driven AI UGC</span> & <span className="text-brand-purple drop-shadow-[0_0_8px_rgba(192,38,255,0.4)]">cinematic ad creatives</span> designed to <span className="text-brand-blue drop-shadow-[0_0_8px_rgba(123,97,255,0.4)]">increase CTR</span> and improve paid ad performance.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-          <a 
-            href="#work" 
-            className="relative w-full sm:w-auto px-10 py-5 rounded-full bg-brand-teal text-brand-dark font-bold text-lg glow-teal hover:scale-105 transition-transform text-center overflow-hidden"
-          >
-            <ButtonSparkle />
-            View My Work
-          </a>
-          <button 
-            onClick={onStartProject}
-            className="relative w-full sm:w-auto px-10 py-5 rounded-full border border-white/20 text-white font-bold text-lg hover:bg-white/5 transition-colors text-center overflow-hidden"
-          >
-            <ButtonSparkle />
-            Start Your Project
-          </button>
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-brand-dark to-transparent z-10" />
+        <div className="w-full h-full opacity-60 md:opacity-100">
+          <Spline scene="https://prod.spline.design/j9pRqjdNekwaWXIs/scene.splinecode" className="w-full h-full" />
         </div>
       </motion.div>
-    </div>
-  </section>
-));
+
+      <ShopifyBlur />
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="text-left"
+        >
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-teal/10 border border-brand-teal/20 mb-8"
+          >
+            <div className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
+            <span className="text-brand-teal text-[10px] font-black uppercase tracking-[0.2em]">Addy Growth Studio</span>
+          </motion.div>
+
+          <h1 className="text-5xl md:text-8xl lg:text-9xl font-display font-bold leading-[0.95] tracking-tight mb-8 max-w-4xl">
+            Future of <br />
+            <span className="gradient-text drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]">Performance</span> <br />
+            Marketing.
+          </h1>
+          
+          <p className="text-lg md:text-2xl font-display font-medium text-white/50 max-w-2xl mb-12 leading-relaxed">
+            At <span className="text-white">Addy Growth Studio</span>, we engineer high-converting cinematic ads and performance-driven websites that turn attention into revenue.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <button 
+              onClick={onStartProject}
+              className="w-full sm:w-auto px-12 py-6 rounded-2xl bg-brand-teal text-brand-dark font-black text-xl shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:scale-105 active:scale-95 transition-all text-center uppercase tracking-widest"
+            >
+              Launch Project
+            </button>
+            <a 
+              href="#work" 
+              className="w-full sm:w-auto px-12 py-6 rounded-2xl border border-white/10 bg-white/5 text-white font-black text-xl hover:bg-white/10 hover:border-white/20 transition-all text-center uppercase tracking-widest"
+            >
+              View Work
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+});
 
 const WhyMyCreativesWork = memo(() => {
   const points = [
@@ -373,7 +387,7 @@ const PositioningStrip = memo(() => (
         transition={{ duration: 0.6, ease: "circOut" }}
       >
         <p className="text-base md:text-xl font-display font-medium text-white/90 leading-relaxed">
-          At <span className="text-brand-teal font-bold drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">Addy UGC Creative</span>, we specialize in <span className="text-brand-teal font-bold">high-converting UGC</span> and commercial product ads built for brands, dropshippers, and scaling e-commerce stores. Every creative is engineered with <span className="text-brand-purple font-bold">performance psychology</span>, thumb-stopping hooks, and platform-native storytelling to <span className="text-brand-blue font-bold">maximize ROAS</span> and dominate attention.
+          At <span className="text-brand-teal font-bold drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">Addy Growth Studio</span>, we specialize in <span className="text-brand-teal font-bold">high-converting cinematic ads</span> and high-performance websites built for brands, dropshippers, and scaling e-commerce stores. Every asset is engineered with <span className="text-brand-purple font-bold">performance psychology</span>, thumb-stopping hooks, and platform-native storytelling to <span className="text-brand-blue font-bold">maximize ROAS</span> and dominate attention.
         </p>
       </motion.div>
     </div>
@@ -941,8 +955,8 @@ const ProcessSteps = memo(() => (
   </section>
 ));
 
-const SparklingTick = memo(() => (
-  <div className="relative w-20 h-20 flex items-center justify-center">
+const SparklingTick = memo(({ className }: { className?: string }) => (
+  <div className={`relative w-20 h-20 flex items-center justify-center ${className || ''}`}>
     {/* Rotating Glow Ring */}
     <div className="absolute inset-0 rounded-full border-2 border-dashed border-brand-teal/30 animate-rotate-glow" />
     
@@ -996,296 +1010,201 @@ const fireConfetti = () => {
   }, 250);
 };
 
-const ProjectForm = memo(({ onBack, selectedPlan, formatPrice }: { 
-  onBack: () => void, 
-  selectedPlan?: string,
-  formatPrice: (usdPrice: number, inrPrice?: number) => string
-}) => {
+const ProjectForm = memo(({ onBack }: { onBack: () => void }) => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     brand: '',
     niche: '',
-    budget: '',
     details: '',
-    plan: selectedPlan || ''
+    serviceType: 'Cinematic Product Video',
+    duration: '15 Seconds',
+    videoCount: '1'
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
-    
-    const formDataObj = new FormData(e.currentTarget as HTMLFormElement);
-    
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
     try {
-      const response = await fetch('https://formspree.io/f/xpqjkazv', {
+      await fetch('https://formspree.io/f/xpqjkazv', {
         method: 'POST',
-        body: formDataObj,
-        headers: {
-          'Accept': 'application/json'
-        }
+        body: data,
+        headers: { 'Accept': 'application/json' }
       });
-      
-      if (response.ok) {
-        setStatus('success');
-        fireConfetti();
-      } else {
-        // Fallback to success even if error for better UX in demo, 
-        // but ideally we'd handle errors.
-        setStatus('success');
-        fireConfetti();
-      }
-    } catch (error) {
+      setStatus('success');
+      fireConfetti();
+      window.scrollTo(0, 0);
+    } catch (e) {
       setStatus('success');
     }
-    
-    // Scroll to top
-    window.scrollTo(0, 0);
   };
 
   if (status === 'success') {
     return (
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="min-h-screen pt-32 pb-24 px-6 flex items-center justify-center"
-      >
+      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="min-h-screen pt-32 pb-24 px-6 flex items-center justify-center">
         <div className="max-w-md w-full bg-white/5 border border-brand-teal/30 p-12 rounded-[40px] text-center backdrop-blur-xl">
-          <div className="flex justify-center mb-8">
-            <SparklingTick />
-          </div>
-          <h2 className="text-3xl font-display font-bold mb-4">Project Received!</h2>
-          <p className="text-white/60 mb-8 leading-relaxed">
-            Thank you for reaching out. We've received your project details and will get back to you within 24 hours to schedule a strategy call.
-          </p>
-          <button 
-            onClick={onBack}
-            className="w-full py-4 rounded-2xl bg-brand-teal text-brand-dark font-bold hover:scale-105 transition-transform"
-          >
-            Back to Home
-          </button>
+          <SparklingTick className="mx-auto mb-8" />
+          <h2 className="text-3xl font-display font-bold mb-4 uppercase tracking-tighter">Growth Await!</h2>
+          <p className="text-white/60 mb-8 leading-relaxed">We've received your brief. Our team will analyze your brand and reach out within 24 hours.</p>
+          <button onClick={onBack} className="w-full py-4 rounded-2xl bg-brand-teal text-brand-dark font-black uppercase tracking-widest hover:scale-105 transition-transform">Back Home</button>
         </div>
       </motion.div>
     );
   }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="min-h-screen pt-32 pb-24 px-6 max-w-3xl mx-auto"
-    >
-      <button 
-        onClick={onBack}
-        className="flex items-center gap-2 text-white/60 hover:text-white mb-12 transition-colors group"
-      >
-        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-        Back to Home
-      </button>
-
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Start Your Project</h1>
-        <p className="text-lg text-white/60">Tell us about your brand and let's build something high-performing together.</p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <input type="hidden" name="_subject" value="New Project Request - Addy UGC" />
-        <input type="hidden" name="form_type" value="Project Request" />
-        
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-white/60 ml-1">Full Name</label>
-            <input 
-              required
-              name="name"
-              type="text"
-              placeholder="John Doe"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors"
-              value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-white/60 ml-1">Work Email</label>
-            <input 
-              required
-              name="email"
-              type="email"
-              placeholder="john@brand.com"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors"
-              value={formData.email}
-              onChange={e => setFormData({...formData, email: e.target.value})}
-            />
-          </div>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="min-h-screen pt-32 pb-24 px-6 max-w-4xl mx-auto">
+      <button onClick={onBack} className="flex items-center gap-2 text-white/40 hover:text-white mb-12 transition-colors group uppercase text-[10px] font-black tracking-[0.3em]"><ArrowLeft size={16} /> Return to Home</button>
+      <div className="mb-16"><h1 className="text-4xl md:text-7xl font-display font-bold mb-4 tracking-tighter">Start Your <span className="text-brand-teal">Project</span></h1><p className="text-lg text-white/50 font-display">Tell us about your brand and let's engineer something iconic.</p></div>
+      <form onSubmit={handleSubmit} className="space-y-8 bg-white/[0.02] border border-white/5 p-8 md:p-12 rounded-[40px] backdrop-blur-3xl">
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="space-y-3"><label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Full Name</label>
+            <input required name="name" type="text" placeholder="John Doe" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-brand-teal outline-hidden transition-all text-white" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} /></div>
+          <div className="space-y-3"><label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Work Email</label>
+            <input required name="email" type="email" placeholder="john@brand.com" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-brand-teal outline-hidden transition-all text-white" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} /></div>
         </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-white/60 ml-1">Brand Name</label>
-            <input 
-              required
-              name="brand"
-              type="text"
-              placeholder="Your Brand"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors"
-              value={formData.brand}
-              onChange={e => setFormData({...formData, brand: e.target.value})}
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-white/60 ml-1">Niche / Category</label>
-            <select 
-              required
-              name="niche"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors appearance-none"
-              value={formData.niche}
-              onChange={e => setFormData({...formData, niche: e.target.value})}
-            >
-              <option value="" className="bg-brand-dark">Select Niche</option>
-              <option value="skincare" className="bg-brand-dark">Skincare / Beauty</option>
-              <option value="fitness" className="bg-brand-dark">Fitness / Health</option>
-              <option value="tech" className="bg-brand-dark">Tech / Gadgets</option>
-              <option value="fashion" className="bg-brand-dark">Fashion / Jewelry</option>
-              <option value="ecommerce" className="bg-brand-dark">Dropshipping / Ecom</option>
-              <option value="other" className="bg-brand-dark">Other</option>
-            </select>
-          </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="space-y-3"><label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Video Technique</label>
+            <select name="video_type" className="w-full bg-brand-dark border border-white/10 rounded-2xl px-6 py-4 focus:border-brand-teal outline-hidden appearance-none cursor-pointer text-white" value={formData.serviceType} onChange={e => setFormData({...formData, serviceType: e.target.value})}>
+              <option value="Cinematic Product Video">Cinematic Product Video</option>
+              <option value="UGC Testimonial Video">UGC Testimonial Video</option>
+            </select></div>
+          <div className="space-y-3"><label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Target Duration</label>
+            <select name="duration" className="w-full bg-brand-dark border border-white/10 rounded-2xl px-6 py-4 focus:border-brand-teal outline-hidden appearance-none cursor-pointer text-white" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})}>
+              <option value="15 Seconds">15 Seconds</option>
+              <option value="20-25 Seconds">20-25 Seconds</option>
+              <option value="30 Seconds">30 Seconds</option>
+            </select></div>
         </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-white/60 ml-1">Project Budget</label>
-            <select 
-              required
-              name="budget"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors appearance-none"
-              value={formData.budget}
-              onChange={e => setFormData({...formData, budget: e.target.value})}
-            >
-              <option value="" className="bg-brand-dark">Select Budget</option>
-              <option value="500" className="bg-brand-dark">{formatPrice(500, 15999)}</option>
-              <option value="1k-5k" className="bg-brand-dark">{formatPrice(1000, 31999)} - {formatPrice(5000, 159999)}</option>
-              <option value="5k-10k" className="bg-brand-dark">{formatPrice(5000, 159999)} - {formatPrice(10000, 319999)}</option>
-              <option value="10k+" className="bg-brand-dark">{formatPrice(10000, 319999)}+</option>
-            </select>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-white/60 ml-1">Selected Package</label>
-            <select 
-              name="package"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors appearance-none"
-              value={formData.plan}
-              onChange={e => setFormData({...formData, plan: e.target.value})}
-            >
-              <option value="" className="bg-brand-dark">Custom / Not Sure</option>
-              {PRICING_PLANS.map(p => (
-                <option key={p.name} value={p.name} className="bg-brand-dark">{p.name} - {formatPrice(p.basePrice, p.inrPrice)}</option>
-              ))}
-            </select>
-          </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="space-y-3"><label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Bulk Quantity</label>
+            <select name="quantity" className="w-full bg-brand-dark border border-white/10 rounded-2xl px-6 py-4 focus:border-brand-teal outline-hidden appearance-none cursor-pointer text-white" value={formData.videoCount} onChange={e => setFormData({...formData, videoCount: e.target.value})}>
+              <option value="1">1 Creative</option>
+              <option value="3">3 Creatives (Bundled)</option>
+              <option value="5">5 Creatives (Growth Pack)</option>
+              <option value="10">10 Creatives (Dominance Pack)</option>
+            </select></div>
+          <div className="space-y-3"><label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Brand Niche</label>
+            <input required name="brand_niche" type="text" placeholder="e.g. Beauty, Fitness" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-brand-teal outline-hidden transition-all text-white" value={formData.niche} onChange={e => setFormData({...formData, niche: e.target.value})} /></div>
         </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-white/60 ml-1">Project Details & Goals</label>
-          <textarea 
-            required
-            name="project_details"
-            rows={4}
-            placeholder="Tell us about your goals, target audience, and any specific requirements..."
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-teal transition-colors resize-none"
-            value={formData.details}
-            onChange={e => setFormData({...formData, details: e.target.value})}
-          />
-        </div>
-
-        <button 
-          type="submit"
-          disabled={status === 'submitting'}
-          className="w-full py-5 rounded-2xl bg-brand-teal text-brand-dark font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          {status === 'submitting' ? (
-            <div className="w-6 h-6 border-2 border-brand-dark/30 border-t-brand-dark rounded-full animate-spin" />
-          ) : (
-            <>Submit Project Request <ArrowRight size={20} /></>
-          )}
+        <div className="space-y-3"><label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Project Details</label>
+          <textarea required name="details" rows={4} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:border-brand-teal outline-hidden transition-all text-white" placeholder="Goals, target audience, etc." value={formData.details} onChange={e => setFormData({...formData, details: e.target.value})} /></div>
+        <button type="submit" disabled={status === 'submitting'} className="w-full py-6 rounded-2xl bg-brand-teal text-brand-dark font-black text-xl uppercase tracking-[0.2em] shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:scale-[1.01] transition-all flex items-center justify-center gap-4 disabled:opacity-50">
+          {status === 'submitting' ? 'Processing...' : <>Launch Project <Zap size={24} /></>}
         </button>
       </form>
     </motion.div>
   );
 });
 
-const Pricing = memo(({ onStartProject, currency }: { 
-  onStartProject: (plan?: string) => void,
-  currency: Currency
+const Pricing = memo(({ onStartProject }: { 
+  onStartProject: (plan?: string) => void
 }) => {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'cinematic' | 'ugc'>('cinematic');
+
+  const cinematicPricing = [
+    { duration: '15 Seconds', prices: { '1': 60, '3': 170, '5': 290, '10': 540 }, savings: { '3': 10, '5': 10, '10': 60 } },
+    { duration: '20-25 Seconds', prices: { '1': 75, '3': 210, '5': 360, '10': 690 }, savings: { '3': 15, '5': 15, '10': 60 } },
+    { duration: '30 Seconds', prices: { '1': 90, '3': 255, '5': 435, '10': 840 }, savings: { '3': 15, '5': 15, '10': 60 } },
+  ];
+
+  const ugcPricing = [
+    { duration: '15 Seconds', prices: { '1': 45, '3': 125, '5': 210, '10': 400 }, savings: { '3': 10, '5': 15, '10': 50 } },
+    { duration: '20-25 Seconds', prices: { '1': 60, '3': 170, '5': 285, '10': 550 }, savings: { '3': 10, '5': 15, '10': 50 } },
+    { duration: '30 Seconds', prices: { '1': 75, '3': 210, '5': 360, '10': 700 }, savings: { '3': 15, '5': 15, '10': 50 } },
+  ];
 
   return (
     <section id="services" className="py-24 max-w-7xl mx-auto px-6 overflow-hidden optimize-gpu">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Services & <span className="text-brand-teal">Packages</span></h2>
-        <p className="text-lg md:text-xl font-display font-medium text-white/90">Scalable creative solutions tailored for <span className="text-brand-purple font-bold">growth-focused brands</span>.</p>
+        <span className="text-brand-teal text-[10px] md:text-sm font-black uppercase tracking-[0.4em] mb-4 block">Service Pricing Guide</span>
+        <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Scalable <span className="text-brand-teal">Creative</span> Solutions</h2>
+        <p className="text-lg md:text-xl font-display font-medium text-white/50">Premium visual assets tailored for growth-focused brands.</p>
       </div>
 
-      <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide optimize-gpu">
-        {PRICING_PLANS.map((plan) => (
-          <motion.div 
-            key={plan.name} 
-            whileHover={{ y: -5, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setSelectedPlan(plan.name)}
-            className={`relative p-6 md:p-8 rounded-[28px] flex flex-col shrink-0 w-[280px] md:w-auto snap-center cursor-pointer transition-all duration-300 optimize-gpu ${
-              selectedPlan === plan.name 
-                ? 'bg-linear-to-br from-brand-teal/20 via-brand-blue/20 to-brand-purple/20 border-2 border-brand-teal shadow-[0_0_30px_rgba(0,229,255,0.2)]' 
-                : plan.isPopular 
-                  ? 'bg-white/10 border border-brand-teal/50' 
-                  : 'bg-white/5 border border-white/10 hover:border-white/20'
-            }`}
+      <div className="flex justify-center mb-12">
+        <div className="bg-white/5 p-1 rounded-2xl border border-white/10 flex gap-1">
+          <button 
+            onClick={() => setActiveTab('cinematic')}
+            className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${activeTab === 'cinematic' ? 'bg-brand-teal text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
           >
-            {plan.isPopular && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-linear-to-r from-brand-teal to-brand-purple text-[10px] font-bold uppercase tracking-wider z-20">
-                Most Popular
-              </div>
-            )}
-            
-            <div className="mb-6">
-              <h3 className="text-lg font-display font-bold mb-1">{plan.name}</h3>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-display font-bold gradient-text">
-                  <PriceCounter basePrice={plan.basePrice} inrPrice={plan.inrPrice} currency={currency} />
-                </span>
-                <span className="text-white/40 text-xs">/pkg</span>
-              </div>
-            </div>
+            Cinematic Product Videos
+          </button>
+          <button 
+            onClick={() => setActiveTab('ugc')}
+            className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${activeTab === 'ugc' ? 'bg-brand-teal text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
+          >
+            UGC Testimonial Videos
+          </button>
+        </div>
+      </div>
 
-            <p className="text-xs text-white/60 mb-6 h-10 leading-relaxed">{plan.subtitle}</p>
-            
-            <div className="space-y-3 mb-8 flex-grow">
-              {plan.features.map(feature => (
-                <div key={feature} className="flex items-start gap-2 text-xs text-white/80">
-                  <CheckCircle2 size={14} className="text-brand-teal shrink-0 mt-0.5" />
-                  <span>{feature}</span>
-                </div>
-              ))}
-            </div>
+      <div className="overflow-x-auto pb-4 scrollbar-hide">
+        <table className="w-full min-w-[800px] border-collapse">
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className="py-6 px-4 text-left text-[10px] uppercase tracking-widest text-white/40 font-black">Duration</th>
+              <th className="py-6 px-4 text-center text-[10px] uppercase tracking-widest text-white/40 font-black">Per Video</th>
+              <th className="py-6 px-4 text-center text-[10px] uppercase tracking-widest text-white/40 font-black">3 Videos</th>
+              <th className="py-6 px-4 text-center text-[10px] uppercase tracking-widest text-white/40 font-black">5 Videos</th>
+              <th className="py-6 px-4 text-center text-[10px] uppercase tracking-widest text-white/40 font-black">10 Videos</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(activeTab === 'cinematic' ? cinematicPricing : ugcPricing).map((item, idx) => (
+              <tr key={idx} className="border-b border-white/5 group hover:bg-white/[0.02] transition-colors">
+                <td className="py-8 px-4 font-display font-bold text-lg text-white/90">{item.duration}</td>
+                <td className="py-8 px-4 text-center">
+                  <div className="text-2xl font-display font-black text-white">${item.prices['1']}</div>
+                </td>
+                <td className="py-8 px-4 text-center">
+                  <div className="text-2xl font-display font-black text-brand-teal">${item.prices['3']}</div>
+                  <div className="text-[10px] text-brand-teal/60 font-bold uppercase tracking-wider mt-1">(save ${item.savings['3']})</div>
+                </td>
+                <td className="py-8 px-4 text-center">
+                  <div className="text-2xl font-display font-black text-brand-teal">${item.prices['5']}</div>
+                  <div className="text-[10px] text-brand-teal/60 font-bold uppercase tracking-wider mt-1">(save ${item.savings['5']})</div>
+                </td>
+                <td className="py-8 px-4 text-center">
+                  <div className="text-2xl font-display font-black text-brand-teal">${item.prices['10']}</div>
+                  <div className="text-[10px] text-brand-teal/60 font-bold uppercase tracking-wider mt-1">(save ${item.savings['10']})</div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                onStartProject(plan.name);
-              }}
-              className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all text-center ${
-                selectedPlan === plan.name || plan.isPopular 
-                  ? 'bg-brand-teal text-brand-dark glow-teal' 
-                  : 'bg-white/10 hover:bg-white/20'
-              }`}
-            >
-              {selectedPlan === plan.name ? 'Selected' : 'Start Project'}
-            </button>
-          </motion.div>
-        ))}
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white/5 border border-white/10 p-6 rounded-[28px] text-center group hover:border-brand-teal/30 transition-all">
+          <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Additional revisions</div>
+          <div className="text-2xl font-display font-bold text-brand-teal">$20/video</div>
+        </div>
+        <div className="bg-white/5 border border-white/10 p-6 rounded-[28px] text-center group hover:border-brand-teal/30 transition-all">
+          <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Rush delivery (48hrs)</div>
+          <div className="text-2xl font-display font-bold text-brand-teal">+20%</div>
+        </div>
+        <div className="bg-white/5 border border-white/10 p-6 rounded-[28px] text-center group hover:border-brand-teal/30 transition-all">
+          <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Paid ad usage rights</div>
+          <div className="text-2xl font-display font-bold text-brand-teal">+30%</div>
+        </div>
+      </div>
+
+      <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-8 py-8 border-t border-white/10">
+        <div className="flex flex-wrap gap-4 text-xs text-white/40 font-medium">
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-brand-teal" /> Up to 2 revision rounds</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-brand-teal" /> Watermarked previews</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-brand-teal" /> Final delivery in MP4</span>
+        </div>
+        <button 
+          onClick={() => onStartProject()}
+          className="px-10 py-5 rounded-2xl bg-brand-teal text-brand-dark font-black text-lg shadow-xl hover:scale-105 active:scale-95 transition-all w-full md:w-auto"
+        >
+          Start Your Project Now
+        </button>
       </div>
     </section>
   );
@@ -1339,6 +1258,88 @@ const FAQItem = ({ question, answer, index }: { question: string, answer: string
   );
 };
 
+const ProjectProtocol = memo(() => {
+  const protocols = [
+    {
+      title: "Before Project Starts",
+      items: [
+        "Confirm video count, duration & type",
+        "Client shares product details & brief",
+        "Reference videos or examples shared",
+        "Written script or bullet points provided",
+        "50% deposit paid upfront",
+        "Brief approved before production begins"
+      ]
+    },
+    {
+      title: "During Production",
+      items: [
+        "Watermarked preview shared via Drive",
+        "Client reviews and gives feedback",
+        "Up to 2 revision rounds per video",
+        "Changes outside brief = extra (+25% fee)",
+        "7-day standard delivery turnaround",
+        "Rush delivery available for scale"
+      ]
+    },
+    {
+      title: "Delivery & Close",
+      items: [
+        "Final 50% payment before file release",
+        "Final video sent without watermark",
+        "Client confirms satisfaction in writing",
+        "File stored 30 days after delivery",
+        "Portfolio use with client permission",
+        "Testimonial / review appreciated"
+      ]
+    },
+    {
+      title: "Revision Policy",
+      items: [
+        "2 revision rounds included per video",
+        "Each extra revision = $20 per video",
+        "Changes after brief approval = extra",
+        "No full refund after production starts",
+        "50% refund if cancelled before preview",
+        "AI-generated — realistic not 100% real"
+      ]
+    }
+  ];
+
+  return (
+    <section id="protocol" className="py-24 bg-brand-dark relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Project <span className="text-brand-teal">Protocol</span></h2>
+          <p className="text-lg md:text-xl font-display font-medium text-white/50 tracking-wide uppercase text-sm">What to expect when working with Addy Growth Studio</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {protocols.map((protocol, idx) => (
+            <div key={idx} className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:border-brand-teal/30 transition-all group">
+              <h3 className="text-brand-teal font-display font-bold text-lg mb-6 uppercase tracking-widest">{protocol.title}</h3>
+              <ul className="space-y-4">
+                {protocol.items.map((item, i) => (
+                  <li key={i} className="flex gap-3 text-sm text-white/60 leading-relaxed font-medium">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-teal mt-2 shrink-0 opacity-40" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 p-8 rounded-[32px] bg-brand-teal/5 border border-brand-teal/20 text-center">
+          <p className="text-brand-teal text-sm font-bold uppercase tracking-[0.2em]">
+            Payment Terms: 50% upfront before production · 50% on final delivery · 7-day turnaround per video
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+});
+
 const FAQSection = memo(() => {
   const faqs = [
     {
@@ -1351,7 +1352,7 @@ const FAQSection = memo(() => {
     },
     {
       question: "Do you manage ads?",
-      answer: "No. Addy UGC Creative focuses exclusively on performance-driven creative production. Ad management is not included."
+      answer: "No. Addy Growth Studio focuses exclusively on performance-driven creative production. Ad management is not included."
     },
     {
       question: "What is the turnaround time?",
@@ -1419,7 +1420,7 @@ const BigCTA = memo(({ onStartProject }: { onStartProject: () => void }) => (
   </section>
 ));
 
-const ContactSection = memo(({ formatPrice }: { formatPrice: (usdPrice: number, inrPrice?: number) => string }) => {
+const ContactSection = memo(() => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -1514,10 +1515,10 @@ const ContactSection = memo(({ formatPrice }: { formatPrice: (usdPrice: number, 
                 <label className="text-[10px] md:text-sm font-bold text-white/40 uppercase tracking-widest">Project Budget</label>
                 <div className="relative">
                   <select name="budget" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 md:py-3 text-sm md:text-base focus:border-brand-teal focus:ring-1 focus:ring-brand-teal/20 outline-hidden transition-all appearance-none cursor-pointer">
-                    <option value="500">{formatPrice(500, 15999)}</option>
-                    <option value="1k-5k">{formatPrice(1000, 31999)} - {formatPrice(5000, 159999)}</option>
-                    <option value="5k-10k">{formatPrice(5000, 159999)} - {formatPrice(10000, 319999)}</option>
-                    <option value="10k+">{formatPrice(10000, 319999)}+</option>
+                    <option value="500">$500 - $1,000</option>
+                    <option value="1k-5k">$1,000 - $5,000</option>
+                    <option value="5k-10k">$5,000 - $10,000</option>
+                    <option value="10k+">$10,000+</option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
                     <ChevronDown size={14} />
@@ -1544,12 +1545,12 @@ const ContactSection = memo(({ formatPrice }: { formatPrice: (usdPrice: number, 
             </div>
             <button 
               disabled={status === 'submitting'}
-              className="w-full py-4 md:py-5 rounded-xl md:rounded-2xl bg-brand-teal text-brand-dark font-bold text-base md:text-lg glow-teal hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 md:py-5 rounded-xl md:rounded-2xl bg-brand-teal text-brand-dark font-black text-base md:text-lg shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest"
             >
-              {status === 'submitting' ? 'Sending...' : 'Start Project'}
+              {status === 'submitting' ? 'Engineering...' : 'Start Your Project'}
             </button>
             {status === 'error' && (
-              <p className="text-red-400 text-xs text-center">Something went wrong. Please try again or email us directly at <a href="mailto:addyugccreative@gmail.com" className="underline hover:text-white transition-colors">addyugccreative@gmail.com</a></p>
+              <p className="text-red-400 text-[10px] uppercase font-bold tracking-widest text-center mt-4">Something went wrong. Email us directly at <a href="mailto:hello@addygrowth.studio" className="underline hover:text-white transition-colors">hello@addygrowth.studio</a></p>
             )}
           </form>
         )}
@@ -1591,12 +1592,12 @@ const AboutPage = memo(({ onBack }: { onBack: () => void }) => {
         Back to Home
       </motion.button>
 
-      <motion.h1 variants={itemVariants} className="text-3xl md:text-5xl font-display font-bold mb-8 gradient-text">About Addy UGC Creative</motion.h1>
+      <motion.h1 variants={itemVariants} className="text-3xl md:text-5xl font-display font-bold mb-8 gradient-text">About Addy Growth Studio</motion.h1>
       
       <div className="space-y-10 text-sm md:text-base text-white/70 leading-relaxed">
         <motion.section variants={itemVariants} className="space-y-6">
           <p className="text-base md:text-lg text-white font-medium leading-snug">
-            Addy UGC Creative is a <span className="text-brand-teal font-bold">performance-oriented creative studio</span> delivering strategic user-generated content and commercial product advertising for <span className="text-brand-blue font-bold">growth-focused brands</span>. We operate at the intersection of <span className="text-brand-purple font-bold">marketing strategy</span>, audience psychology, and high-quality visual execution.
+            Addy Growth Studio is a <span className="text-brand-teal font-bold">performance-oriented creative studio</span> delivering strategic visual assets and high-impact websites for <span className="text-brand-blue font-bold">growth-focused brands</span>. We operate at the intersection of <span className="text-brand-purple font-bold">marketing strategy</span>, audience psychology, and high-quality visual execution.
           </p>
           <p>
             Our objective is clear: to produce <span className="text-white font-bold">structured, platform-native creatives</span> that strengthen brand positioning while driving <span className="text-brand-teal font-bold underline decoration-brand-teal/30 underline-offset-4">measurable performance outcomes</span>.
@@ -1713,7 +1714,7 @@ const Footer = memo(({ onNavigate }: { onNavigate: (view: string, shouldScrollTo
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           <div className="md:col-span-2">
             <div className="text-2xl font-display font-bold mb-6">
-              <span className="gradient-text">Addy</span> UGC Creative
+              <span className="gradient-text">Addy</span> Growth Studio
             </div>
             <p className="text-white/50 max-w-sm leading-relaxed">
               Performance-driven creative studio for modern e-commerce brands. We engineer ads that convert, scale, and dominate attention.
@@ -1753,7 +1754,7 @@ const Footer = memo(({ onNavigate }: { onNavigate: (view: string, shouldScrollTo
         </div>
         
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/30">
-          <p>© 2026 Addy UGC Creative. All rights reserved.</p>
+          <p>© 2026 Addy Growth Studio. All rights reserved.</p>
           <div className="flex gap-8">
             <button onClick={() => handleNavClick('Privacy Policy')} className="hover:text-white transition-colors">Privacy Policy</button>
             <button onClick={() => handleNavClick('Terms of Service')} className="hover:text-white transition-colors">Terms of Service</button>
@@ -1934,7 +1935,7 @@ const PrivacyPolicy = memo(({ onBack }: { onBack: () => void }) => {
 
       <div className="space-y-12 text-white/70 leading-relaxed">
         <motion.section variants={itemVariants}>
-          <p className="text-lg mb-6">Welcome to Addy UGC Creative (“we,” “our,” or “us”).</p>
+          <p className="text-lg mb-6">Welcome to Addy Growth Studio (“we,” “our,” or “us”).</p>
           <p>Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your information when you visit our website or contact us regarding our AI-powered UGC and performance ad creative services.</p>
           <p className="mt-4">By using this website, you agree to the terms outlined in this Privacy Policy.</p>
         </motion.section>
@@ -1969,7 +1970,7 @@ const PrivacyPolicy = memo(({ onBack }: { onBack: () => void }) => {
 
         <motion.section variants={itemVariants} className="space-y-6">
           <h2 className="text-2xl font-display font-bold text-white">2. How We Use Your Information</h2>
-          <p>Addy UGC Creative uses the collected information to:</p>
+          <p>Addy Growth Studio uses the collected information to:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Respond to inquiries and project requests</li>
             <li>Provide quotes, proposals, and service information</li>
@@ -2007,7 +2008,7 @@ const PrivacyPolicy = memo(({ onBack }: { onBack: () => void }) => {
           <h2 className="text-2xl font-display font-bold text-white">6. Client Work & Intellectual Property</h2>
           <p>Creative samples displayed on this website may include projects developed for brands or conceptual performance demonstrations.</p>
           <p>All product names, logos, and trademarks belong to their respective owners.</p>
-          <p>AI-generated visuals, creative structures, and editing styles created by Addy UGC Creative remain our intellectual property unless otherwise agreed in writing.</p>
+          <p>AI-generated visuals, creative structures, and editing styles created by Addy Growth Studio remain our intellectual property unless otherwise agreed in writing.</p>
           <p>Portfolio content is displayed strictly for demonstration and professional showcasing purposes.</p>
         </motion.section>
 
@@ -2020,7 +2021,7 @@ const PrivacyPolicy = memo(({ onBack }: { onBack: () => void }) => {
             <li>Request deletion of your information</li>
           </ul>
           <p>To exercise any of these rights, please contact us at:</p>
-          <a href="mailto:addyugccreative@gmail.com" className="text-brand-teal font-bold hover:underline">Email: addyugccreative@gmail.com</a>
+          <a href="mailto:hello@addygrowth.studio" className="text-brand-teal font-bold hover:underline">Email: hello@addygrowth.studio</a>
         </motion.section>
 
         <motion.section variants={itemVariants} className="space-y-6">
@@ -2034,9 +2035,9 @@ const PrivacyPolicy = memo(({ onBack }: { onBack: () => void }) => {
           <p>If you have any questions about this Privacy Policy or how your information is handled, please contact:</p>
           <div className="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-2">
             <p className="font-bold text-white text-xl">Addy</p>
-            <p className="text-brand-teal">Addy UGC Creative</p>
-            <a href="mailto:addyugccreative@gmail.com" className="flex items-center gap-2 hover:text-brand-teal transition-colors">
-              <Mail size={16} /> addyugccreative@gmail.com
+            <p className="text-brand-teal">Addy Growth Studio</p>
+            <a href="mailto:hello@addygrowth.studio" className="flex items-center gap-2 hover:text-brand-teal transition-colors">
+              <Mail size={16} /> hello@addygrowth.studio
             </a>
           </div>
         </motion.section>
@@ -2083,14 +2084,14 @@ const TermsOfService = memo(({ onBack }: { onBack: () => void }) => {
 
       <div className="space-y-12 text-white/70 leading-relaxed">
         <motion.section variants={itemVariants}>
-          <p className="text-lg mb-6">Welcome to Addy UGC Creative.</p>
+          <p className="text-lg mb-6">Welcome to Addy Growth Studio.</p>
           <p>By accessing this website or purchasing our services, you agree to the following Terms & Conditions. Please read them carefully.</p>
           <p className="mt-4 font-bold text-white">If you do not agree with these terms, please do not use our website or services.</p>
         </motion.section>
 
         <motion.section variants={itemVariants} className="space-y-6">
           <h2 className="text-2xl font-display font-bold text-white">1. Services</h2>
-          <p>Addy UGC Creative provides:</p>
+          <p>Addy Growth Studio provides:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>AI-powered UGC video ads</li>
             <li>Performance marketing creatives</li>
@@ -2132,14 +2133,14 @@ const TermsOfService = memo(({ onBack }: { onBack: () => void }) => {
           <h2 className="text-2xl font-display font-bold text-white">5. Intellectual Property</h2>
           <ul className="list-disc pl-6 space-y-2">
             <li>Final delivered video creatives become the client’s usage asset after full payment.</li>
-            <li>Addy UGC Creative retains the right to showcase completed work in portfolios, social media, or promotional materials unless agreed otherwise in writing.</li>
+            <li>Addy Growth Studio retains the right to showcase completed work in portfolios, social media, or promotional materials unless agreed otherwise in writing.</li>
             <li>All trademarks, logos, and product names belong to their respective owners.</li>
           </ul>
         </motion.section>
 
         <motion.section variants={itemVariants} className="space-y-6">
           <h2 className="text-2xl font-display font-bold text-white">6. No Performance Guarantee</h2>
-          <p>While creatives are designed using performance marketing principles, Addy UGC Creative does not guarantee:</p>
+          <p>While creatives are designed using performance marketing principles, Addy Growth Studio does not guarantee:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Specific sales results</li>
             <li>ROAS targets</li>
@@ -2156,12 +2157,12 @@ const TermsOfService = memo(({ onBack }: { onBack: () => void }) => {
             <li>Ensure they have legal rights to sell and advertise their product</li>
             <li>Comply with advertising platform policies</li>
           </ul>
-          <p>Addy UGC Creative is not responsible for ad account bans, policy violations, or product compliance issues.</p>
+          <p>Addy Growth Studio is not responsible for ad account bans, policy violations, or product compliance issues.</p>
         </motion.section>
 
         <motion.section variants={itemVariants} className="space-y-6">
           <h2 className="text-2xl font-display font-bold text-white">8. Limitation of Liability</h2>
-          <p>Addy UGC Creative shall not be held liable for:</p>
+          <p>Addy Growth Studio shall not be held liable for:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Indirect or incidental damages</li>
             <li>Business losses due to ad performance</li>
@@ -2195,9 +2196,9 @@ const TermsOfService = memo(({ onBack }: { onBack: () => void }) => {
           <p>For questions regarding these Terms & Conditions, please contact:</p>
           <div className="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-2">
             <p className="font-bold text-white text-xl">Addy</p>
-            <p className="text-brand-teal">Addy UGC Creative</p>
-            <a href="mailto:addyugccreative@gmail.com" className="flex items-center gap-2 hover:text-brand-teal transition-colors">
-              <Mail size={16} /> addyugccreative@gmail.com
+            <p className="text-brand-teal">Addy Growth Studio</p>
+            <a href="mailto:hello@addygrowth.studio" className="flex items-center gap-2 hover:text-brand-teal transition-colors">
+              <Mail size={16} /> hello@addygrowth.studio
             </a>
           </div>
         </motion.section>
@@ -2207,7 +2208,6 @@ const TermsOfService = memo(({ onBack }: { onBack: () => void }) => {
 });
 
 export default function App() {
-  const { currency, setCurrency, formatPrice } = useCurrency();
   const [currentView, setCurrentView] = useState<'home' | 'project-form' | 'about' | 'privacy' | 'terms' | PortfolioNiche>('home');
   const [selectedPlan, setSelectedPlan] = useState<string | undefined>(undefined);
   const [modalVideo, setModalVideo] = useState<{url: string, title: string} | null>(null);
@@ -2322,8 +2322,6 @@ export default function App() {
       <Navbar 
         onNavigate={handleNavigate} 
         onStartProject={() => handleStartProject()} 
-        currentCurrency={currency.code}
-        onCurrencyChange={setCurrency}
         activeSection={activeSection}
       />
       
@@ -2346,17 +2344,16 @@ export default function App() {
             <div id="results" className="section-optimize"><ProvenResults /></div>
             <div id="testimonials" className="section-optimize"><Testimonials /></div>
             <div id="process" className="section-optimize"><ProcessSteps /></div>
-            <div id="pricing" className="section-optimize"><Pricing onStartProject={handleStartProject} currency={currency} /></div>
+            <div id="pricing" className="section-optimize"><Pricing onStartProject={handleStartProject} /></div>
+            <div id="protocol" className="section-optimize"><ProjectProtocol /></div>
             <div id="faq" className="section-optimize"><FAQSection /></div>
             <div id="cta" className="section-optimize"><BigCTA onStartProject={() => handleStartProject()} /></div>
-            <div id="contact" className="section-optimize"><ContactSection formatPrice={formatPrice} /></div>
+            <div id="contact" className="section-optimize"><ContactSection /></div>
             <Footer onNavigate={handleNavigate} />
           </motion.main>
         ) : currentView === 'project-form' ? (
           <ProjectForm 
             key="project-form"
-            selectedPlan={selectedPlan}
-            formatPrice={formatPrice}
             onBack={() => handleNavigate('home', false)} 
           />
         ) : currentView === 'about' ? (

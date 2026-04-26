@@ -2,9 +2,9 @@
 
 @theme {
   --color-brand-dark: #0B0F14;
-  --color-brand-teal: #00E5FF;
-  --color-brand-blue: #7B61FF;
-  --color-brand-purple: #C026FF;
+  --color-brand-teal: #D4AF37;
+  --color-brand-blue: #C5A021;
+  --color-brand-purple: #F5E1A4;
   
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk", sans-serif;
@@ -49,7 +49,7 @@
 }
 
 .gradient-text {
-  @apply bg-clip-text text-transparent bg-linear-to-r from-brand-teal via-brand-blue to-brand-purple;
+  @apply bg-clip-text text-transparent bg-linear-to-r from-brand-teal via-white to-brand-purple;
 }
 
 .gradient-border {
@@ -63,7 +63,7 @@
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(to right, var(--color-brand-teal), var(--color-brand-blue), var(--color-brand-purple));
+  background: linear-gradient(to right, var(--color-brand-teal), white, var(--color-brand-purple));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -71,11 +71,11 @@
 }
 
 .glow-teal {
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
 }
 
 .glow-purple {
-  box-shadow: 0 0 20px rgba(192, 38, 255, 0.2);
+  box-shadow: 0 0 20px rgba(245, 225, 164, 0.2);
 }
 
 .glass-card {
