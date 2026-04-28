@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo, memo } from 'react';
 import { motion, AnimatePresence, useInView, animate, useScroll, useTransform } from 'motion/react';
 import Spline from '@splinetool/react-spline';
 import confetti from 'canvas-confetti';
+import Lenis from 'lenis';
 import { 
   Zap, FileText, Users, Scissors, Cpu, BarChart3, Target, Clock, 
   ChevronRight, CheckCircle2, ArrowRight, Instagram, 
@@ -86,17 +87,38 @@ const Navbar = memo(({ onNavigate, onStartProject, activeSection }: {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-brand-dark/90 backdrop-blur-xl border-b border-brand-teal/20 py-4' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <div 
-          className="text-2xl font-display font-bold cursor-pointer flex items-center gap-3"
+          className="cursor-pointer flex items-center transition-opacity hover:opacity-80 min-w-[120px] relative"
           onClick={() => {
             onNavigate('home', true);
           }}
         >
-          <div className="w-10 h-10 rounded-xl bg-brand-teal flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.4)]">
-            <Cpu size={24} className="text-brand-dark" />
-          </div>
-          <div className="flex flex-col -space-y-1">
-            <span className="text-white text-lg leading-tight italic">Addy</span>
-            <span className="text-brand-teal text-[10px] uppercase tracking-widest font-black">Growth Studio</span>
+          {/* Logo container with fallback */}
+          <div className="relative h-10 md:h-14 flex items-center">
+            <img 
+              src="https://kommodo.ai/i/srmiWN8tJp0b2f2sakUL.png" 
+              alt="Addy Growth Studio" 
+              className="h-full w-auto object-contain block"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (target.src.includes('.png')) {
+                  target.src = "https://kommodo.ai/i/srmiWN8tJp0b2f2sakUL";
+                } else {
+                  target.style.display = 'none';
+                  const fallback = target.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.classList.remove('hidden');
+                }
+              }}
+            />
+            <div className="logo-fallback hidden flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-brand-teal flex items-center justify-center">
+                <Cpu size={20} className="text-brand-dark" />
+              </div>
+              <div className="flex flex-col -space-y-1">
+                <span className="text-white text-lg leading-tight italic font-bold">Addy</span>
+                <span className="text-brand-teal text-[8px] uppercase tracking-widest font-black">Growth Studio</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -124,7 +146,7 @@ const Navbar = memo(({ onNavigate, onStartProject, activeSection }: {
           
           <button 
             onClick={onStartProject}
-            className="px-8 py-3 rounded-full bg-brand-teal text-brand-dark font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]"
+            className="px-8 py-3 rounded-full bg-brand-teal text-brand-dark font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,229,255,0.3)]"
           >
             Start Project
           </button>
@@ -192,70 +214,74 @@ const Hero = memo(({ onStartProject }: { onStartProject: () => void }) => {
   });
   
   const scrollY = useTransform(scrollYProgress, [0, 1], [0, 100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   return (
-    <section ref={containerRef} className="relative min-h-[90vh] flex items-center pt-24 md:pt-32 pb-16 overflow-hidden optimize-gpu">
+    <section ref={containerRef} className="relative min-h-[90vh] lg:min-h-screen flex items-center pt-24 md:pt-32 pb-16 overflow-hidden optimize-gpu font-display">
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-24">
+          
+          {/* Laptop View: Robot on the left side of text */}
+          <motion.div
+            style={{ 
+              y: scrollY, 
+              scale,
+              translateX: mousePosition.x * 0.2,
+              translateY: mousePosition.y * 0.2
+            }}
+            className="hidden lg:flex order-2 lg:order-1 flex-1 justify-center lg:justify-start"
+          >
+            <div className="relative w-full max-w-[280px] md:max-w-[400px] lg:max-w-[550px] aspect-square">
+              <div className="absolute inset-0 bg-brand-teal/20 blur-[100px] rounded-full animate-pulse opacity-40" />
+              <div className="relative w-full h-full brightness-[1.8] saturate-[1.8] filter drop-shadow-[0_0_40px_rgba(0,229,255,0.3)]">
+                <Spline 
+                  scene="https://prod.spline.design/j9pRqjdNekwaWXIs/scene.splinecode" 
+                  className="w-full h-full pointer-events-none" 
+                />
+              </div>
+            </div>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-left order-1"
+            className="order-1 lg:order-2 flex-1 text-left relative z-20 flex flex-col items-start bg-brand-dark/20 lg:bg-transparent backdrop-blur-sm lg:backdrop-blur-none p-4 lg:p-0 rounded-3xl"
           >
+            {/* Tagline */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal/10 border border-brand-teal/20 mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal/20 backdrop-blur-md border border-brand-teal/30 mb-4 lg:mb-6"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-brand-teal animate-pulse" />
               <span className="text-brand-teal text-[10px] font-black uppercase tracking-[0.2em]">Skincare Specialist</span>
             </motion.div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.1] tracking-tight mb-6 max-w-2xl">
-              Premium Cinematic <br />
-              & UGC Ads for <br />
-              <span className="gradient-text drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]">Skincare</span> Brands.
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-7xl font-bold leading-[1.1] tracking-tight mb-6 w-full">
+              Premium Cinematic <br className="hidden sm:block" />
+              & UGC Ads for <br className="hidden sm:block" />
+              <span className="gradient-text drop-shadow-[0_0_20px_rgba(0,229,255,0.4)]">Skincare</span> Brands.
             </h1>
             
-            <p className="text-base md:text-xl font-display font-medium text-white/50 max-w-xl mb-10 leading-relaxed">
-              At <span className="text-white">Addy Growth Studio</span>, we engineer high-converting skincare ads and performance-driven websites that turn attention into revenue.
+            <p className="text-[13px] md:text-lg lg:text-xl font-medium text-white/50 max-w-xl mb-6 lg:mb-10 leading-relaxed shadow-white/5">
+              At <span className="text-white font-bold">Addy Growth Studio</span>, we engineer high-converting ads and websites that turn attention into revenue.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex flex-row items-center gap-2 lg:gap-4 w-full sm:w-auto">
               <button 
                 onClick={onStartProject}
-                className="w-full sm:w-auto px-10 py-5 rounded-xl bg-brand-teal text-brand-dark font-black text-lg shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:scale-105 active:scale-95 transition-all text-center uppercase tracking-widest"
+                className="flex-1 sm:flex-none px-4 py-2.5 lg:px-10 lg:py-5 rounded-lg lg:rounded-xl bg-brand-teal text-brand-dark font-black text-[10px] lg:text-lg shadow-[0_4_20px_rgba(0,229,255,0.2)] hover:scale-105 active:scale-95 transition-all text-center uppercase tracking-widest cursor-pointer"
               >
-                Launch Project
+                Launch
               </button>
               <a 
                 href="#work" 
-                className="w-full sm:w-auto px-10 py-5 rounded-xl border border-white/10 bg-white/5 text-white font-black text-lg hover:bg-white/10 hover:border-white/20 transition-all text-center uppercase tracking-widest"
+                className="flex-1 sm:flex-none px-4 py-2.5 lg:px-10 lg:py-5 rounded-lg lg:rounded-xl border border-white/10 bg-white/5 text-white font-black text-[10px] lg:text-lg hover:bg-white/10 hover:border-white/20 transition-all text-center uppercase tracking-widest cursor-pointer"
               >
-                View Work
+                Work
               </a>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            style={{ 
-              y: scrollY, 
-              opacity, 
-              scale,
-              translateX: mousePosition.x,
-              translateY: mousePosition.y
-            }}
-            className="relative z-0 order-2 flex justify-center lg:justify-end"
-          >
-            <div className="relative w-full max-w-[300px] md:max-w-[450px] aspect-square rounded-full">
-              <div className="absolute inset-0 bg-brand-teal/20 blur-[100px] rounded-full animate-pulse" />
-              <div className="relative w-full h-full">
-                <Spline scene="https://prod.spline.design/j9pRqjdNekwaWXIs/scene.splinecode" className="w-full h-full" />
-              </div>
             </div>
           </motion.div>
         </div>
@@ -2243,6 +2269,30 @@ export default function App() {
   const scrollPositions = useRef<Record<string, number>>(
     JSON.parse(sessionStorage.getItem('scrollPositions') || '{}')
   );
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.5,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 1.5,
+      infinite: false,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     sessionStorage.setItem('scrollPositions', JSON.stringify(scrollPositions.current));

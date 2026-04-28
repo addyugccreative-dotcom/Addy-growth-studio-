@@ -21,7 +21,7 @@ export const PORTFOLIO_NICHES: PortfolioNiche[] = [
     description: "High-production ads with multi-angle shots and professional lighting. Designed for premium brands.",
     thumbnailUrl: "https://parliamentary-yellow-q708idzt8m.edgeone.app/commercial.png",
     videos: [
-      { id: "c1", title: "Night Cream Routine", coverUrl: "https://picsum.photos/seed/cream-1/400/711", videoUrl: "https://youtube.com/shorts/iHQPQCFxI4g" },
+      { id: "c1", title: "Luxury Cinematic Product Ad", coverUrl: "https://picsum.photos/seed/cream-1/400/711", videoUrl: "https://youtube.com/shorts/G5eCyGwJJ1Q" },
       { id: "c2", title: "Morning Moisturizer", coverUrl: "https://picsum.photos/seed/cream-2/400/711", videoUrl: "https://youtube.com/shorts/Za7PkrpeqMU" },
       { id: "c3", title: "Cream Product Reveal", coverUrl: "https://picsum.photos/seed/cream-3/400/711", videoUrl: "https://www.youtube.com/watch?v=QNC6QNscRSQ" },
       { id: "c4", title: "Face Cream Tutorial", coverUrl: "https://picsum.photos/seed/cream-4/400/711", videoUrl: "https://youtube.com/shorts/nMFw460QEFQ" },
