@@ -155,10 +155,64 @@
       drawFrame(currentFrame);
     }
 
-    // ── Hero content fade ──
-    const contentFade = 1 - Math.min(1, frac * 4);
-    heroContent.style.opacity = Math.max(0, contentFade);
-    heroContent.style.transform = `translateY(${frac * 80}px)`;
+    // ── Hero Text Sequencing ──
+    function animateText(id, f, start, end, isFirst = false, isLast = false) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (f < start || f > end) {
+        el.style.opacity = 0;
+        el.style.pointerEvents = 'none';
+        return;
+      }
+      el.style.pointerEvents = 'auto';
+      const p = (f - start) / (end - start);
+      
+      let opacity = 1;
+      let yOffset = 0;
+      let blur = 0;
+      let scale = 1;
+      
+      if (p < 0.2 && !isFirst) {
+        const inP = p / 0.2;
+        opacity = inP;
+        yOffset = 40 * (1 - inP);
+        blur = 10 * (1 - inP);
+        scale = 0.95 + 0.05 * inP;
+      } else if (p > 0.8 && !isLast) {
+        const outP = (p - 0.8) / 0.2;
+        opacity = 1 - outP;
+        yOffset = -40 * outP;
+        blur = 10 * outP;
+        scale = 1 + 0.05 * outP;
+      }
+      
+      const parallax = (p - 0.5) * 60;
+      
+      let transform = '';
+      if (window.innerWidth <= 768) {
+        if (el.classList.contains('bottom-center')) {
+          transform = `translate(-50%, ${yOffset + parallax}px) scale(${scale})`;
+        } else {
+          transform = `translate(-50%, calc(-50% + ${yOffset + parallax}px)) scale(${scale})`;
+        }
+      } else {
+        if (el.classList.contains('bottom-center')) {
+          transform = `translateX(-50%) translateY(${yOffset + parallax}px) scale(${scale})`;
+        } else {
+          transform = `translateY(calc(-50% + ${yOffset + parallax}px)) scale(${scale})`;
+        }
+      }
+      
+      el.style.opacity = opacity;
+      el.style.filter = `blur(${blur}px)`;
+      el.style.transform = transform;
+    }
+
+    animateText('heroText1', frac, 0.0, 0.35, true, false);
+    animateText('heroText2', frac, 0.25, 0.65, false, false);
+    animateText('heroText3', frac, 0.55, 0.9, false, false);
+    animateText('heroText4', frac, 0.8, 1.0, false, true);
+
     if (scrollIndicator) scrollIndicator.style.opacity = Math.max(0, 1 - frac * 8);
 
     // ── Overlay ──

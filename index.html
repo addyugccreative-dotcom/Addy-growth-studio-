@@ -56,11 +56,22 @@
     <div class="hero-sticky">
       <canvas id="heroCanvas"></canvas>
       <div class="hero-overlay" id="heroOverlay">
-        <div class="hero-content" id="heroContent">
-          <div class="hero-badge"><span class="badge-dot"></span><span>Skincare Ad Agency</span></div>
-          <h1 class="hero-title">We engineer <span class="text-accent">high-converting</span> ads &amp; websites that turn attention into <span class="text-accent">revenue.</span></h1>
-          <p class="hero-subtitle">Science-backed strategy meets luxury cinematics. Every frame is engineered to stop the scroll and close the sale.</p>
-          <div class="hero-buttons">
+        <!-- Individual Floating Texts -->
+        <div class="hero-text-float left" id="heroText1">
+          <div class="hero-badge" style="margin-bottom: 16px; animation: none;"><span class="badge-dot"></span><span>Skincare Ad Agency</span></div>
+          <h2 style="font-family: var(--font-display); font-size: clamp(32px, 4vw, 56px); font-weight: 800; line-height: 1.1;">High-Converting<br>Creative Ads</h2>
+        </div>
+
+        <div class="hero-text-float right" id="heroText2">
+          <h2 style="font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 48px); font-weight: 800; line-height: 1.1;">We engineer ads &amp;<br>websites that turn<br><span class="text-accent">attention into revenue.</span></h2>
+        </div>
+
+        <div class="hero-text-float left" id="heroText3">
+          <p style="font-size: clamp(16px, 2vw, 20px); color: var(--text-dim); line-height: 1.6; font-weight: 500;">Science-backed strategy meets luxury cinematics. Every frame is engineered to stop the scroll and close the sale.</p>
+        </div>
+
+        <div class="hero-text-float bottom-center" id="heroText4">
+          <div class="hero-buttons" style="justify-content: center; animation: none;">
             <a href="#work" class="btn-primary"><span>View Our Work</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
             <a href="#pricing" class="btn-secondary">See Pricing →</a>
           </div>
