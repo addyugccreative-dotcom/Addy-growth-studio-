@@ -1,1279 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Addy Growth Studio — High-Converting Skincare Ads</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-<style>
-/* ─── TOKENS ─────────────────────────────────────────── */
-:root{
-  --ink:#04050a;
-  --ink2:#0b0d18;
-  --ink3:#0f1220;
-  --blue:#1a6bff;
-  --blue2:#4d8fff;
-  --cyan:#00c8ff;
-  --gold:#c8a96e;
-  --white:#f5f7ff;
-  --muted:rgba(245,247,255,.45);
-  --faint:rgba(245,247,255,.12);
-  --border:rgba(26,107,255,.2);
-  --border2:rgba(245,247,255,.08);
-  --glow:rgba(26,107,255,.22);
-  --glow2:rgba(0,200,255,.15);
-  --r:2px;
-}
-
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:16px}
-body{
-  background:var(--ink);color:var(--white);
-  font-family:'DM Sans',sans-serif;font-weight:300;
-  overflow-x:hidden;cursor:none;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  letter-spacing:.01em;
-}
-
-/* ─── CURSOR ─────────────────────────────────────────── */
-#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
-#cur{width:8px;height:8px;background:var(--blue);transition:width .2s,height .2s,background .2s}
-#cur2{width:34px;height:34px;border:1px solid rgba(26,107,255,.55);transition:width .3s,height .3s,border-color .3s;transition-timing-function:ease}
-
-/* ─── BG SYSTEM ──────────────────────────────────────── */
-#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-.grid-bg{
-  position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(26,107,255,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(26,107,255,.035) 1px,transparent 1px);
-  background-size:72px 72px;
-}
-.noise{
-  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:200px;
-}
-
-/* ─── NAV ────────────────────────────────────────────── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:999;
-  height:64px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 4%;
-  background:rgba(4,5,10,.7);backdrop-filter:blur(24px) saturate(180%);
-  border-bottom:1px solid var(--border2);
-  transition:background .4s;
-}
-nav.solid{background:rgba(4,5,10,.95)}
-.n-logo{
-  font-family:'Cormorant',serif;font-weight:600;font-size:1.15rem;
-  letter-spacing:.06em;
-  background:linear-gradient(110deg,var(--white) 40%,var(--blue2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  text-decoration:none;
-}
-.n-links{display:flex;gap:2.2rem;list-style:none}
-.n-links a{
-  font-family:'Space Grotesk',sans-serif;font-size:.62rem;font-weight:500;
-  letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
-  text-decoration:none;transition:color .3s;
-}
-.n-links a:hover{color:var(--white)}
-.n-btn{
-  font-family:'Space Grotesk',sans-serif;font-size:.62rem;font-weight:600;
-  letter-spacing:.2em;text-transform:uppercase;
-  padding:9px 22px;border:1px solid var(--blue);color:var(--white);
-  background:transparent;text-decoration:none;border-radius:var(--r);
-  transition:background .3s,box-shadow .3s;
-}
-.n-btn:hover{background:var(--blue);box-shadow:0 0 28px var(--glow)}
-.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
-.hbg span{width:22px;height:1px;background:var(--white);display:block;transition:transform .3s,opacity .3s}
-
-/* ─── HERO ───────────────────────────────────────────── */
-#hero{
-  min-height:100svh;display:flex;align-items:center;justify-content:center;
-  padding:100px 4% 60px;text-align:center;position:relative;z-index:1;
-}
-.hero-inner{max-width:960px;width:100%}
-.h-pill{
-  display:inline-flex;align-items:center;gap:10px;
-  font-family:'Space Grotesk',sans-serif;font-size:.62rem;font-weight:500;
-  letter-spacing:.32em;text-transform:uppercase;color:var(--blue2);
-  border:1px solid var(--border);padding:7px 22px;border-radius:40px;
-  background:rgba(26,107,255,.07);margin-bottom:2.8rem;
-  animation:riseIn 1s .1s both;
-}
-.h-pill-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-.h-title{
-  font-family:'Cormorant',serif;font-weight:600;
-  font-size:clamp(4rem,11vw,10.5rem);
-  line-height:.9;letter-spacing:-.02em;
-  margin-bottom:1.4rem;animation:riseIn 1s .25s both;
-}
-.h-title em{
-  font-style:italic;font-weight:300;
-  background:linear-gradient(125deg,var(--blue) 0%,var(--cyan) 60%,var(--blue2) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.h-rule{
-  width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);
-  margin:1.8rem auto;animation:riseIn 1s .4s both;
-}
-.h-sub{
-  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;
-  font-size:clamp(1.15rem,2.6vw,1.6rem);color:var(--muted);
-  max-width:580px;margin:0 auto 3rem;line-height:1.6;
-  animation:riseIn 1s .5s both;
-}
-.h-sub strong{color:rgba(245,247,255,.85);font-style:normal;font-weight:500;font-family:'Space Grotesk',sans-serif;font-size:.9em;letter-spacing:.04em}
-.h-ctas{
-  display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
-  animation:riseIn 1s .65s both;
-}
-.btn-a{
-  font-family:'Space Grotesk',sans-serif;font-size:.68rem;font-weight:600;
-  letter-spacing:.2em;text-transform:uppercase;text-decoration:none;
-  padding:14px 38px;border-radius:var(--r);
-  background:var(--blue);color:var(--white);border:1px solid var(--blue);
-  box-shadow:0 0 40px rgba(26,107,255,.35);
-  transition:transform .3s,box-shadow .3s;display:inline-block;
-}
-.btn-a:hover{transform:translateY(-3px);box-shadow:0 12px 60px rgba(26,107,255,.5)}
-.btn-b{
-  font-family:'Space Grotesk',sans-serif;font-size:.68rem;font-weight:500;
-  letter-spacing:.2em;text-transform:uppercase;text-decoration:none;
-  padding:14px 38px;border-radius:var(--r);
-  background:transparent;color:rgba(245,247,255,.7);border:1px solid var(--border2);
-  transition:border-color .3s,background .3s,color .3s;display:inline-block;
-}
-.btn-b:hover{border-color:var(--blue2);background:rgba(26,107,255,.08);color:var(--white)}
-
-.h-stats{
-  display:flex;gap:0;margin-top:5rem;
-  border:1px solid var(--border2);
-  animation:riseIn 1s .8s both;
-}
-.h-stat{
-  flex:1;padding:1.8rem 1rem;text-align:center;
-  border-right:1px solid var(--border2);
-  position:relative;overflow:hidden;
-}
-.h-stat:last-child{border-right:none}
-.h-stat::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--blue),transparent);
-  opacity:0;transition:opacity .4s;
-}
-.h-stat:hover::before{opacity:1}
-.h-stat-n{
-  font-family:'Cormorant',serif;font-weight:600;
-  font-size:2.6rem;
-  background:linear-gradient(135deg,var(--white),var(--blue2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  display:block;margin-bottom:.3rem;line-height:1;
-}
-.h-stat-l{font-family:'Space Grotesk',sans-serif;font-size:.58rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
-
-@keyframes riseIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-
-/* ─── SHARED SECTION ─────────────────────────────────── */
-.sec{position:relative;z-index:1;padding:120px 4%}
-.sec-tag{
-  font-family:'Space Grotesk',sans-serif;font-size:.58rem;font-weight:500;
-  letter-spacing:.38em;text-transform:uppercase;color:var(--blue2);
-  display:flex;align-items:center;gap:14px;margin-bottom:1.4rem;
-}
-.sec-tag::before{content:'';width:32px;height:1px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
-.sec-h{
-  font-family:'Cormorant',serif;font-weight:600;
-  font-size:clamp(2.4rem,6vw,5.5rem);line-height:.92;
-  margin-bottom:1.2rem;letter-spacing:-.02em;
-}
-.sec-h em{
-  font-style:italic;font-weight:300;
-  background:linear-gradient(125deg,var(--blue),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.sec-sub{
-  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;
-  font-size:1.15rem;color:var(--muted);max-width:520px;line-height:1.75;
-  margin-bottom:3.8rem;
-}
-.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:0 4%}
-
-/* ─── WHY ────────────────────────────────────────────── */
-.why-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
-  background:var(--border2);border:1px solid var(--border2);
-}
-.why-c{
-  background:var(--ink);padding:2.8rem 2rem;
-  position:relative;overflow:hidden;transition:background .4s;
-}
-.why-c::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--blue),transparent);
-  transform:scaleX(0);transition:transform .5s;transform-origin:left;
-}
-.why-c:hover{background:rgba(26,107,255,.05)}
-.why-c:hover::after{transform:scaleX(1)}
-.why-ico{
-  width:44px;height:44px;border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.2rem;margin-bottom:1.6rem;
-  background:rgba(26,107,255,.06);color:var(--blue2);
-}
-.why-c h3{font-family:'Space Grotesk',sans-serif;font-size:.88rem;font-weight:600;letter-spacing:.06em;margin-bottom:.9rem;color:var(--white)}
-.why-c p{font-size:.84rem;color:var(--muted);line-height:1.85;font-weight:300}
-
-/* ─── VIDEO SECTION WRAPPER ──────────────────────────── */
-.vs-wrap{margin-bottom:6rem}
-.vs-head{
-  display:flex;align-items:flex-end;justify-content:space-between;
-  flex-wrap:wrap;gap:1rem;margin-bottom:2.2rem;
-}
-.vs-num{
-  font-family:'Cormorant',serif;font-weight:300;font-style:italic;
-  font-size:7rem;line-height:1;color:rgba(26,107,255,.1);margin-right:-.5rem;
-  align-self:flex-start;letter-spacing:-.04em;
-}
-.vs-info{flex:1}
-.vs-kicker{font-family:'Space Grotesk',sans-serif;font-size:.58rem;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:var(--blue2);margin-bottom:.6rem}
-.vs-title{font-family:'Cormorant',serif;font-weight:600;font-size:clamp(1.7rem,3.8vw,3.2rem);line-height:.95;letter-spacing:-.01em}
-.vs-title span{
-  font-style:italic;font-weight:300;
-  background:linear-gradient(125deg,var(--blue),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.vs-format{font-family:'Space Grotesk',sans-serif;font-size:.58rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,247,255,.3);margin-top:.8rem}
-.vs-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;font-size:1.05rem;color:rgba(245,247,255,.5);line-height:1.7;margin-top:.6rem;max-width:520px}
-
-/* ─── HORIZONTAL VIDEO ROW ───────────────────────────── */
-.vrow{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
-}
-.vf{
-  position:relative;overflow:hidden;background:var(--ink3);
-  border:1px solid var(--border2);aspect-ratio:16/9;
-  transition:border-color .4s,box-shadow .4s;
-}
-.vf:hover{border-color:var(--blue);box-shadow:0 0 28px var(--glow)}
-.vf video{width:100%;height:100%;object-fit:cover;display:block}
-.vf-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 40%,rgba(4,5,10,.8) 100%);
-  pointer-events:none;
-}
-.vf-tag{
-  position:absolute;bottom:8px;left:10px;
-  font-family:'Space Grotesk',sans-serif;font-size:.58rem;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;
-  color:rgba(255,255,255,.55);background:rgba(0,0,0,.4);
-  padding:3px 8px;backdrop-filter:blur(6px);
-}
-.vf-play{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:opacity .3s;
-}
-.vf:hover .vf-play{opacity:1}
-.vf-play-ring{
-  width:46px;height:46px;border-radius:50%;
-  background:rgba(26,107,255,.85);backdrop-filter:blur(8px);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;box-shadow:0 0 30px rgba(26,107,255,.5);
-}
-/* ─── PLACEHOLDER ART ────────────────────────────────── */
-.vph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem}
-.vph-icon{font-size:1.6rem;opacity:.2}
-.vph-lbl{font-family:'Space Grotesk',sans-serif;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;opacity:.18}
-
-/* ─── VERTICAL 9:16 VIDEOS ───────────────────────────── */
-.vrow-v{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.vfv{
-  position:relative;overflow:hidden;background:var(--ink3);
-  border:1px solid var(--border2);aspect-ratio:9/16;
-  transition:border-color .4s,box-shadow .4s;
-}
-.vfv:hover{border-color:var(--blue);box-shadow:0 0 28px var(--glow)}
-.vfv video{width:100%;height:100%;object-fit:cover;display:block}
-.vfv .vf-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(4,5,10,.8) 100%);pointer-events:none}
-.vfv .vf-tag{position:absolute;bottom:8px;left:10px;font-family:'Space Grotesk',sans-serif;font-size:.58rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);background:rgba(0,0,0,.4);padding:3px 8px;backdrop-filter:blur(6px)}
-.ig-pill{
-  position:absolute;top:10px;right:10px;
-  background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  font-family:'Space Grotesk',sans-serif;font-size:.52rem;font-weight:700;
-  letter-spacing:.15em;text-transform:uppercase;
-  padding:3px 8px;border-radius:20px;
-}
-.format-badge{
-  position:absolute;top:10px;left:10px;
-  font-family:'Space Grotesk',sans-serif;font-size:.52rem;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;
-  color:var(--blue2);background:rgba(26,107,255,.15);border:1px solid var(--border);
-  padding:3px 8px;
-}
-
-/* ─── RESULTS SECTION (LAPTOP) ───────────────────────── */
-.niche-row{
-  display:grid;grid-template-columns:1fr 1fr;gap:5rem;
-  align-items:center;margin-bottom:7rem;
-}
-.niche-row:last-child{margin-bottom:0}
-.niche-row.rev .nl{order:2}
-.niche-row.rev .nr{order:1}
-.nl{}
-.nr{}
-
-/* LAPTOP MOCKUP */
-.laptop-wrap{position:relative}
-.laptop-body{
-  background:var(--ink2);border:1px solid var(--border);
-  border-radius:12px;padding:14px 14px 36px;
-  box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 60px var(--glow);
-  position:relative;
-}
-.laptop-body::before{
-  content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);
-  width:8px;height:8px;border-radius:50%;background:var(--ink3);
-  box-shadow:0 0 0 2px rgba(255,255,255,.06);
-}
-.laptop-body::after{
-  content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  width:40%;height:2px;background:rgba(255,255,255,.05);border-radius:0 0 8px 8px;
-}
-.laptop-screen{border-radius:6px;overflow:hidden;background:var(--ink)}
-.laptop-vgrid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-.lv{aspect-ratio:16/9;background:var(--ink3);overflow:hidden;position:relative}
-.lv video{width:100%;height:100%;object-fit:cover}
-
-.niche-meta{}
-.niche-big-n{
-  font-family:'Cormorant',serif;font-weight:300;font-style:italic;
-  font-size:9rem;line-height:1;
-  color:rgba(26,107,255,.07);margin-bottom:-.5rem;letter-spacing:-.04em;
-}
-.niche-title{
-  font-family:'Cormorant',serif;font-weight:600;
-  font-size:clamp(1.8rem,3.2vw,2.8rem);line-height:1;margin-bottom:1.2rem;letter-spacing:-.01em;
-}
-.niche-title em{font-style:italic;font-weight:300;background:linear-gradient(125deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.niche-desc{font-size:.85rem;color:var(--muted);line-height:1.9;max-width:380px;margin-bottom:2rem;font-weight:300}
-.niche-tags{display:flex;flex-wrap:wrap;gap:.5rem}
-.n-tag{
-  font-family:'Space Grotesk',sans-serif;font-size:.58rem;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;
-  border:1px solid var(--border);padding:5px 14px;
-  color:rgba(245,247,255,.45);background:rgba(26,107,255,.04);
-  transition:border-color .3s,color .3s;
-}
-.n-tag:hover{border-color:var(--blue2);color:var(--white)}
-.result-line{
-  display:flex;gap:2rem;margin-top:2rem;padding-top:2rem;
-  border-top:1px solid var(--border2);
-}
-.rl-item{text-align:left}
-.rl-n{font-family:'Cormorant',serif;font-weight:600;font-size:2rem;background:linear-gradient(135deg,var(--white),var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
-.rl-l{font-family:'Space Grotesk',sans-serif;font-size:.56rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:4px}
-
-/* ─── TESTIMONIALS ────────────────────────────────────── */
-.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2);border:1px solid var(--border2)}
-.t-card{
-  background:var(--ink);padding:2.6rem 2rem;
-  position:relative;transition:background .4s;
-}
-.t-card:hover{background:var(--ink2)}
-.t-badge{
-  position:absolute;top:1.4rem;right:1.4rem;
-  font-family:'Space Grotesk',sans-serif;font-size:.55rem;font-weight:500;
-  letter-spacing:.2em;text-transform:uppercase;
-  color:var(--blue2);background:rgba(26,107,255,.1);
-  border:1px solid var(--border);padding:3px 10px;
-}
-.t-stars{color:var(--blue2);letter-spacing:3px;font-size:.72rem;margin-bottom:1.4rem;opacity:.7}
-.t-text{
-  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;
-  font-size:1.12rem;color:rgba(245,247,255,.75);line-height:1.82;margin-bottom:2rem;
-}
-.t-author{display:flex;align-items:center;gap:.9rem}
-.t-av{
-  width:42px;height:42px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.82rem;
-  background:linear-gradient(135deg,var(--blue),var(--cyan));
-}
-.t-name{font-family:'Space Grotesk',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.03em}
-.t-role{font-size:.7rem;color:var(--muted);margin-top:3px;font-weight:300}
-
-/* ─── PRICING ─────────────────────────────────────────── */
-.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
-.p-card{
-  border:1px solid var(--border2);padding:0;
-  background:var(--ink2);position:relative;overflow:hidden;
-  transition:transform .35s,box-shadow .35s,border-color .35s;
-}
-.p-card:hover{transform:translateY(-6px);box-shadow:0 24px 70px rgba(26,107,255,.15);border-color:var(--border)}
-.p-card.feat{border-color:var(--blue);box-shadow:0 0 50px var(--glow)}
-.p-top{
-  padding:2.2rem 2rem 1.6rem;
-  border-bottom:1px solid var(--border2);
-}
-.p-card.feat .p-top{background:linear-gradient(160deg,rgba(26,107,255,.12),transparent)}
-.p-pop{
-  display:inline-block;font-family:'Space Grotesk',sans-serif;font-size:.56rem;font-weight:700;
-  letter-spacing:.22em;text-transform:uppercase;
-  background:var(--blue);color:var(--white);
-  padding:4px 12px;margin-bottom:1.4rem;
-}
-.p-dur{font-family:'Space Grotesk',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--blue2);margin-bottom:.8rem}
-.p-price{
-  font-family:'Cormorant',serif;font-weight:900;
-  font-size:4rem;line-height:1;margin-bottom:.4rem;
-}
-.p-price sup{font-size:1.5rem;vertical-align:super;font-family:'Space Grotesk',sans-serif;font-weight:400}
-.p-tagline{font-size:.82rem;color:var(--muted)}
-.p-body{padding:1.8rem 2rem}
-.p-feats{list-style:none;display:flex;flex-direction:column;gap:.9rem;margin-bottom:2rem}
-.p-feats li{font-size:.83rem;color:var(--muted);display:flex;align-items:center;gap:10px}
-.p-feats li::before{content:'◆';font-size:.45rem;color:var(--blue);flex-shrink:0}
-.p-btn{
-  display:block;text-align:center;padding:13px;
-  font-family:'Space Grotesk',sans-serif;font-size:.7rem;font-weight:700;
-  letter-spacing:.15em;text-transform:uppercase;text-decoration:none;
-  border:1px solid var(--border);color:var(--white);background:transparent;
-  transition:background .3s,border-color .3s;
-}
-.p-card.feat .p-btn{background:var(--blue);border-color:var(--blue)}
-.p-btn:hover{background:var(--blue);border-color:var(--blue)}
-
-/* ─── PROCESS ─────────────────────────────────────────── */
-.proc-row{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
-  margin-top:3.5rem;position:relative;
-}
-.proc-row::before{
-  content:'';position:absolute;top:32px;left:12.5%;right:12.5%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--blue),var(--blue),transparent);z-index:0;
-}
-.proc-step{padding:0 1.5rem;z-index:1;position:relative}
-.proc-num{
-  width:60px;height:60px;border-radius:50%;
-  border:1px solid var(--border);background:var(--ink);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant',serif;font-weight:300;font-style:italic;
-  font-size:1.6rem;color:var(--blue2);
-  margin-bottom:1.8rem;
-  box-shadow:0 0 24px var(--glow);
-}
-.proc-title{font-family:'Space Grotesk',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.9rem;color:var(--white)}
-.proc-desc{font-size:.82rem;color:var(--muted);line-height:1.9;font-weight:300}
-.proc-note{
-  margin-top:1rem;font-size:.9rem;font-style:italic;
-  color:var(--blue2);font-family:'Cormorant Garamond',serif;font-weight:400;opacity:.7;
-}
-
-/* ─── CONTACT ─────────────────────────────────────────── */
-#contact{background:var(--ink2)}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}
-.contact-h{
-  font-family:'Cormorant',serif;font-weight:600;
-  font-size:clamp(2.8rem,5.5vw,5.5rem);line-height:.92;margin-bottom:1.5rem;letter-spacing:-.02em;
-}
-.contact-h em{font-style:italic;font-weight:300;background:linear-gradient(125deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.contact-p{font-size:.84rem;color:var(--muted);line-height:1.95;max-width:420px;margin-bottom:2.5rem;font-weight:300}
-.c-links{display:flex;flex-direction:column;gap:.8rem}
-.c-link{
-  display:flex;align-items:center;gap:1.2rem;
-  padding:1.2rem 1.4rem;border:1px solid var(--border2);
-  background:var(--ink);text-decoration:none;color:var(--white);
-  transition:border-color .3s,background .3s,transform .3s;
-}
-.c-link:hover{border-color:var(--blue);background:rgba(26,107,255,.06);transform:translateX(6px)}
-.c-icon{
-  width:44px;height:44px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(26,107,255,.08);border:1px solid var(--border);
-  font-size:1.1rem;
-}
-.c-info{}
-.c-lbl{font-family:'Space Grotesk',sans-serif;font-size:.56rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--blue2);margin-bottom:3px}
-.c-val{font-size:.86rem;font-weight:300}
-.c-arr{margin-left:auto;color:var(--blue2);opacity:.5;font-size:1.1rem}
-
-/* FORM */
-.cf{border:1px solid var(--border2);padding:2.8rem 2.2rem;background:var(--ink)}
-.cf-title{font-family:'Cormorant',serif;font-weight:600;font-size:2rem;line-height:1;margin-bottom:2rem;letter-spacing:-.01em}
-.cf-field{margin-bottom:1.2rem}
-.cf-field label{
-  display:block;font-family:'Space Grotesk',sans-serif;font-size:.58rem;font-weight:500;
-  letter-spacing:.26em;text-transform:uppercase;color:rgba(245,247,255,.4);margin-bottom:7px;
-}
-.cf-field input,
-.cf-field select,
-.cf-field textarea{
-  width:100%;background:var(--ink2);border:1px solid var(--border2);
-  color:var(--white);padding:12px 14px;
-  font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:300;
-  outline:none;transition:border-color .3s;appearance:none;
-  letter-spacing:.01em;
-}
-.cf-field input:focus,
-.cf-field select:focus,
-.cf-field textarea:focus{border-color:var(--blue)}
-.cf-field textarea{resize:none}
-.cf-btn{
-  width:100%;padding:14px;
-  font-family:'Space Grotesk',sans-serif;font-size:.68rem;font-weight:600;
-  letter-spacing:.22em;text-transform:uppercase;
-  background:var(--blue);color:var(--white);border:none;cursor:pointer;
-  transition:box-shadow .3s,transform .3s;margin-top:.5rem;
-}
-.cf-btn:hover{box-shadow:0 8px 40px rgba(26,107,255,.5);transform:translateY(-2px)}
-
-/* ─── FOOTER ──────────────────────────────────────────── */
-footer{
-  padding:2.2rem 4%;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
-  border-top:1px solid var(--border2);position:relative;z-index:1;
-}
-.f-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.26em;text-transform:uppercase;background:linear-gradient(110deg,var(--white),var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.f-copy{font-size:.68rem;color:rgba(245,247,255,.3);letter-spacing:.06em}
-.f-tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.92rem;color:rgba(245,247,255,.3)}
-
-/* ─── PRICING TABLE ──────────────────────────────────── */
-.pt-tabs{
-  display:flex;gap:0;margin-bottom:3rem;
-  border:1px solid var(--border);border-radius:40px;
-  background:rgba(26,107,255,.05);
-  width:fit-content;padding:5px;
-  box-shadow:0 0 30px rgba(26,107,255,.1);
-}
-.pt-tab{
-  font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;
-  letter-spacing:.1em;text-transform:none;
-  padding:12px 32px;border-radius:35px;border:none;cursor:pointer;
-  background:transparent;color:var(--muted);
-  transition:background .3s,color .3s,box-shadow .3s;
-}
-.pt-tab.active{
-  background:linear-gradient(135deg,var(--blue),var(--cyan));
-  color:#fff;
-  box-shadow:0 4px 28px rgba(26,107,255,.55),0 0 0 1px rgba(0,200,255,.2);
-}
-.pt-table{
-  width:100%;border-collapse:collapse;
-  border:1px solid var(--border);
-  overflow:hidden;
-  box-shadow:0 0 60px rgba(26,107,255,.08),inset 0 1px 0 rgba(26,107,255,.15);
-}
-.pt-header{
-  display:grid;grid-template-columns:260px 1fr 1fr 1fr 1fr;
-  background:rgba(26,107,255,.08);
-  border-bottom:1px solid var(--border);
-  padding:0 2rem;
-}
-.pt-header>div{
-  font-family:'Space Grotesk',sans-serif;font-size:.62rem;font-weight:700;
-  letter-spacing:.22em;text-transform:uppercase;
-  color:var(--muted);padding:1.2rem .5rem;
-}
-.pt-col-dur{grid-column:1}
-.pt-col{text-align:center}
-.pt-blue-hd{color:var(--blue2) !important}
-.pt-row{
-  display:grid;grid-template-columns:260px 1fr 1fr 1fr 1fr;
-  padding:0 2rem;
-  border-bottom:1px solid rgba(26,107,255,.1);
-  transition:background .3s,box-shadow .3s;
-  position:relative;
-  align-items:center;
-}
-.pt-row:last-child{border-bottom:none}
-.pt-row:hover{
-  background:rgba(26,107,255,.07);
-  box-shadow:inset 0 0 40px rgba(26,107,255,.05);
-}
-.pt-row.featured{
-  background:rgba(26,107,255,.1);
-}
-.pt-row.featured::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(180deg,var(--blue),var(--cyan));
-  box-shadow:0 0 18px rgba(0,200,255,.7),0 0 40px rgba(26,107,255,.4);
-}
-.pt-row.featured::after{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(90deg,rgba(26,107,255,.06),transparent 40%);
-}
-.pt-row>div{padding:2rem .5rem;text-align:center}
-.pt-row .pt-col-dur{text-align:left}
-.pt-dur-label{
-  font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:500;
-  color:var(--white);letter-spacing:.02em;
-}
-.pt-row.featured .pt-dur-label{
-  background:linear-gradient(135deg,var(--white),var(--blue2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.pt-base{
-  font-family:'Cormorant',serif;font-weight:500;
-  font-size:1.7rem;color:rgba(245,247,255,.6);line-height:1;
-}
-.pt-bundle{
-  display:block;
-  font-family:'Cormorant',serif;font-weight:600;
-  font-size:2.1rem;
-  background:linear-gradient(135deg,var(--blue2),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 0 14px rgba(0,200,255,.3));
-  line-height:1;margin-bottom:.3rem;
-}
-.pt-save{
-  display:block;
-  font-family:'Space Grotesk',sans-serif;font-size:.54rem;font-weight:500;
-  letter-spacing:.22em;text-transform:uppercase;
-  color:rgba(77,143,255,.6);
-}
-
-@media(max-width:700px){
-  .pt-header,.pt-row{grid-template-columns:140px 1fr 1fr 1fr 1fr;padding:0 .8rem}
-  .pt-dur-label{font-size:.82rem}
-  .pt-bundle{font-size:1.3rem}
-  .pt-base{font-size:1.2rem}
-  .pt-tab{padding:10px 18px;font-size:.7rem}
-}
-
-/* ─── REVEAL ANIMATION ────────────────────────────────── */
-.rv{opacity:0;transform:translateY(36px);transition:opacity .85s ease,transform .85s ease}
-.rv.on{opacity:1;transform:translateY(0)}
-.rv2{opacity:0;transform:translateY(36px);transition:opacity .85s .15s ease,transform .85s .15s ease}
-.rv2.on{opacity:1;transform:translateY(0)}
-.rv3{opacity:0;transform:translateY(36px);transition:opacity .85s .3s ease,transform .85s .3s ease}
-.rv3.on{opacity:1;transform:translateY(0)}
-
-/* ─── MOBILE NAV MENU ─────────────────────────────────── */
-@media(max-width:900px){
-  .n-links{
-    display:none;flex-direction:column;position:fixed;
-    top:64px;left:0;right:0;padding:2rem 4%;gap:1.5rem;
-    background:rgba(4,5,10,.97);border-bottom:1px solid var(--border2);
-  }
-  .n-links.open{display:flex}
-  .n-btn-wrap{display:none}
-  .hbg{display:flex}
-  .h-stats{flex-wrap:wrap}
-  .h-stat{min-width:50%;border-right:none;border-bottom:1px solid var(--border2)}
-  .why-grid{grid-template-columns:1fr 1fr}
-  .vrow,.vrow-v{grid-template-columns:1fr 1fr}
-  .niche-row{grid-template-columns:1fr;gap:3rem}
-  .niche-row.rev .nl{order:1}
-  .niche-row.rev .nr{order:2}
-  .t-grid{grid-template-columns:1fr 1fr}
-  .p-grid{grid-template-columns:1fr}
-  .proc-row{grid-template-columns:1fr 1fr;gap:2.5rem}
-  .proc-row::before{display:none}
-  .contact-grid{grid-template-columns:1fr;gap:3rem}
-}
-@media(max-width:600px){
-  .why-grid{grid-template-columns:1fr}
-  .t-grid{grid-template-columns:1fr}
-  .vrow,.vrow-v{grid-template-columns:1fr 1fr}
-  .proc-row{grid-template-columns:1fr}
-  .h-stats{flex-direction:column}
-  .h-stat{border-bottom:1px solid var(--border2);border-right:none}
-  .h-stat:last-child{border-bottom:none}
-  .niche-big-n{font-size:5rem}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Addy Growth Studio — High-Converting Skincare Ads</title>
+  <meta name="description" content="We engineer high-converting ads & websites that turn attention into revenue." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
+  <canvas id="starsCanvas"></canvas>
 
-<!-- CURSOR -->
-<div id="cur"></div>
-<div id="cur2"></div>
-
-<!-- BG -->
-<canvas id="bgCanvas"></canvas>
-<div class="grid-bg"></div>
-<div class="noise"></div>
-
-<!-- ══════════════════════════════════════════════════ NAV -->
-<nav id="nav">
-  <a class="n-logo" href="#">Addy Growth Studio</a>
-  <ul class="n-links" id="nmenu">
-    <li><a href="#why">Strategy</a></li>
-    <li><a href="#work">Work</a></li>
-    <li><a href="#testimonials">Clients</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="n-btn-wrap">
-    <a href="#contact" class="n-btn">Start Project</a>
-  </div>
-  <div class="hbg" id="hbg">
-    <span></span><span></span><span></span>
-  </div>
-</nav>
-
-<!-- ══════════════════════════════════════════════════ HERO -->
-<section id="hero">
-  <div class="hero-inner">
-    <div class="h-pill">
-      <span class="h-pill-dot"></span>
-      Previews · Cinematic · Authentic Ads for Skincare
-    </div>
-    <h1 class="h-title">
-      Addy<br><em>Growth</em><br>Studio.
-    </h1>
-    <div class="h-rule"></div>
-    <p class="h-sub">
-      We engineer <strong>high-converting ads &amp; websites</strong><br>
-      that turn attention into revenue.
-    </p>
-    <div class="h-ctas">
-      <a href="#work" class="btn-a">View Our Work</a>
-      <a href="#pricing" class="btn-b">See Pricing →</a>
-    </div>
-    <div class="h-stats">
-      <div class="h-stat">
-        <span class="h-stat-n" data-count="120" data-suffix="+">120+</span>
-        <span class="h-stat-l">Ads Delivered</span>
-      </div>
-      <div class="h-stat">
-        <span class="h-stat-n" data-count="45" data-suffix="+">45+</span>
-        <span class="h-stat-l">Happy Brands</span>
-      </div>
-      <div class="h-stat">
-        <span class="h-stat-n" data-val="3.8" data-suffix="×">3.8×</span>
-        <span class="h-stat-l">Avg ROAS Lift</span>
-      </div>
-      <div class="h-stat">
-        <span class="h-stat-n" data-count="98" data-suffix="%">98%</span>
-        <span class="h-stat-l">Client Retention</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="sep"></div>
-
-<!-- ══════════════════════════════════════════════════ WHY IT WORKS -->
-<section id="why" class="sec">
-  <div class="sec-tag">Why Our Creatives Work</div>
-  <h2 class="sec-h rv">The <em>Formula</em><br>Behind Every Win</h2>
-  <p class="sec-sub rv2">Science-backed strategy meets luxury cinematics. Every frame is engineered to stop the scroll and close the sale.</p>
-  <div class="why-grid rv">
-    <div class="why-c">
-      <div class="why-ico">🎯</div>
-      <h3>Hook in 0–3 Seconds</h3>
-      <p>Pattern-interrupt openers built from behavioural psychology. We study thousands of data points to craft openers that force viewers to stop mid-scroll.</p>
-    </div>
-    <div class="why-c">
-      <div class="why-ico">🎬</div>
-      <h3>Cinematic Brand Elevation</h3>
-      <p>Your product deserves luxury treatment. Our cinematography and colour grading elevates skincare brands to premium perceived value — instantly.</p>
-    </div>
-    <div class="why-c">
-      <div class="why-ico">⚡</div>
-      <h3>Conversion-First Editing</h3>
-      <p>Every cut, transition, and CTA placement is optimised for click-throughs. We don't just make beautiful ads — we make ads that actually sell.</p>
-    </div>
-    <div class="why-c">
-      <div class="why-ico">📊</div>
-      <h3>Data-Driven Iteration</h3>
-      <p>We analyse performance metrics after launch and feed insights back into future creatives. Your campaigns get smarter with every video.</p>
-    </div>
-    <div class="why-c">
-      <div class="why-ico">📱</div>
-      <h3>Platform-Native Format</h3>
-      <p>Instagram Reels, TikTok, Meta — each platform has its own culture. We craft native-feeling content that doesn't look or feel like an ad.</p>
-    </div>
-    <div class="why-c">
-      <div class="why-ico">🚀</div>
-      <h3>Rapid Creative Output</h3>
-      <p>Brief to final delivery in under 5 days. Fast turnaround means you're always testing fresh creatives — staying permanently ahead of ad fatigue.</p>
-    </div>
-  </div>
-</section>
-
-<div class="sep"></div>
-
-<!-- ══════════════════════════════════════════════════ WORK — ALL 3 NICHES -->
-<section id="work" class="sec">
-  <div class="sec-tag">Our Work</div>
-  <h2 class="sec-h rv">Previews. <em>Cinematic.</em><br>Authentic Ads.</h2>
-  <p class="sec-sub rv2">Three core skincare niches. Upload your product — we handle everything else.</p>
-
-  <!-- NICHE 1 — UGC REVIEWS -->
-  <div class="vs-wrap rv">
-    <div class="vs-head">
-      <div class="vs-num">01</div>
-      <div class="vs-info">
-        <div class="vs-kicker">UGC · Real People · Real Results</div>
-        <div class="vs-title">Authentic UGC Reviews <span>That Build Trust</span></div>
-        <div class="vs-desc">Real people, real results. Testimonial videos designed to convert skeptics into customers.</div>
-        <div class="vs-format">9:16 · Instagram Reels · Stories · TikTok Ready</div>
-      </div>
-    </div>
-    <div class="vrow-v">
-      <div class="vfv" style="background:linear-gradient(160deg,#07091c,#0d1535)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">UGC Review · 15s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">15 sec</div>
-        <div class="ig-pill">Instagram</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#060a1c,#0a1228)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Testimonial · 25s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">25 sec</div>
-        <div class="ig-pill">Reels</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#060a1a,#0c1430)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">UGC Review · 30s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">30 sec</div>
-        <div class="ig-pill">Instagram</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#070c20,#101828)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Testimonial · 25s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">25 sec</div>
-        <div class="ig-pill">Stories</div>
-      </div>
+  <!-- Preloader -->
+  <div id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">ADDY</div>
+      <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
+      <div class="preloader-text" id="preloaderText">Loading frames...</div>
     </div>
   </div>
 
-  <!-- NICHE 2 — LUXURY CINEMATIC -->
-  <div class="vs-wrap rv">
-    <div class="vs-head">
-      <div class="vs-num">02</div>
-      <div class="vs-info">
-        <div class="vs-kicker">Cinematic Skin Care Ads · Luxury Cinematic Product Ad</div>
-        <div class="vs-title">Luxury Cinematic <span>Product Ads</span></div>
-        <div class="vs-desc">High-production ads with multi-angle shots and professional lighting. Designed for premium brands.</div>
-        <div class="vs-format">9:16 · Instagram Reels · Stories · TikTok Ready</div>
+  <!-- Nav -->
+  <nav id="navbar">
+    <div class="nav-progress" id="navProgress"></div>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo"><span class="logo-icon">◈</span><span>Addy Growth Studio</span></a>
+      <div class="nav-links">
+        <a href="#why" class="nav-link">Strategy</a>
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#testimonials" class="nav-link">Clients</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#process" class="nav-link">Process</a>
+        <a href="#contact" class="nav-link">Contact</a>
       </div>
+      <a href="#contact" class="nav-cta">Start Project</a>
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     </div>
-    <div class="vrow-v">
-      <div class="vfv" style="background:linear-gradient(160deg,#07091c,#0e1535)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Cinematic · 25s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">25 sec</div>
-        <div class="ig-pill">Instagram</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#06081a,#0c1228)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Product Ad · 15s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">15 sec</div>
-        <div class="ig-pill">Reels</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#070a1e,#0d1430)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Cinematic · 30s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">30 sec</div>
-        <div class="ig-pill">Instagram</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#080c22,#101828)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Product Ad · 25s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">25 sec</div>
-        <div class="ig-pill">Stories</div>
-      </div>
-    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#why" class="mobile-link">Strategy</a>
+    <a href="#work" class="mobile-link">Work</a>
+    <a href="#testimonials" class="mobile-link">Clients</a>
+    <a href="#pricing" class="mobile-link">Pricing</a>
+    <a href="#process" class="mobile-link">Process</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+    <a href="#contact" class="mobile-cta">Start Project</a>
   </div>
 
-  <!-- NICHE 3 — BEFORE & AFTER -->
-  <div class="vs-wrap rv">
-    <div class="vs-head">
-      <div class="vs-num">03</div>
-      <div class="vs-info">
-        <div class="vs-kicker">Before &amp; After · Transformation Storytelling</div>
-        <div class="vs-title">Visible Results, <span>Visible Growth</span></div>
-        <div class="vs-desc">Before and after storytelling that proves skincare works and drives purchase intent.</div>
-        <div class="vs-format">9:16 · Instagram Reels · Stories · TikTok Ready</div>
-      </div>
-    </div>
-    <div class="vrow-v">
-      <div class="vfv" style="background:linear-gradient(160deg,#07091e,#0d1538)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Before/After · 25s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">25 sec</div>
-        <div class="ig-pill">Instagram</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#060a1c,#0b1330)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Results Ad · 15s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">15 sec</div>
-        <div class="ig-pill">Reels</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#070b1e,#0e1535)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Before/After · 30s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">30 sec</div>
-        <div class="ig-pill">Instagram</div>
-      </div>
-      <div class="vfv" style="background:linear-gradient(160deg,#080c22,#101828)">
-        <div class="vph"><div class="vph-icon">▶</div><div class="vph-lbl">Results Ad · 25s</div></div>
-        <div class="vf-overlay"></div><div class="vf-tag">25 sec</div>
-        <div class="ig-pill">Stories</div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<div class="sep"></div>
-
-<!-- ══════════════════════════════════════════════════ TESTIMONIALS -->
-<section id="testimonials" class="sec">
-  <div class="sec-tag">Client Results</div>
-  <h2 class="sec-h rv">Success <em>Stories</em></h2>
-  <p class="sec-sub rv2">Real brands. Real results. Real revenue generated by strategic, cinematic creatives.</p>
-  <div class="t-grid rv">
-    <div class="t-card">
-      <div class="t-badge">4.8× ROAS</div>
-      <div class="t-stars">★★★★★</div>
-      <p class="t-text">"Addy Growth transformed our ad performance entirely. Our serum line went from flat sales to sold out within three weeks of launching their creative."</p>
-      <div class="t-author">
-        <div class="t-av">SA</div>
-        <div><div class="t-name">Sarah A.</div><div class="t-role">Founder, LuminGlow Skincare</div></div>
-      </div>
-    </div>
-    <div class="t-card">
-      <div class="t-badge">+312% Revenue</div>
-      <div class="t-stars">★★★★★</div>
-      <p class="t-text">"The cinematic quality is on a completely different level. Our competitors' ads look cheap now. Clients keep asking who made our creatives — we keep the secret."</p>
-      <div class="t-author">
-        <div class="t-av">RK</div>
-        <div><div class="t-name">Riya K.</div><div class="t-role">CMO, PureBloom Beauty</div></div>
-      </div>
-    </div>
-    <div class="t-card">
-      <div class="t-badge">$8K → $45K / mo</div>
-      <div class="t-stars">★★★★★</div>
-      <p class="t-text">"Fast, professional, and results-driven. We scaled our anti-aging line from $8K/month to $45K/month within 60 days of partnering with Addy Growth."</p>
-      <div class="t-author">
-        <div class="t-av">MJ</div>
-        <div><div class="t-name">Maya J.</div><div class="t-role">CEO, Velvet Skin Lab</div></div>
-      </div>
-    </div>
-    <div class="t-card">
-      <div class="t-badge">−50% CPA</div>
-      <div class="t-stars">★★★★★</div>
-      <p class="t-text">"The 25-second format they recommended converted insanely well. Our cost per acquisition dropped by half and our average order value doubled overnight."</p>
-      <div class="t-author">
-        <div class="t-av">ZN</div>
-        <div><div class="t-name">Zara N.</div><div class="t-role">Founder, AuraGlow Co.</div></div>
-      </div>
-    </div>
-    <div class="t-card">
-      <div class="t-badge">5.2× ROAS</div>
-      <div class="t-stars">★★★★★</div>
-      <p class="t-text">"We tried other agencies. None came close to Addy's creative quality or turnaround speed. They understand the skincare market at a depth that's unmatched."</p>
-      <div class="t-author">
-        <div class="t-av">PS</div>
-        <div><div class="t-name">Priya S.</div><div class="t-role">Dir. Marketing, BotaniqSkin</div></div>
-      </div>
-    </div>
-    <div class="t-card">
-      <div class="t-badge">$120K Generated</div>
-      <div class="t-stars">★★★★★</div>
-      <p class="t-text">"We generated over $120K in attributed revenue from a single campaign in the first month. The ROI speaks for itself. These guys are absolute game-changers."</p>
-      <div class="t-author">
-        <div class="t-av">AL</div>
-        <div><div class="t-name">Aisha L.</div><div class="t-role">Founder, ClearLuxe Skincare</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="sep"></div>
-
-<!-- ══════════════════════════════════════════════════ PRICING -->
-<section id="pricing" class="sec">
-  <div class="sec-tag">Pricing</div>
-  <h2 class="sec-h rv">Premium <em>Visual Assets</em><br>for Growth Brands.</h2>
-  <p class="sec-sub rv2">Transparent, no-surprise pricing. Bundle &amp; save on multiple videos.</p>
-
-  <!-- TAB TOGGLE -->
-  <div class="pt-tabs rv">
-    <button class="pt-tab active" data-tab="cinematic">Cinematic Product Videos</button>
-    <button class="pt-tab" data-tab="ugc">UGC Testimonial Videos</button>
-  </div>
-
-  <!-- CINEMATIC TABLE -->
-  <div class="pt-table rv" id="tab-cinematic">
-    <div class="pt-header">
-      <div class="pt-col-dur">Duration</div>
-      <div class="pt-col">Per Video</div>
-      <div class="pt-col pt-blue-hd">3 Videos</div>
-      <div class="pt-col pt-blue-hd">5 Videos</div>
-      <div class="pt-col pt-blue-hd">10 Videos</div>
-    </div>
-    <div class="pt-row">
-      <div class="pt-col-dur"><span class="pt-dur-label">15 Seconds</span></div>
-      <div class="pt-col"><span class="pt-base">$60</span></div>
-      <div class="pt-col"><span class="pt-bundle">$170</span><span class="pt-save">SAVE $10</span></div>
-      <div class="pt-col"><span class="pt-bundle">$290</span><span class="pt-save">SAVE $10</span></div>
-      <div class="pt-col"><span class="pt-bundle">$540</span><span class="pt-save">SAVE $60</span></div>
-    </div>
-    <div class="pt-row featured">
-      <div class="pt-col-dur"><span class="pt-dur-label">20–25 Seconds</span></div>
-      <div class="pt-col"><span class="pt-base">$75</span></div>
-      <div class="pt-col"><span class="pt-bundle">$210</span><span class="pt-save">SAVE $15</span></div>
-      <div class="pt-col"><span class="pt-bundle">$360</span><span class="pt-save">SAVE $15</span></div>
-      <div class="pt-col"><span class="pt-bundle">$690</span><span class="pt-save">SAVE $60</span></div>
-    </div>
-    <div class="pt-row">
-      <div class="pt-col-dur"><span class="pt-dur-label">30 Seconds</span></div>
-      <div class="pt-col"><span class="pt-base">$90</span></div>
-      <div class="pt-col"><span class="pt-bundle">$255</span><span class="pt-save">SAVE $15</span></div>
-      <div class="pt-col"><span class="pt-bundle">$435</span><span class="pt-save">SAVE $15</span></div>
-      <div class="pt-col"><span class="pt-bundle">$840</span><span class="pt-save">SAVE $60</span></div>
-    </div>
-  </div>
-
-  <!-- UGC TABLE -->
-  <div class="pt-table rv" id="tab-ugc" style="display:none">
-    <div class="pt-header">
-      <div class="pt-col-dur">Duration</div>
-      <div class="pt-col">Per Video</div>
-      <div class="pt-col pt-blue-hd">3 Videos</div>
-      <div class="pt-col pt-blue-hd">5 Videos</div>
-      <div class="pt-col pt-blue-hd">10 Videos</div>
-    </div>
-    <div class="pt-row">
-      <div class="pt-col-dur"><span class="pt-dur-label">15 Seconds</span></div>
-      <div class="pt-col"><span class="pt-base">$45</span></div>
-      <div class="pt-col"><span class="pt-bundle">$125</span><span class="pt-save">SAVE $10</span></div>
-      <div class="pt-col"><span class="pt-bundle">$210</span><span class="pt-save">SAVE $15</span></div>
-      <div class="pt-col"><span class="pt-bundle">$400</span><span class="pt-save">SAVE $50</span></div>
-    </div>
-    <div class="pt-row featured">
-      <div class="pt-col-dur"><span class="pt-dur-label">20–25 Seconds</span></div>
-      <div class="pt-col"><span class="pt-base">$60</span></div>
-      <div class="pt-col"><span class="pt-bundle">$170</span><span class="pt-save">SAVE $10</span></div>
-      <div class="pt-col"><span class="pt-bundle">$285</span><span class="pt-save">SAVE $15</span></div>
-      <div class="pt-col"><span class="pt-bundle">$550</span><span class="pt-save">SAVE $50</span></div>
-    </div>
-    <div class="pt-row">
-      <div class="pt-col-dur"><span class="pt-dur-label">30 Seconds</span></div>
-      <div class="pt-col"><span class="pt-base">$75</span></div>
-      <div class="pt-col"><span class="pt-bundle">$210</span><span class="pt-save">SAVE $15</span></div>
-      <div class="pt-col"><span class="pt-bundle">$360</span><span class="pt-save">SAVE $15</span></div>
-      <div class="pt-col"><span class="pt-bundle">$700</span><span class="pt-save">SAVE $50</span></div>
-    </div>
-  </div>
-
-  <div style="text-align:center;margin-top:3rem" class="rv2">
-    <a href="#contact" class="btn-a">Start Your Project →</a>
-  </div>
-</section>
-
-<div class="sep"></div>
-
-<!-- ══════════════════════════════════════════════════ PROCESS -->
-<section id="process" class="sec">
-  <div class="sec-tag">How We Work</div>
-  <h2 class="sec-h rv">The <em>Protocol</em></h2>
-  <p class="sec-sub rv2">A battle-tested 4-step workflow built for speed, creative excellence, and zero confusion — every single time.</p>
-  <div class="proc-row rv">
-    <div class="proc-step">
-      <div class="proc-num">01</div>
-      <div class="proc-title">Pre-Production</div>
-      <p class="proc-desc">Strategy call, brief intake, concept creation &amp; mood board approval. We align on creative direction before a single frame is touched.</p>
-      <p class="proc-note">Before project starts</p>
-    </div>
-    <div class="proc-step">
-      <div class="proc-num">02</div>
-      <div class="proc-title">During Production</div>
-      <p class="proc-desc">Filming, asset collection, scripting, voiceover &amp; motion design. You provide the product — we handle the entire creative production.</p>
-      <p class="proc-note">Active production phase</p>
-    </div>
-    <div class="proc-step">
-      <div class="proc-num">03</div>
-      <div class="proc-title">Delivery &amp; Close</div>
-      <p class="proc-desc">Final edited creative delivered in all formats. Platform-ready exports, full quality review &amp; instant delivery via secure download link.</p>
-      <p class="proc-note">Final handoff</p>
-    </div>
-    <div class="proc-step">
-      <div class="proc-num">04</div>
-      <div class="proc-title">Revision &amp; Policy</div>
-      <p class="proc-desc">Included revisions applied within 24–48 hours. Additional revisions available at a flat rate. Full IP ownership transferred on final payment.</p>
-      <p class="proc-note">Post-delivery support</p>
-    </div>
-  </div>
-</section>
-
-<div class="sep"></div>
-
-<!-- ══════════════════════════════════════════════════ CONTACT -->
-<section id="contact" class="sec">
-  <div class="contact-grid">
-    <div>
-      <div class="sec-tag">Let's Work Together</div>
-      <h2 class="contact-h rv">Ready<br>to <em>Scale?</em></h2>
-      <p class="contact-p rv2">Drop us a message and we'll respond within 24 hours with a custom creative strategy tailored specifically to your skincare brand.</p>
-      <div class="c-links rv">
-        <a href="mailto:hello@addygrowthstudio.com" class="c-link">
-          <div class="c-icon">✉</div>
-          <div class="c-info">
-            <div class="c-lbl">Email Us</div>
-            <div class="c-val">hello@addygrowthstudio.com</div>
+  <!-- ═══ HERO ═══ -->
+  <section id="hero-scroll-container">
+    <div class="hero-sticky">
+      <canvas id="heroCanvas"></canvas>
+      <div class="hero-overlay" id="heroOverlay">
+        <div class="hero-content" id="heroContent">
+          <div class="hero-badge"><span class="badge-dot"></span><span>Skincare Ad Agency</span></div>
+          <h1 class="hero-title">We engineer <span class="text-accent">high-converting</span> ads &amp; websites that turn attention into <span class="text-accent">revenue.</span></h1>
+          <p class="hero-subtitle">Science-backed strategy meets luxury cinematics. Every frame is engineered to stop the scroll and close the sale.</p>
+          <div class="hero-buttons">
+            <a href="#work" class="btn-primary"><span>View Our Work</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+            <a href="#pricing" class="btn-secondary">See Pricing →</a>
           </div>
-          <div class="c-arr">→</div>
-        </a>
-        <a href="https://instagram.com/addygrowthstudio" target="_blank" class="c-link">
-          <div class="c-icon">◈</div>
-          <div class="c-info">
-            <div class="c-lbl">Instagram</div>
-            <div class="c-val">@addygrowthstudio</div>
-          </div>
-          <div class="c-arr">→</div>
-        </a>
-        <a href="https://wa.me/919999999999" target="_blank" class="c-link">
-          <div class="c-icon">💬</div>
-          <div class="c-info">
-            <div class="c-lbl">WhatsApp</div>
-            <div class="c-val">Message Us Directly</div>
-          </div>
-          <div class="c-arr">→</div>
-        </a>
+        </div>
+        <div class="scroll-indicator" id="scrollIndicator">
+          <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+          <span>Scroll to explore</span>
+        </div>
       </div>
     </div>
-    <div>
-      <div class="cf rv2">
-        <div class="cf-title">Quick <em style="font-family:'Cormorant',serif;font-style:italic;background:linear-gradient(125deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Inquiry</em></div>
-        <div class="cf-field">
-          <label>Brand Name</label>
-          <input type="text" placeholder="Your skincare brand">
+  </section>
+
+  <!-- ═══ STRATEGY — HORIZONTAL SCROLL ═══ -->
+  <section id="why" class="hscroll-section" data-hscroll="strategy">
+    <div class="hscroll-sticky">
+      <div class="hscroll-header">
+        <span class="section-tag">Why Us</span>
+        <h2 class="section-title">Science-backed strategy meets <span class="text-accent">luxury cinematics.</span></h2>
+        <p class="section-desc">Every frame is engineered to stop the scroll and close the sale.</p>
+      </div>
+      <div class="hscroll-track" id="strategyTrack">
+        <div class="strategy-card">
+          <div class="card-icon">⚡</div><h3>Hook in 0–3 Seconds</h3>
+          <p>Pattern-interrupt openers built from behavioural psychology. We study thousands of data points to craft openers that force viewers to stop mid-scroll.</p>
         </div>
-        <div class="cf-field">
-          <label>Email / WhatsApp</label>
-          <input type="text" placeholder="your@email.com or +91 XXXXXXXX">
+        <div class="strategy-card">
+          <div class="card-icon">🎬</div><h3>Cinematic Brand Elevation</h3>
+          <p>Your product deserves luxury treatment. Our cinematography and colour grading elevates skincare brands to premium perceived value — instantly.</p>
         </div>
-        <div class="cf-field">
-          <label>Package</label>
-          <select>
-            <option>15-Second Ad — $60</option>
-            <option selected>25-Second Ad — $75 (Most Popular)</option>
-            <option>30-Second Ad — $90</option>
-          </select>
+        <div class="strategy-card">
+          <div class="card-icon">🎯</div><h3>Conversion-First Editing</h3>
+          <p>Every cut, transition, and CTA placement is optimised for click-throughs. We don't just make beautiful ads — we make ads that actually sell.</p>
         </div>
-        <div class="cf-field">
-          <label>Tell us about your brand &amp; goals</label>
-          <textarea rows="4" placeholder="Product type, target audience, campaign goals..."></textarea>
+        <div class="strategy-card">
+          <div class="card-icon">📊</div><h3>Data-Driven Iteration</h3>
+          <p>We analyse performance metrics after launch and feed insights back into future creatives. Your campaigns get smarter with every video.</p>
         </div>
-        <button class="cf-btn" onclick="this.textContent='✓ Sent! We\'ll reply within 24h';this.style.background='#0f4';this.style.color='#000';setTimeout(()=>{this.textContent='Send Inquiry →';this.style.background='';this.style.color=''},3000)">Send Inquiry →</button>
+        <div class="strategy-card">
+          <div class="card-icon">📱</div><h3>Platform-Native Format</h3>
+          <p>Instagram Reels, TikTok, Meta — each platform has its own culture. We craft native-feeling content that doesn't look or feel like an ad.</p>
+        </div>
+        <div class="strategy-card">
+          <div class="card-icon">🚀</div><h3>Rapid Creative Output</h3>
+          <p>Brief to final delivery in under 5 days. Fast turnaround means you're always testing fresh creatives — staying permanently ahead of ad fatigue.</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ══════════════════════════════════════════════════ FOOTER -->
-<footer>
-  <div class="f-logo">Addy Growth Studio</div>
-  <div class="f-copy">© 2025 Addy Growth Studio · All Rights Reserved</div>
-  <div class="f-tag">Engineering Attention Into Revenue</div>
-</footer>
+  <!-- ═══ WORK ═══ -->
+  <section id="work" class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Our Work</span>
+        <h2 class="section-title">Previews. <span class="text-accent">Cinematic.</span> Authentic Ads.</h2>
+        <p class="section-desc">Three core skincare niches. Upload your product — we handle everything else.</p>
+      </div>
+      <div class="niche-block reveal" style="--delay:.1s">
+        <div class="niche-label">Niche 01 — Anti-Aging Serums</div>
+        <div class="niche-format-tag">9:16 · Instagram Reels · Stories · TikTok Ready</div>
+        <div class="niche-frame">
+          <div class="niche-video-card"><span class="platform-tag instagram">Instagram</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">UGC Review · 15s</div></div><div class="niche-duration">15 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag reels">Reels</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">Testimonial · 25s</div></div><div class="niche-duration">25 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag instagram">Instagram</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">UGC Review · 30s</div></div><div class="niche-duration">30 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag stories">Stories</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">Testimonial · 25s</div></div><div class="niche-duration">25 SEC</div></div>
+        </div>
+      </div>
+      <div class="niche-block reveal" style="--delay:.2s">
+        <div class="niche-label">Niche 02 — Hydration & Moisturisers</div>
+        <div class="niche-format-tag">9:16 · Instagram Reels · Stories · TikTok Ready</div>
+        <div class="niche-frame">
+          <div class="niche-video-card"><span class="platform-tag instagram">Instagram</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">UGC Review · 15s</div></div><div class="niche-duration">15 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag reels">Reels</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">Testimonial · 25s</div></div><div class="niche-duration">25 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag instagram">Instagram</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">UGC Review · 30s</div></div><div class="niche-duration">30 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag stories">Stories</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">Testimonial · 25s</div></div><div class="niche-duration">25 SEC</div></div>
+        </div>
+      </div>
+      <div class="niche-block reveal" style="--delay:.3s">
+        <div class="niche-label">Niche 03 — SPF & Sunscreen</div>
+        <div class="niche-format-tag">9:16 · Instagram Reels · Stories · TikTok Ready</div>
+        <div class="niche-frame">
+          <div class="niche-video-card"><span class="platform-tag instagram">Instagram</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">UGC Review · 15s</div></div><div class="niche-duration">15 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag reels">Reels</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">Testimonial · 25s</div></div><div class="niche-duration">25 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag instagram">Instagram</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">UGC Review · 30s</div></div><div class="niche-duration">30 SEC</div></div>
+          <div class="niche-video-card"><span class="platform-tag stories">Stories</span><div class="niche-video-inner"><div class="niche-play"><svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,.5)"><path d="M8 5v14l11-7z"/></svg></div><div class="niche-video-label">Testimonial · 25s</div></div><div class="niche-duration">25 SEC</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<!-- ══════════════════════════════════════════════════ SCRIPTS -->
-<script>
-/* CURSOR */
-const cur = document.getElementById('cur');
-const cur2 = document.getElementById('cur2');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX; my=e.clientY;
-  cur.style.left=mx+'px'; cur.style.top=my+'px';
-});
-(function tick(){
-  rx+=(mx-rx)*.13; ry+=(my-ry)*.13;
-  cur2.style.left=rx+'px'; cur2.style.top=ry+'px';
-  requestAnimationFrame(tick);
-})();
-document.querySelectorAll('a,button,.vf,.vfv,.why-c,.p-card,.t-card,.c-link').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cur.style.width='16px';cur.style.height='16px';cur2.style.width='52px';cur2.style.height='52px';cur2.style.borderColor='rgba(26,107,255,.9)'});
-  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';cur2.style.width='34px';cur2.style.height='34px';cur2.style.borderColor='rgba(26,107,255,.55)'});
-});
+  <!-- ═══ TESTIMONIALS — HORIZONTAL SCROLL ═══ -->
+  <section id="testimonials" class="hscroll-section" data-hscroll="testimonials">
+    <div class="hscroll-sticky">
+      <div class="hscroll-header">
+        <span class="section-tag">Success Stories</span>
+        <h2 class="section-title">Real brands. Real results. <span class="text-accent">Real revenue.</span></h2>
+        <p class="section-desc">Generated by strategic, cinematic creatives.</p>
+      </div>
+      <div class="hscroll-track" id="testimonialsTrack">
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>"Addy Growth transformed our ad performance entirely. Our serum line went from flat sales to sold out within three weeks."</p><div class="testimonial-author"><div class="author-avatar">SB</div><div><strong>Sarah B.</strong><span>Founder, GlowLab Skincare</span></div></div></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>"The cinematic quality is on a completely different level. Our competitors' ads look cheap now. Clients keep asking who made our creatives."</p><div class="testimonial-author"><div class="author-avatar">MR</div><div><strong>Michael R.</strong><span>CMO, DermaElite</span></div></div></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>"We scaled our anti-aging line from $8K/month to $45K/month within 60 days of partnering with Addy Growth."</p><div class="testimonial-author"><div class="author-avatar">JP</div><div><strong>Jessica P.</strong><span>CEO, AgeDefy Labs</span></div></div></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>"Our cost per acquisition dropped by half and our average order value doubled overnight with the 25-second format."</p><div class="testimonial-author"><div class="author-avatar">DK</div><div><strong>David K.</strong><span>Director, PureSkin Co.</span></div></div></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>"None came close to Addy's creative quality or turnaround speed. They understand the skincare market at unmatched depth."</p><div class="testimonial-author"><div class="author-avatar">LT</div><div><strong>Lisa T.</strong><span>Brand Manager, VitalGlow</span></div></div></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>"We generated over $120K in attributed revenue from a single campaign in the first month. Absolute game-changers."</p><div class="testimonial-author"><div class="author-avatar">AW</div><div><strong>Alex W.</strong><span>Founder, Radiance Beauty</span></div></div></div>
+      </div>
+    </div>
+  </section>
 
-/* NAV */
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('solid',scrollY>50));
-const hbg=document.getElementById('hbg');
-const nmenu=document.getElementById('nmenu');
-hbg.addEventListener('click',()=>nmenu.classList.toggle('open'));
-nmenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nmenu.classList.remove('open')));
+  <!-- ═══ PRICING ═══ -->
+  <section id="pricing" class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Pricing</span>
+        <h2 class="section-title">Premium Visual Assets <span class="text-accent">for Growth Brands.</span></h2>
+        <p class="section-desc">Transparent, no-surprise pricing. Bundle & save on multiple videos.</p>
+      </div>
+      <div class="pricing-tabs reveal">
+        <div class="pricing-tab-bg" id="pricingTabBg"></div>
+        <button class="pricing-tab active" data-tab="cinematic" id="tabCinematic">Cinematic Product Videos</button>
+        <button class="pricing-tab" data-tab="ugc" id="tabUgc">UGC Testimonial Videos</button>
+      </div>
+      <div class="pricing-table-wrap reveal" style="--delay:.1s">
+        <table class="pricing-table" id="pricingTable">
+          <thead><tr><th class="col-duration">Duration</th><th class="col-per">Per Video</th><th class="col-bundle">3 Videos</th><th class="col-bundle">5 Videos</th><th class="col-bundle">10 Videos</th></tr></thead>
+          <tbody id="pricingBody"></tbody>
+        </table>
+      </div>
+      <div class="pricing-cta reveal" style="--delay:.2s"><a href="#contact" class="btn-primary pricing-start-btn"><span>Start Your Project →</span></a></div>
+    </div>
+  </section>
 
-/* ANIMATED CANVAS BG */
-const canvas=document.getElementById('bgCanvas');
-const ctx=canvas.getContext('2d');
-let W,H,pts=[];
-function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;init()}
-function init(){
-  pts=[];
-  for(let i=0;i<70;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.2+.4});
-}
-function draw(){
-  ctx.clearRect(0,0,W,H);
-  /* orbs */
-  const t=Date.now()/1000;
-  [[W*.15,H*.2,280,'rgba(26,107,255,.055)'],[W*.85,H*.5,220,'rgba(0,200,255,.04)'],[W*.4,H*.85,320,'rgba(26,107,255,.04)']].forEach(([ox,oy,r,c],i)=>{
-    const ox2=ox+Math.sin(t*.3+i*2)*40;
-    const oy2=oy+Math.cos(t*.25+i*1.5)*35;
-    const g=ctx.createRadialGradient(ox2,oy2,0,ox2,oy2,r);
-    g.addColorStop(0,c);g.addColorStop(1,'transparent');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(ox2,oy2,r,0,Math.PI*2);ctx.fill();
-  });
-  /* particles */
-  pts.forEach(p=>{
-    p.x+=p.vx;p.y+=p.vy;
-    if(p.x<0)p.x=W;if(p.x>W)p.x=0;
-    if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle='rgba(26,107,255,.7)';ctx.fill();
-  });
-  /* connections */
-  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
-    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
-    if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(26,107,255,${.12*(1-d/130)})`;ctx.lineWidth=.5;ctx.stroke();}
-  }
-  requestAnimationFrame(draw);
-}
-resize();window.addEventListener('resize',resize);draw();
+  <!-- ═══ PROCESS ═══ -->
+  <section id="process" class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">The Protocol</span>
+        <h2 class="section-title">A battle-tested <span class="text-accent">4-step workflow</span></h2>
+        <p class="section-desc">Built for speed, creative excellence, and zero confusion — every single time.</p>
+      </div>
+      <div class="process-timeline">
+        <div class="process-step reveal" style="--delay:.1s"><div class="step-number">01</div><div class="step-content"><span class="step-phase">Before project starts</span><h3>Strategy & Alignment</h3><p>Strategy call, brief intake, concept creation & mood board approval.</p></div></div>
+        <div class="process-step reveal" style="--delay:.2s"><div class="step-number">02</div><div class="step-content"><span class="step-phase">Active production</span><h3>Production & Creation</h3><p>Filming, scripting, voiceover & motion design. We handle everything.</p></div></div>
+        <div class="process-step reveal" style="--delay:.3s"><div class="step-number">03</div><div class="step-content"><span class="step-phase">Final handoff</span><h3>Delivery & Export</h3><p>Platform-ready exports, quality review & instant secure delivery.</p></div></div>
+        <div class="process-step reveal" style="--delay:.4s"><div class="step-number">04</div><div class="step-content"><span class="step-phase">Post-delivery</span><h3>Revisions & Optimization</h3><p>Revisions within 24–48 hrs. Full IP ownership on final payment.</p></div></div>
+      </div>
+    </div>
+  </section>
 
-/* PRICING TABS */
-document.querySelectorAll('.pt-tab').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.pt-tab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const t=btn.dataset.tab;
-    document.getElementById('tab-cinematic').style.display=t==='cinematic'?'block':'none';
-    document.getElementById('tab-ugc').style.display=t==='ugc'?'block':'none';
-  });
-});
+  <!-- ═══ CONTACT ═══ -->
+  <section id="contact" class="section section-contact">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Get In Touch</span>
+        <h2 class="section-title">Ready to <span class="text-accent">Scale?</span></h2>
+        <p class="section-desc">Drop us a message and we'll respond within 24 hours with a custom creative strategy.</p>
+      </div>
+      <div class="contact-grid">
+        <a href="mailto:hello@addygrowthstudio.com" class="contact-card reveal" style="--delay:.1s"><div class="contact-icon">✉</div><div class="contact-info"><strong>Email Us</strong><span>hello@addygrowthstudio.com</span></div><div class="contact-arrow">→</div></a>
+        <a href="https://instagram.com/addygrowthstudio" target="_blank" class="contact-card reveal" style="--delay:.2s"><div class="contact-icon">◈</div><div class="contact-info"><strong>Instagram</strong><span>@addygrowthstudio</span></div><div class="contact-arrow">→</div></a>
+        <a href="https://wa.me/919999999999" target="_blank" class="contact-card reveal" style="--delay:.3s"><div class="contact-icon">💬</div><div class="contact-info"><strong>WhatsApp</strong><span>Message Us Directly</span></div><div class="contact-arrow">→</div></a>
+      </div>
+    </div>
+  </section>
 
-const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.1});
-document.querySelectorAll('.rv,.rv2,.rv3').forEach(el=>obs.observe(el));
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand"><span class="logo-icon">◈</span><span>Addy Growth Studio</span></div>
+        <p class="footer-copy">© 2026 Addy Growth Studio. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
-/* COUNTER */
-function counter(el,target,isFloat,suffix){
-  let v=0;const dur=1800,step=16,inc=target/(dur/step);
-  const iv=setInterval(()=>{
-    v+=inc;if(v>=target){v=target;clearInterval(iv);}
-    el.textContent=(isFloat?v.toFixed(1):Math.floor(v))+suffix;
-  },step);
-}
-const statObs=new IntersectionObserver(entries=>entries.forEach(e=>{
-  if(e.isIntersecting){
-    e.target.querySelectorAll('.h-stat-n').forEach(n=>{
-      const c=parseInt(n.dataset.count||0);
-      const f=parseFloat(n.dataset.val||0);
-      const s=n.dataset.suffix||'';
-      if(c)counter(n,c,false,s);
-      else if(f)counter(n,f,true,s);
-    });
-    statObs.unobserve(e.target);
-  }
-}),{threshold:.5});
-const hs=document.querySelector('.h-stats');
-if(hs)statObs.observe(hs);
-</script>
+  <script type="module" src="/main.js"></script>
 </body>
 </html>
-
