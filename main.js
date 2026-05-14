@@ -237,6 +237,45 @@
         track.style.transform = `translate3d(-${maxScroll}px, 0, 0)`;
       }
     });
+
+    // ── Premium Cards Neon Highlight ──
+    const premiumCards = document.querySelectorAll('.premium-card');
+    const viewportCenter = window.innerWidth / 2;
+    premiumCards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = rect.left + rect.width / 2;
+      // Highlight if the center of the card is within 25% of the viewport center
+      if (Math.abs(cardCenter - viewportCenter) < window.innerWidth * 0.25) {
+        card.classList.add('neon-highlight');
+      } else {
+        card.classList.remove('neon-highlight');
+      }
+    });
+
+    // ── Vertical Timeline Process ──
+    const vTimeline = document.getElementById('processVTimeline');
+    const vLineFill = document.getElementById('vLineFill');
+    if (vTimeline && vLineFill) {
+      const vh = window.innerHeight;
+      const tRect = vTimeline.getBoundingClientRect();
+      
+      let fillPct = 0;
+      if (tRect.top < vh * 0.75) {
+         fillPct = (vh * 0.75 - tRect.top) / (tRect.height * 0.8);
+      }
+      fillPct = Math.max(0, Math.min(1, fillPct));
+      vLineFill.style.height = `${fillPct * 100}%`;
+      
+      const steps = vTimeline.querySelectorAll('.v-step');
+      steps.forEach(step => {
+        const sRect = step.getBoundingClientRect();
+        if (sRect.top < vh * 0.8) {
+          step.classList.add('active');
+        } else {
+          step.classList.remove('active');
+        }
+      });
+    }
   }
 
   let ticking = false;
