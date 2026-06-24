@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Addy Growth Studio — High-Converting Skincare Ads</title>
-  <meta name="description" content="We engineer high-converting ads & websites that turn attention into revenue." />
+  <title>Addy Growth Studio — Premium Skincare Ads & Websites</title>
+  <meta name="description" content="We engineer high-converting cinematic ads & premium websites that turn attention into revenue for skincare brands." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
@@ -30,9 +30,7 @@
       <div class="nav-links">
         <a href="#why" class="nav-link">Strategy</a>
         <a href="#work" class="nav-link">Work</a>
-        <a href="#testimonials" class="nav-link">Clients</a>
         <a href="#pricing" class="nav-link">Pricing</a>
-        <a href="#process" class="nav-link">Process</a>
         <a href="#contact" class="nav-link">Contact</a>
       </div>
       <a href="#contact" class="nav-cta">Start Project</a>
@@ -44,49 +42,33 @@
   <div class="mobile-menu" id="mobileMenu">
     <a href="#why" class="mobile-link">Strategy</a>
     <a href="#work" class="mobile-link">Work</a>
-    <a href="#testimonials" class="mobile-link">Clients</a>
     <a href="#pricing" class="mobile-link">Pricing</a>
     <a href="#process" class="mobile-link">Process</a>
     <a href="#contact" class="mobile-link">Contact</a>
     <a href="#contact" class="mobile-cta">Start Project</a>
   </div>
 
-  <!-- ═══ HERO ═══ -->
+  <!-- ═══ HERO — SCROLL FRAME ANIMATION ═══ -->
   <section id="hero-scroll-container">
     <div class="hero-sticky">
       <canvas id="heroCanvas"></canvas>
       <div class="hero-overlay" id="heroOverlay">
-        <!-- Individual Floating Texts -->
-        <div class="hero-text-float left" id="heroText1">
-          <div class="hero-badge" style="margin-bottom: 16px; animation: none;"><span class="badge-dot"></span><span>Skincare Ad Agency</span></div>
-          <h2 style="font-family: var(--font-display); font-size: clamp(32px, 4vw, 56px); font-weight: 800; line-height: 1.1;">Cinematic Ads &<br>Premium Websites<br><span class="text-accent">for Modern Skincare Brands</span></h2>
+
+        <div class="hero-text-float right" id="heroText1" style="top:50%;right:5%;text-align:right;">
+          <h1 class="hero-h1" style="font-size:clamp(36px,5.5vw,72px);line-height:1.1;">Cinematic Ads &amp;<br>Premium Websites<br><span class="text-accent hero-accent-animate">for Modern Skincare</span></h1>
         </div>
 
-        <div class="hero-text-float right" id="heroText2">
-          <p style="font-size: clamp(18px, 2.5vw, 24px); color: var(--text-dim); line-height: 1.6; font-weight: 500;">We help skincare brands grow with cinematic AI UGC ads and conversion-focused website experiences.</p>
-        </div>
-
-        <div class="hero-text-float left" id="heroText3">
-          <!-- Removed original text as per user request -->
-        </div>
-
-        <div class="hero-text-float bottom-center" id="heroText4">
-          <div class="hero-buttons" style="justify-content: center; animation: none;">
-            <a href="#work" class="btn-primary"><span>View Our Work</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
-            <a href="#pricing" class="btn-secondary">See Pricing →</a>
-          </div>
-        </div>
         <div class="scroll-indicator" id="scrollIndicator">
           <div class="scroll-mouse"><div class="scroll-dot"></div></div>
           <span>Scroll to explore</span>
         </div>
-        
+
         <div class="hero-marquee">
           <div class="marquee-content">
-            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull;</span>
-            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull;</span>
-            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull;</span>
-            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull;</span>
+            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
           </div>
         </div>
       </div>
@@ -96,35 +78,34 @@
   <!-- ═══ STRATEGY — HORIZONTAL SCROLL ═══ -->
   <section id="why" class="hscroll-section" data-hscroll="strategy">
     <div class="hscroll-sticky">
-      <div class="hscroll-header">
+      <div class="hscroll-header reveal">
         <span class="section-tag">Why Us</span>
-        <h2 class="section-title">Science-backed strategy meets <span class="text-accent">luxury cinematics.</span></h2>
+        <h2 class="section-title shimmer-heading">Science-backed strategy meets <span class="text-accent">luxury cinematics.</span></h2>
         <p class="section-desc">Every frame is engineered to stop the scroll and close the sale.</p>
       </div>
       <div class="hscroll-track" id="strategyTrack">
-        <div class="strategy-card">
-          <div class="card-icon">⚡</div><h3>Hook in 0–3 Seconds</h3>
-          <p>Pattern-interrupt openers built from behavioural psychology. We study thousands of data points to craft openers that force viewers to stop mid-scroll.</p>
+        <div class="strategy-card"><div class="card-icon">⚡</div><h3>Hook in 0–3 Seconds</h3><p>Pattern-interrupt openers built from behavioural psychology. We study thousands of data points to craft openers that force viewers to stop mid-scroll.</p></div>
+        <div class="strategy-card"><div class="card-icon">🎬</div><h3>Cinematic Brand Elevation</h3><p>Your product deserves luxury treatment. Our cinematography and colour grading elevates skincare brands to premium perceived value — instantly.</p></div>
+        <div class="strategy-card"><div class="card-icon">🎯</div><h3>Conversion-First Editing</h3><p>Every cut, transition, and CTA placement is optimised for click-throughs. We don't just make beautiful ads — we make ads that actually sell.</p></div>
+        <div class="strategy-card"><div class="card-icon">📊</div><h3>Data-Driven Iteration</h3><p>We analyse performance metrics after launch and feed insights back into future creatives. Your campaigns get smarter with every video.</p></div>
+        <div class="strategy-card"><div class="card-icon">📱</div><h3>Platform-Native Format</h3><p>Instagram Reels, TikTok, Meta — each platform has its own culture. We craft native-feeling content that doesn't look or feel like an ad.</p></div>
+        <div class="strategy-card"><div class="card-icon">🚀</div><h3>Rapid Creative Output</h3><p>Brief to final delivery in under 5 days. Fast turnaround means you're always testing fresh creatives — staying permanently ahead of ad fatigue.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ABOUT ═══ -->
+  <section id="about" class="section">
+    <div class="container" style="max-width:900px;">
+      <div class="about-flex reveal">
+        <div class="about-photo-wrap">
+          <div class="about-ring">
+            <img src="/addy-photo.png" alt="Addy" class="about-photo" />
+          </div>
         </div>
-        <div class="strategy-card">
-          <div class="card-icon">🎬</div><h3>Cinematic Brand Elevation</h3>
-          <p>Your product deserves luxury treatment. Our cinematography and colour grading elevates skincare brands to premium perceived value — instantly.</p>
-        </div>
-        <div class="strategy-card">
-          <div class="card-icon">🎯</div><h3>Conversion-First Editing</h3>
-          <p>Every cut, transition, and CTA placement is optimised for click-throughs. We don't just make beautiful ads — we make ads that actually sell.</p>
-        </div>
-        <div class="strategy-card">
-          <div class="card-icon">📊</div><h3>Data-Driven Iteration</h3>
-          <p>We analyse performance metrics after launch and feed insights back into future creatives. Your campaigns get smarter with every video.</p>
-        </div>
-        <div class="strategy-card">
-          <div class="card-icon">📱</div><h3>Platform-Native Format</h3>
-          <p>Instagram Reels, TikTok, Meta — each platform has its own culture. We craft native-feeling content that doesn't look or feel like an ad.</p>
-        </div>
-        <div class="strategy-card">
-          <div class="card-icon">🚀</div><h3>Rapid Creative Output</h3>
-          <p>Brief to final delivery in under 5 days. Fast turnaround means you're always testing fresh creatives — staying permanently ahead of ad fatigue.</p>
+        <div class="about-text">
+          <h2 class="section-title shimmer-heading" style="font-size:clamp(32px,5vw,52px);margin-bottom:24px;text-align:left;">Hi, I'm <span class="text-accent">Addy.</span></h2>
+          <p style="font-size:clamp(17px,2.5vw,22px);color:var(--text-dim);line-height:1.75;">I help skincare brands stand out with cinematic ad creatives and modern websites — designed to elevate their online presence and turn viewers into buyers.</p>
         </div>
       </div>
     </div>
@@ -135,45 +116,33 @@
     <div class="container">
       <div class="section-header reveal">
         <span class="section-tag">Our Work</span>
-        <h2 class="section-title">Previews. <span class="text-accent">Cinematic.</span> Authentic Ads.</h2>
+        <h2 class="section-title shimmer-heading">Previews. <span class="text-accent">Cinematic.</span> Authentic Ads.</h2>
         <p class="section-desc">Three core skincare niches. Upload your product — we handle everything else.</p>
       </div>
       <div class="niche-block reveal" style="--delay:.1s">
-        <div class="niche-label">Authentic UGC Reviews That Build Trust</div>
+        <div class="niche-label">✦ Authentic UGC Reviews That Build Trust</div>
         <div class="niche-frame">
-          <!-- Niche 1, Video 1 -->
           <div class="niche-video-card" id="niche1-video1"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/ZKdiiiXR4Mk?autoplay=1&mute=1&loop=1&playlist=ZKdiiiXR4Mk&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 1, Video 2 -->
           <div class="niche-video-card" id="niche1-video2"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/cXH4idWYgGc?autoplay=1&mute=1&loop=1&playlist=cXH4idWYgGc&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 1, Video 3 -->
           <div class="niche-video-card" id="niche1-video3"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/lUHtUOrXEcI?autoplay=1&mute=1&loop=1&playlist=lUHtUOrXEcI&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 1, Video 4 -->
           <div class="niche-video-card" id="niche1-video4"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/VEyp8H_kHvo?autoplay=1&mute=1&loop=1&playlist=VEyp8H_kHvo&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
         </div>
       </div>
       <div class="niche-block reveal" style="--delay:.2s">
-        <div class="niche-label">Luxury Cinematic Product Ads</div>
+        <div class="niche-label">✦ Luxury Cinematic Product Ads</div>
         <div class="niche-frame">
-          <!-- Niche 2, Video 1 -->
           <div class="niche-video-card" id="niche2-video1"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/P81b9Ttp8ds?autoplay=1&mute=1&loop=1&playlist=P81b9Ttp8ds&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 2, Video 2 -->
           <div class="niche-video-card" id="niche2-video2"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/KoyKJpT-9CI?autoplay=1&mute=1&loop=1&playlist=KoyKJpT-9CI&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 2, Video 3 -->
           <div class="niche-video-card" id="niche2-video3"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/yfD3_3-qY5s?autoplay=1&mute=1&loop=1&playlist=yfD3_3-qY5s&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 2, Video 4 -->
           <div class="niche-video-card" id="niche2-video4"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/mex8ko8q97M?autoplay=1&mute=1&loop=1&playlist=mex8ko8q97M&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
         </div>
       </div>
       <div class="niche-block reveal" style="--delay:.3s">
-        <div class="niche-label">Cinematic Brand Visuals</div>
+        <div class="niche-label">✦ Cinematic Brand Visuals</div>
         <div class="niche-frame">
-          <!-- Niche 3, Video 1 -->
           <div class="niche-video-card" id="niche3-video1"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/0SVwobcEIYs?autoplay=1&mute=1&loop=1&playlist=0SVwobcEIYs&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 3, Video 2 -->
           <div class="niche-video-card" id="niche3-video2"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/HHHbvmh5g9o?autoplay=1&mute=1&loop=1&playlist=HHHbvmh5g9o&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 3, Video 3 -->
           <div class="niche-video-card" id="niche3-video3"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/XV-ffDRK6IU?autoplay=1&mute=1&loop=1&playlist=XV-ffDRK6IU&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
-          <!-- Niche 3, Video 4 -->
           <div class="niche-video-card" id="niche3-video4"><div class="niche-video-inner"><iframe class="niche-video" style="border:none;" src="https://www.youtube.com/embed/8HLLgAa_SLo?autoplay=1&mute=1&loop=1&playlist=8HLLgAa_SLo&controls=1&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" title="YouTube Short" allowfullscreen></iframe></div></div>
         </div>
       </div>
@@ -183,16 +152,16 @@
   <!-- ═══ PREMIUM WEBSITES ═══ -->
   <section id="premium-websites" class="hscroll-section neon-hscroll" data-hscroll="websites">
     <div class="hscroll-sticky">
-      <div class="hscroll-header">
+      <div class="hscroll-header reveal">
         <span class="section-tag">Premium Websites</span>
-        <h2 class="section-title">Premium Website <span class="text-accent">Experiences</span></h2>
-        <p class="section-desc">Luxury skincare landing page designed for premium branding and conversions.</p>
+        <h2 class="section-title shimmer-heading">Premium Website <span class="text-accent">Experiences</span></h2>
+        <p class="section-desc">Luxury skincare landing pages designed for premium branding and conversions.</p>
       </div>
       <div class="hscroll-track" id="websitesTrack">
-        <div class="premium-card"><div class="premium-card-inner"><span>Website Preview 1</span></div></div>
-        <div class="premium-card"><div class="premium-card-inner"><span>Website Preview 2</span></div></div>
-        <div class="premium-card"><div class="premium-card-inner"><span>Website Preview 3</span></div></div>
-        <div class="premium-card"><div class="premium-card-inner"><span>Website Preview 4</span></div></div>
+        <div class="premium-card"><div class="premium-card-inner"><div class="premium-card-label">Peptide Ritual</div><div class="premium-card-sub">Clinical Serum Brand</div><div class="premium-card-tag">E-Commerce</div></div></div>
+        <div class="premium-card"><div class="premium-card-inner"><div class="premium-card-label">Velvet Skin Co</div><div class="premium-card-sub">Luxury Moisturisers</div><div class="premium-card-tag">Landing Page</div></div></div>
+        <div class="premium-card"><div class="premium-card-inner"><div class="premium-card-label">Luminos Glow</div><div class="premium-card-sub">Brightening Range</div><div class="premium-card-tag">DTC Store</div></div></div>
+        <div class="premium-card"><div class="premium-card-inner"><div class="premium-card-label">Dermis Lab</div><div class="premium-card-sub">Science-Led Skincare</div><div class="premium-card-tag">Portfolio</div></div></div>
       </div>
     </div>
   </section>
@@ -202,57 +171,82 @@
     <div class="container">
       <div class="section-header reveal">
         <span class="section-tag">3 Minimal Steps</span>
-        <h2 class="section-title">Our Creative <span class="text-accent">Process</span></h2>
+        <h2 class="section-title shimmer-heading">Our Creative <span class="text-accent">Process</span></h2>
       </div>
       <div class="process-v-timeline" id="processVTimeline">
         <div class="v-line"><div class="v-line-fill" id="vLineFill"></div></div>
-        <div class="v-step" data-step="0">
-          <div class="v-circle"></div>
-          <div class="v-content">
-            <h3 class="v-title">01 Strategy</h3>
-            <p class="v-desc">Understanding your brand & audience</p>
-          </div>
+        <div class="v-step" data-step="0"><div class="v-circle"></div><div class="v-content"><h3 class="v-title">01 Strategy</h3><p class="v-desc">We deep-dive into your brand, audience, and competitor landscape to build a winning creative brief.</p></div></div>
+        <div class="v-step" data-step="1"><div class="v-circle"></div><div class="v-content"><h3 class="v-title">02 Creation</h3><p class="v-desc">Cinematic ads and conversion websites produced by our premium creative team — delivered in 5 days.</p></div></div>
+        <div class="v-step" data-step="2"><div class="v-circle"></div><div class="v-content"><h3 class="v-title">03 Growth</h3><p class="v-desc">We track performance, iterate creatives, and keep your brand ahead of ad fatigue permanently.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ BENEFITS ═══ -->
+  <section id="benefits" class="benefits-sticky-section">
+    <div class="benefits-sticky-container">
+      <div class="container" style="max-width:1200px;">
+        <div class="section-header reveal-benefit-header">
+          <span class="section-tag">Results</span>
+          <h2 class="section-title shimmer-heading">Designed for <span class="text-accent">Growth</span></h2>
         </div>
-        <div class="v-step" data-step="1">
-          <div class="v-circle"></div>
-          <div class="v-content">
-            <h3 class="v-title">02 Creation</h3>
-            <p class="v-desc">Producing cinematic ads & websites</p>
+        <div class="benefits-layout">
+          <!-- Left Column: Top, Middle, Bottom -->
+          <div class="benefits-col left-col">
+            <div class="benefit-card reveal-benefit" data-benefit-line="1">⚡ Scroll-Stopping Creatives</div>
+            <div class="benefit-card reveal-benefit" data-benefit-line="2">💎 Premium Brand Experience</div>
+            <div class="benefit-card reveal-benefit" data-benefit-line="3">📱 Mobile-Optimized Design</div>
           </div>
-        </div>
-        <div class="v-step" data-step="2">
-          <div class="v-circle"></div>
-          <div class="v-content">
-            <h3 class="v-title">03 Growth</h3>
-            <p class="v-desc">Helping improve engagement & conversions</p>
+
+          <!-- Center Image: Standing Addy -->
+          <div class="benefits-image-wrap reveal-benefit-image">
+            <img src="/addy-stand.png" alt="Addy Stand" class="benefits-image" />
+          </div>
+
+          <!-- Right Column: Top, Middle, Bottom -->
+          <div class="benefits-col right-col">
+            <div class="benefit-card reveal-benefit" data-benefit-line="1">🎯 Conversion-Focused Layouts</div>
+            <div class="benefit-card reveal-benefit" data-benefit-line="2">🚀 5-Day Fast Delivery</div>
+            <div class="benefit-card reveal-benefit" data-benefit-line="3">🔬 Data-Driven Strategy</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ BENEFITS / RESULTS ═══ -->
-  <section id="benefits" class="section">
-    <div class="container" style="max-width:800px;">
+
+  <!-- ═══ TESTIMONIALS ═══ -->
+  <section id="testimonials" class="section">
+    <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag">Results</span>
-        <h2 class="section-title">Designed for <span class="text-accent">Growth</span></h2>
+        <h2 class="section-title shimmer-heading">What Brands Say</h2>
+        <p class="section-desc">Real feedback from skincare brands we have worked with.</p>
       </div>
-      <div class="benefits-grid">
-        <div class="benefit-card reveal" style="--delay:.1s">✅ Scroll-Stopping Creatives</div>
-        <div class="benefit-card reveal" style="--delay:.2s">✅ Premium Brand Experience</div>
-        <div class="benefit-card reveal" style="--delay:.3s">✅ Mobile-Optimized Design</div>
-        <div class="benefit-card reveal" style="--delay:.4s">✅ Conversion-Focused Layouts</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ ABOUT SECTION ═══ -->
-  <section id="about" class="section">
-    <div class="container" style="max-width:700px; text-align:center;">
-      <div class="reveal">
-        <h2 class="section-title" style="font-size:clamp(32px, 5vw, 48px); margin-bottom: 24px;">Hi, I’m Addy.</h2>
-        <p style="font-size: clamp(18px, 3vw, 22px); color: var(--text-dim); line-height: 1.6;">I help skincare brands stand out with cinematic ad creatives and modern websites designed to elevate their online presence.</p>
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal" style="--delay:.15s">
+          <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+          <p class="testimonial-quote">"The cinematic ad Addy made for our serum completely transformed how our brand looks online. We saw a noticeable increase in profile visits and DMs within the first week of posting."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SM</div>
+            <div class="author-info"><strong>Sarah M.</strong><span>GlowLab Skincare</span></div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal" style="--delay:.3s">
+          <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+          <p class="testimonial-quote">"We needed UGC content fast without a huge budget. Addy delivered 3 videos in 5 days that looked completely real. Our customers genuinely thought it was a real person reviewing the product. Conversion rate improved significantly."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">PR</div>
+            <div class="author-info"><strong>Priya R.</strong><span>Lumière Beauty</span></div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal" style="--delay:.45s">
+          <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+          <p class="testimonial-quote">"Professional, fast, and the quality is insane for the price. The cinematic video made our moisturizer look like a luxury brand. Highly recommend for any skincare brand that wants premium content without the premium cost."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JK</div>
+            <div class="author-info"><strong>James K.</strong><span>NovaDerm Co.</span></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -261,21 +255,30 @@
   <section id="pricing" class="section">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag">Pricing</span>
-        <h2 class="section-title">Premium Visual Assets <span class="text-accent">for Growth Brands.</span></h2>
-        <p class="section-desc">Transparent, no-surprise pricing. Bundle & save on multiple videos.</p>
+        <h2 class="section-title shimmer-heading">Flexible Pricing for Every Stage of Growth.</h2>
+        <p class="section-desc">Every brand is different. Pricing is customized based on your goals and brand size.</p>
       </div>
-      <div class="pricing-tabs reveal">
-        <div class="pricing-tab-bg" id="pricingTabBg"></div>
-        <button class="pricing-tab active" data-tab="cinematic" id="tabCinematic">Cinematic Product Videos</button>
-        <button class="pricing-tab" data-tab="ugc" id="tabUgc">UGC Testimonial Videos</button>
+      <div class="pricing-grid">
+        <div class="pricing-card reveal" style="--delay:.1s">
+          <div class="pricing-title">Cinematic Ads</div>
+          <div class="pricing-price">From $99</div>
+          <div class="pricing-desc">15s 1080p cinematic product video</div>
+          <a href="#contact" class="btn-primary">Get Custom Quote</a>
+        </div>
+        <div class="pricing-card reveal" style="--delay:.2s">
+          <div class="pricing-title">UGC Videos</div>
+          <div class="pricing-price">From $79</div>
+          <div class="pricing-desc">15s 1080p UGC testimonial video</div>
+          <a href="#contact" class="btn-primary">Get Custom Quote</a>
+        </div>
+        <div class="pricing-card reveal" style="--delay:.3s">
+          <div class="pricing-title">Combo Bundle</div>
+          <div class="pricing-price">From $149</div>
+          <div class="pricing-desc">Cinematic + UGC combined package</div>
+          <a href="#contact" class="btn-primary">Get Custom Quote</a>
+        </div>
       </div>
-      <div class="pricing-table-wrap reveal" style="--delay:.1s">
-        <table class="pricing-table" id="pricingTable">
-          <thead><tr><th class="col-duration">Duration</th><th class="col-per">Per Video</th><th class="col-bundle">3 Videos</th><th class="col-bundle">5 Videos</th><th class="col-bundle">10 Videos</th></tr></thead>
-          <tbody id="pricingBody"></tbody>
-        </table>
-      </div>
+      <div class="pricing-note reveal" style="--delay:.4s">* DM or email for full pricing and custom quote within 24 hours.</div>
     </div>
   </section>
 
@@ -290,8 +293,8 @@
           <div class="protocol-col">
             <div class="protocol-header">BEFORE PROJECT STARTS</div>
             <ul class="protocol-list">
-              <li>Confirm video count, duration & type</li>
-              <li>Client shares product details & brief</li>
+              <li>Confirm video count, duration &amp; type</li>
+              <li>Client shares product details &amp; brief</li>
               <li>Reference videos or examples shared</li>
               <li>Written script or bullet points provided</li>
               <li>50% deposit paid upfront. Brief approved before production begins</li>
@@ -308,14 +311,13 @@
             </ul>
           </div>
           <div class="protocol-col">
-            <div class="protocol-header">DELIVERY & CLOSE</div>
+            <div class="protocol-header">DELIVERY &amp; CLOSE</div>
             <ul class="protocol-list">
               <li>Final 50% payment before file release</li>
               <li>Final video sent without watermark</li>
               <li>Client confirms satisfaction in writing</li>
               <li>File stored 30 days after delivery</li>
               <li>Portfolio use with client permission</li>
-              <li>Testimonial / review appreciated</li>
             </ul>
           </div>
           <div class="protocol-col">
@@ -326,24 +328,23 @@
               <li>Changes after brief approval = extra</li>
               <li>No full refund after production starts</li>
               <li>50% refund if cancelled before preview</li>
-              <li>AI-generated — realistic not 100% real</li>
             </ul>
           </div>
         </div>
-        <div class="protocol-footer">Payment Terms: 50% upfront before production &nbsp;&middot;&nbsp; 50% on final delivery &nbsp;&middot;&nbsp; 7-day turnaround per video</div>
+        <div class="protocol-footer">Payment Terms: 50% upfront &nbsp;·&nbsp; 50% on final delivery &nbsp;·&nbsp; 7-day turnaround per video</div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ FINAL CTA SECTION ═══ -->
-  <section id="final-cta" class="section" style="background: linear-gradient(180deg, var(--bg), #0a0e1e); text-align: center; padding: 120px 20px;">
+  <!-- ═══ FINAL CTA ═══ -->
+  <section id="contact" class="section final-cta-section">
     <div class="container">
-      <div class="reveal">
-        <h2 style="font-size: clamp(40px, 6vw, 64px); font-family: var(--font-display); font-weight: 800; margin-bottom: 24px;">Ready to <span class="text-accent">Elevate Your Brand?</span></h2>
-        <p style="font-size: 20px; color: var(--text-dim); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">Let’s create ads and websites that make your brand unforgettable.</p>
-        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-          <a href="mailto:hello@addygrowthstudio.com" class="btn-primary" style="font-size:16px; padding: 16px 32px;">Book a Project</a>
-          <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="btn-secondary" style="font-size:16px; padding: 16px 32px;">DM on Instagram now</a>
+      <div class="reveal" style="text-align:center;">
+        <h2 class="section-title shimmer-heading" style="font-size:clamp(40px,6vw,68px);margin-bottom:24px;">Ready to <span class="text-accent">Elevate Your Brand?</span></h2>
+        <p style="font-size:clamp(16px,2vw,20px);color:var(--text-dim);margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.7;">Let's create ads and websites that make your skincare brand completely unforgettable.</p>
+        <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+          <a href="mailto:hello@addygrowthstudio.com" class="btn-primary" style="font-size:16px;padding:18px 40px;">Book a Project</a>
+          <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="btn-secondary" style="font-size:16px;padding:18px 40px;">DM on Instagram →</a>
         </div>
       </div>
     </div>
