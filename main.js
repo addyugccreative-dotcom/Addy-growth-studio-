@@ -1,18 +1,17 @@
 /* ══════════════════════════════════════════════
-   ADDY GROWTH STUDIO — Main Script
+   ADDY GROWTH STUDIO — Premium Script
    ══════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  const TOTAL_FRAMES = 96;
-  const FRAME_PATH = '/frames/ezgif-frame-';
+  const TOTAL_FRAMES = 192;
+  const FRAME_PATH = '/frames/';
 
   // DOM
   const canvas = document.getElementById('heroCanvas');
   const ctx = canvas.getContext('2d');
   const heroContainer = document.getElementById('hero-scroll-container');
   const heroOverlay = document.getElementById('heroOverlay');
-  const heroContent = document.getElementById('heroContent');
   const scrollIndicator = document.getElementById('scrollIndicator');
   const preloader = document.getElementById('preloader');
   const preloaderFill = document.getElementById('preloaderFill');
@@ -42,6 +41,34 @@
     ]
   };
 
+  // ─── DUMMY PRODUCTS DATA ───
+  const productsData = [
+    { id: 1, name: "Luminous Peptide Serum", category: "serum", price: "$120", style: "bottle-glass",
+      desc: "A clinical-grade formula that instantly brightens and visibly firms the skin using advanced peptide technology.",
+      benefits: ["Visibly firms skin", "Reduces fine lines", "Enhances radiance", "Deeply hydrates"]
+    },
+    { id: 2, name: "Velvet Night Repair", category: "moisturiser", price: "$85", style: "bottle-dark",
+      desc: "An ultra-rich overnight recovery cream infused with ceramides to rebuild the skin barrier while you sleep.",
+      benefits: ["Repairs skin barrier", "Intense overnight moisture", "Soothes redness", "Plumps skin"]
+    },
+    { id: 3, name: "Radiance Exfoliating Mask", category: "mask", price: "$65", style: "bottle-rose",
+      desc: "A gentle yet effective resurfacing mask that sweeps away dead skin cells to reveal a glowing complexion.",
+      benefits: ["Gentle exfoliation", "Unclogs pores", "Evens skin tone", "Boosts glow"]
+    },
+    { id: 4, name: "Hydro-Plump Moisture Surge", category: "moisturiser", price: "$75", style: "bottle-glass",
+      desc: "A lightweight water-cream that floods the skin with continuous hydration lasting up to 72 hours.",
+      benefits: ["72h hydration", "Lightweight texture", "Non-comedogenic", "Cooling effect"]
+    },
+    { id: 5, name: "C-Firma Brightening Essence", category: "serum", price: "$110", style: "bottle-rose",
+      desc: "A potent Vitamin C complex that targets dark spots and hyperpigmentation for an even, luminous tone.",
+      benefits: ["Fades dark spots", "Potent antioxidant", "Protects from pollution", "Brightens overall tone"]
+    },
+    { id: 6, name: "Clarifying Clay Detox", category: "mask", price: "$55", style: "bottle-dark",
+      desc: "A mineral-rich clay mask that deeply purifies pores without stripping the skin of its natural moisture.",
+      benefits: ["Draws out impurities", "Minimizes pores", "Absorbs excess oil", "Non-drying formula"]
+    }
+  ];
+
   // ═══ STARS BACKGROUND ═══
   const stars = [];
   const STAR_COUNT = 180;
@@ -68,21 +95,16 @@
     starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
     const time = Date.now() * 0.001;
     for (const s of stars) {
-      // Movement
       s.x += s.vx;
       s.y += s.vy;
-      
-      // Wrap around screen
       if (s.x < 0) s.x = starsCanvas.width;
       if (s.x > starsCanvas.width) s.x = 0;
       if (s.y < 0) s.y = starsCanvas.height;
       if (s.y > starsCanvas.height) s.y = 0;
-
-      // Twinkle effect
       const a = s.alpha * (0.3 + 0.7 * Math.sin(time * s.speed + s.flicker));
       starsCtx.beginPath();
       starsCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      starsCtx.fillStyle = `rgba(180,220,255,${Math.max(0.1, a)})`;
+      starsCtx.fillStyle = `rgba(77,208,225,${Math.max(0.1, a)})`;
       starsCtx.fill();
     }
     requestAnimationFrame(drawStars);
@@ -90,7 +112,7 @@
 
   // ═══ FRAME LOADING ═══
   function getFrameSrc(i) {
-    return `${FRAME_PATH}${String(i + 1).padStart(3, '0')}.jpg`;
+    return `${FRAME_PATH}${String(i + 1).padStart(4, '0')}.jpg`;
   }
 
   function preloadImages() {
@@ -130,21 +152,117 @@
     ctx.drawImage(img, dx, dy, dw, dh);
   }
 
+  // ═══ DUMMY PRODUCTS & MODAL ═══
+  function getBottleHTML(style, name) {
+    const acronym = name.split(' ').map(w => w[0]).join('').substring(0,2);
+    return `
+      <div class="bottle-3d ${style}">
+        <div class="b-face b-front">
+          <div class="b-label">${acronym}</div>
+        </div>
+        <div class="b-face b-back"></div>
+        <div class="b-face b-left"></div>
+        <div class="b-face b-right"></div>
+        <div class="b-face b-top"></div>
+        <div class="b-face b-bottom"></div>
+        <div class="b-cap">
+          <div class="b-face b-cap-front"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderProducts(filter = 'all') {
+    const grid = document.getElementById('productsGrid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    
+    const filtered = filter === 'all' ? productsData : productsData.filter(p => p.category === filter);
+    
+    filtered.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'prod-card reveal in-view';
+      card.innerHTML = `
+        <div class="prod-visual-area">
+          ${getBottleHTML(p.style, p.name)}
+        </div>
+        <div class="prod-info">
+          <span class="prod-cat">${p.category}</span>
+          <h3 class="prod-name">${p.name}</h3>
+          <div class="prod-price">${p.price}</div>
+          <button class="prod-buy-btn">View Details</button>
+        </div>
+      `;
+      card.addEventListener('click', () => openModal(p));
+      grid.appendChild(card);
+    });
+  }
+
+  function initProductTabs() {
+    const tabs = document.querySelectorAll('.product-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        tabs.forEach(t => t.classList.remove('active'));
+        e.target.classList.add('active');
+        renderProducts(e.target.dataset.filter);
+      });
+    });
+  }
+
+  const modal = document.getElementById('productModal');
+  const modalClose = document.getElementById('modalClose');
+  const modalScene = document.getElementById('modalScene');
+  const modalInfo = document.getElementById('modalInfo');
+
+  function openModal(product) {
+    modalScene.innerHTML = getBottleHTML(product.style, product.name);
+    
+    const benefitsHTML = product.benefits.map(b => `
+      <div class="m-benefit-item">
+        <svg class="m-benefit-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+        <span>${b}</span>
+      </div>
+    `).join('');
+
+    modalInfo.innerHTML = `
+      <div class="m-cat">${product.category}</div>
+      <h2 class="m-title shimmer-heading">${product.name}</h2>
+      <div class="m-price">${product.price}</div>
+      <p class="m-desc">${product.desc}</p>
+      <div class="m-benefits">${benefitsHTML}</div>
+      <button class="m-btn">Add to Cart — ${product.price}</button>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // prevent bg scrolling
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if(modalClose) modalClose.addEventListener('click', closeModal);
+  if(modal) modal.addEventListener('click', (e) => {
+    if(e.target === modal) closeModal();
+  });
+
+
   // ═══ SCROLL HANDLER ═══
   function onScroll() {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
 
-    // ── Progress bar ──
+    // Progress bar
     const scrollPct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
     navProgress.style.width = scrollPct + '%';
 
-    // ── Navbar bg ──
+    // Navbar bg
     navbar.classList.toggle('scrolled', scrollTop > 60);
 
     if (!isReady) return;
 
-    // ── Frame animation ──
+    // Frame animation calculation
     const cTop = heroContainer.offsetTop;
     const cHeight = heroContainer.offsetHeight - window.innerHeight;
     const frac = Math.max(0, Math.min(1, (scrollTop - cTop) / cHeight));
@@ -155,7 +273,7 @@
       drawFrame(currentFrame);
     }
 
-    // ── Hero Text Sequencing ──
+    // Hero Text Sequencing
     function animateText(id, f, start, end, isFirst = false, isLast = false) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -190,17 +308,13 @@
       
       let transform = '';
       if (window.innerWidth <= 768) {
-        if (el.classList.contains('bottom-center')) {
-          transform = `translate(-50%, ${yOffset + parallax}px) scale(${scale})`;
-        } else {
-          transform = `translate(-50%, calc(-50% + ${yOffset + parallax}px)) scale(${scale})`;
-        }
+        transform = el.classList.contains('bottom-center') 
+          ? `translate(-50%, ${yOffset + parallax}px) scale(${scale})`
+          : `translate(-50%, calc(-50% + ${yOffset + parallax}px)) scale(${scale})`;
       } else {
-        if (el.classList.contains('bottom-center')) {
-          transform = `translateX(-50%) translateY(${yOffset + parallax}px) scale(${scale})`;
-        } else {
-          transform = `translateY(calc(-50% + ${yOffset + parallax}px)) scale(${scale})`;
-        }
+        transform = el.classList.contains('bottom-center')
+          ? `translate(-50%, ${yOffset + parallax}px) scale(${scale})`
+          : `translateY(calc(-50% + ${yOffset + parallax}px)) scale(${scale})`;
       }
       
       el.style.opacity = opacity;
@@ -208,18 +322,15 @@
       el.style.transform = transform;
     }
 
-    animateText('heroText1', frac, 0.0, 0.35, true, false);
-    animateText('heroText2', frac, 0.25, 0.65, false, false);
-    animateText('heroText3', frac, 0.55, 0.9, false, false);
-    animateText('heroText4', frac, 0.8, 1.0, false, true);
+    animateText('heroText1', frac, 0.0, 0.3, true, true);
 
     if (scrollIndicator) scrollIndicator.style.opacity = Math.max(0, 1 - frac * 8);
 
-    // ── Overlay ──
+    // Overlay darkness based on scroll
     const ov = frac < 0.5 ? 0.3 + frac * 0.6 : 0.6 - (frac - 0.5) * 0.4;
     heroOverlay.style.background = `radial-gradient(ellipse at center,rgba(5,5,8,${ov * 0.5}) 0%,rgba(5,5,8,${ov}) 60%,rgba(5,5,8,${ov + 0.1}) 100%)`;
 
-    // ── Horizontal Scroll Sections ──
+    // Horizontal Scroll Sections
     document.querySelectorAll('.hscroll-section').forEach(section => {
       const track = section.querySelector('.hscroll-track');
       if (!track) return;
@@ -238,13 +349,12 @@
       }
     });
 
-    // ── Premium Cards Neon Highlight ──
+    // Premium Cards Neon Highlight
     const premiumCards = document.querySelectorAll('.premium-card');
     const viewportCenter = window.innerWidth / 2;
     premiumCards.forEach(card => {
       const rect = card.getBoundingClientRect();
       const cardCenter = rect.left + rect.width / 2;
-      // Highlight if the center of the card is within 25% of the viewport center
       if (Math.abs(cardCenter - viewportCenter) < window.innerWidth * 0.25) {
         card.classList.add('neon-highlight');
       } else {
@@ -252,7 +362,7 @@
       }
     });
 
-    // ── Vertical Timeline Process ──
+    // Vertical Timeline Process
     const vTimeline = document.getElementById('processVTimeline');
     const vLineFill = document.getElementById('vLineFill');
     if (vTimeline && vLineFill) {
@@ -276,6 +386,73 @@
         }
       });
     }
+
+    // Benefits Section Scroll Animation
+    const benefitsSection = document.getElementById('benefits');
+    if (benefitsSection) {
+      const bRect = benefitsSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      
+      // Calculate active scroll progress percentage for benefits section (sticky scroll pinning)
+      const bTop = benefitsSection.offsetTop;
+      const bHeight = benefitsSection.offsetHeight - vh;
+      const currentScroll = window.scrollY;
+      const p = bHeight > 0 ? Math.min(1, (currentScroll - bTop) / bHeight) : 0;
+
+      // Helper function to interpolate values
+      function interpolate(val, start, end, fromVal, toVal) {
+        if (val <= start) return fromVal;
+        if (val >= end) return toVal;
+        const pct = (val - start) / (end - start);
+        return fromVal + (toVal - fromVal) * pct;
+      }
+
+      // 1. Heading Reveal
+      const header = benefitsSection.querySelector('.reveal-benefit-header');
+      if (header) {
+        const opacity = interpolate(p, -0.4, 0.05, 0, 1);
+        const translateY = interpolate(p, -0.4, 0.05, 30, 0);
+        const blur = interpolate(p, -0.4, 0.05, 8, 0);
+        header.style.opacity = opacity;
+        header.style.transform = `translateY(${translateY}px)`;
+        header.style.filter = `blur(${blur}px)`;
+      }
+
+      // 2. Standing Addy Image Reveal (from bottom with neon blue blur/glow)
+      const imageWrap = benefitsSection.querySelector('.reveal-benefit-image');
+      if (imageWrap) {
+        const opacity = interpolate(p, -0.2, 0.25, 0, 1);
+        const translateY = interpolate(p, -0.2, 0.25, 100, 0);
+        const blur = interpolate(p, -0.2, 0.25, 15, 0);
+        const glow = interpolate(p, -0.2, 0.25, 30, 0);
+        imageWrap.style.opacity = opacity;
+        imageWrap.style.transform = `translateY(${translateY}px)`;
+        imageWrap.style.filter = `blur(${blur}px) drop-shadow(0 0 ${glow}px rgba(77,208,225,0.4))`;
+      }
+
+      // 3. 6 Cards Reveal Staggered Top-to-Bottom (Row by Row)
+      const cards = benefitsSection.querySelectorAll('.reveal-benefit');
+      cards.forEach(card => {
+        const line = parseInt(card.dataset.benefitLine, 10) || 1;
+        let start = 0.2;
+        let end = 0.5;
+        if (line === 2) {
+          start = 0.45;
+          end = 0.75;
+        } else if (line === 3) {
+          start = 0.7;
+          end = 1.0;
+        }
+
+        const opacity = interpolate(p, start, end, 0, 1);
+        const translateY = interpolate(p, start, end, 50, 0);
+        const blur = interpolate(p, start, end, 8, 0);
+        
+        card.style.opacity = opacity;
+        card.style.transform = `translateY(${translateY}px)`;
+        card.style.filter = `blur(${blur}px)`;
+      });
+    }
   }
 
   let ticking = false;
@@ -288,8 +465,9 @@
 
   function renderPricing(tab) {
     const body = document.getElementById('pricingBody');
+    if(!body) return;
     const data = pricingData[tab];
-    body.innerHTML = data.map((row, i) => `
+    body.innerHTML = data.map((row) => `
       <tr>
         <td>${row.duration}</td>
         <td><span class="price-per">${row.per}</span></td>
@@ -304,6 +482,7 @@
     const tabCinematic = document.getElementById('tabCinematic');
     const tabUgc = document.getElementById('tabUgc');
     const bg = document.getElementById('pricingTabBg');
+    if(!tabCinematic || !tabUgc || !bg) return;
 
     function positionBg(el) {
       bg.style.left = el.offsetLeft + 'px';
@@ -326,7 +505,6 @@
       renderPricing('ugc');
     });
 
-    // Initial
     renderPricing('cinematic');
     requestAnimationFrame(() => positionBg(tabCinematic));
     window.addEventListener('resize', () => positionBg(activeTab === 'cinematic' ? tabCinematic : tabUgc));
@@ -335,20 +513,30 @@
   // ═══ REVEAL OBSERVER ═══
   function initRevealObserver() {
     const obs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); } });
+      entries.forEach((e) => { 
+        if (e.isIntersecting) { 
+          e.target.classList.add('in-view'); 
+          obs.unobserve(e.target); 
+        } 
+      });
     }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
     document.querySelectorAll('.reveal').forEach((el) => obs.observe(el));
   }
 
   // ═══ MOBILE MENU ═══
   function initMobileMenu() {
+    if(!hamburger || !mobileMenu) return;
     hamburger.addEventListener('click', () => {
       hamburger.classList.toggle('active');
       mobileMenu.classList.toggle('open');
       document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
     });
     document.querySelectorAll('.mobile-link,.mobile-cta').forEach((l) => {
-      l.addEventListener('click', () => { hamburger.classList.remove('active'); mobileMenu.classList.remove('open'); document.body.style.overflow = ''; });
+      l.addEventListener('click', () => { 
+        hamburger.classList.remove('active'); 
+        mobileMenu.classList.remove('open'); 
+        document.body.style.overflow = ''; 
+      });
     });
   }
 
@@ -363,35 +551,16 @@
     });
   }
 
-  // ═══ CARD TILT ═══
-  function initCardHover() {
-    document.querySelectorAll('.strategy-card,.testimonial-card').forEach((card) => {
-      card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect();
-        const rx = ((e.clientY - r.top - r.height / 2) / (r.height / 2)) * -4;
-        const ry = ((e.clientX - r.left - r.width / 2) / (r.width / 2)) * 4;
-        card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
-      });
-      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-    });
-  }
-
-  // ═══ CURSOR GLOW ═══
-  function initCursorGlow() {
-    const g = document.createElement('div');
-    g.style.cssText = 'position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(77,208,225,.06) 0%,transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);transition:opacity .3s;opacity:0;';
-    document.body.appendChild(g);
-    let v = false;
-    document.addEventListener('mousemove', (e) => { g.style.left = e.clientX + 'px'; g.style.top = e.clientY + 'px'; if (!v) { g.style.opacity = '1'; v = true; } });
-    document.addEventListener('mouseleave', () => { g.style.opacity = '0'; v = false; });
-  }
-
   // ═══ INIT ═══
   async function init() {
     // Stars
     initStars();
     drawStars();
-    window.addEventListener('resize', () => { starsCanvas.width = window.innerWidth; starsCanvas.height = window.innerHeight; initStars(); });
+    window.addEventListener('resize', () => { 
+      starsCanvas.width = window.innerWidth; 
+      starsCanvas.height = window.innerHeight; 
+      initStars(); 
+    });
 
     // Preload frames
     await preloadImages();
@@ -408,13 +577,10 @@
     window.addEventListener('scroll', handleScroll, { passive: true });
     onScroll();
 
-    // Features
+    // Init UI
     initRevealObserver();
     initMobileMenu();
     initSmoothScroll();
-    initCardHover();
-    initCursorGlow();
-    initPricingTabs();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
