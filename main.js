@@ -104,76 +104,79 @@
   }
 
   function initHeroScrollSequence() {
-  const sequence = document.querySelector('.hero-scroll-sequence');
-  if (!sequence) return;
+    const sequence = document.querySelector('.hero-scroll-sequence');
+    if (!sequence) return;
 
-  const mobiles = document.querySelectorAll('.hero-mobile-card');
-  
-  // Ensure videos play
-  document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
-    v.muted = true; v.loop = true; v.playsInline = true;
-    v.play().catch(()=>{});
-  });
+    const mobiles = document.querySelectorAll('.hero-mobile-card');
+    
+    // Ensure videos play immediately and stay on loop
+    document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
+      v.muted = true; v.loop = true; v.playsInline = true;
+      v.play().catch(()=>{});
+    });
 
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-    console.error('GSAP not loaded!');
-    return;
-  }
-  
-  gsap.registerPlugin(ScrollTrigger);
-
-  // Group pairs as requested (Inner, Mid, Outer)
-  const pair1 = [mobiles[4], mobiles[5]]; // Inner
-  const pair2 = [mobiles[2], mobiles[3]]; // Mid
-  const pair3 = [mobiles[0], mobiles[1]]; // Outer
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '.hero-scroll-sequence',
-      start: 'top top',
-      end: '+=4000',
-      scrub: 1,
-      pin: true,
-      anticipatePin: 1
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      console.error('GSAP not loaded!');
+      return;
     }
-  });
+    
+    gsap.registerPlugin(ScrollTrigger);
 
-  // Pair 1 (Inner pair)
-  tl.to(pair1, {
-    opacity: 1,
-    scale: 1,
-    x: (i) => i === 0 ? '-14vw' : '14vw',
-    z: 50,
-    rotateY: (i) => i === 0 ? 15 : -15,
-    rotateZ: (i) => i === 0 ? -6 : 6,
-    duration: 1,
-    ease: 'power2.out'
-  });
+    // HTML indices: 0/1 (LeftFar/RightFar), 2/3 (LeftMid/RightMid), 4/5 (LeftInner/RightInner)
+    const pair1 = [mobiles[4], mobiles[5]]; // Inner (Frame 1 + 2)
+    const pair2 = [mobiles[2], mobiles[3]]; // Mid (Frame 3 + 4)
+    const pair3 = [mobiles[0], mobiles[1]]; // Outer (Frame 5 + 6)
 
-  // Pair 2 (Mid pair)
-  tl.to(pair2, {
-    opacity: 1,
-    scale: 1,
-    x: (i) => i === 0 ? '-28vw' : '28vw',
-    z: 0,
-    rotateY: (i) => i === 0 ? 30 : -30,
-    rotateZ: (i) => i === 0 ? -14 : 14,
-    duration: 1,
-    ease: 'power2.out'
-  }, '-=0.8');
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.hero-scroll-sequence',
+        start: 'top top',
+        end: '+=4000',
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          console.log('Hero Scroll Progress (0-1):', self.progress.toFixed(3));
+        }
+      }
+    });
 
-  // Pair 3 (Outer pair)
-  tl.to(pair3, {
-    opacity: 1,
-    scale: 1,
-    x: (i) => i === 0 ? '-42vw' : '42vw',
-    z: -100,
-    rotateY: (i) => i === 0 ? 45 : -45,
-    rotateZ: (i) => i === 0 ? -22 : 22,
-    duration: 1,
-    ease: 'power2.out'
-  }, '-=0.8');
-}
+    // Segment 1: Pair 1 (0% -> 33%)
+    tl.to(pair1, {
+      opacity: 1,
+      scale: 1,
+      x: (i) => i === 0 ? '-14vw' : '14vw',
+      z: 50,
+      rotateY: (i) => i === 0 ? 8 : -8,
+      rotateZ: (i) => i === 0 ? -4 : 4,
+      duration: 1,
+      ease: 'none'
+    }, 0);
+
+    // Segment 2: Pair 2 (33% -> 66%)
+    tl.to(pair2, {
+      opacity: 1,
+      scale: 1,
+      x: (i) => i === 0 ? '-28vw' : '28vw',
+      z: 0,
+      rotateY: (i) => i === 0 ? 15 : -15,
+      rotateZ: (i) => i === 0 ? -10 : 10,
+      duration: 1,
+      ease: 'none'
+    }, 1);
+
+    // Segment 3: Pair 3 (66% -> 100%)
+    tl.to(pair3, {
+      opacity: 1,
+      scale: 1,
+      x: (i) => i === 0 ? '-42vw' : '42vw',
+      z: -100,
+      rotateY: (i) => i === 0 ? 25 : -25,
+      rotateZ: (i) => i === 0 ? -16 : 16,
+      duration: 1,
+      ease: 'none'
+    }, 2);
+  }
 
   // DUMMY PRODUCTS & MODAL
   function getBottleHTML(style, name) {
