@@ -183,17 +183,16 @@ img { max-width: 100%; display: block; }
 
 ��/* P%P%P%P%P%P%P%P%P%P% HERO   SCROLL SEQUENCE P%P%P%P%P%P%P%P%P%P% */
 .hero-scroll-sequence {
-  height: 1200vh;
+  min-height: 100vh;
   position: relative;
   background: #ffffff;
 }
 .hero-sticky-container {
-  position: sticky;
-  top: 0;
   height: 100vh;
   width: 100%;
   overflow: hidden;
   perspective: 1400px;
+  position: relative;
 }
 .hero-arc-glow {
   position: absolute;
@@ -218,6 +217,7 @@ img { max-width: 100%; display: block; }
   justify-content: center;
   transform-style: preserve-3d;
   will-change: transform;
+  perspective: 1200px;
 }
 
 /* Mobile Videos */
@@ -227,8 +227,11 @@ img { max-width: 100%; display: block; }
   aspect-ratio: 9/16;
   z-index: 10;
   opacity: 0;
+  left: 50%;
+  bottom: 5vh;
+  margin-left: calc(clamp(120px, 12vw, 180px) / -2);
   will-change: transform, opacity;
-  transform: translate3d(0, 100vh, -400px) scale(0.5);
+  transform: scale(0.6) translateZ(-200px);
 }
 .hero-iphone-inner {
   width: 100%;

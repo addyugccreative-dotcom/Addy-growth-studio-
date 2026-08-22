@@ -126,6 +126,11 @@
     const pair1 = [mobiles[4], mobiles[5]]; // Inner (Frame 1 + 2)
     const pair2 = [mobiles[2], mobiles[3]]; // Mid (Frame 3 + 4)
     const pair3 = [mobiles[0], mobiles[1]]; // Outer (Frame 5 + 6)
+    
+    console.log('Hero Mobile Frame Targets:');
+    console.log('Pair 1:', pair1);
+    console.log('Pair 2:', pair2);
+    console.log('Pair 3:', pair3);
 
     const tl = gsap.timeline({
       scrollTrigger: {
