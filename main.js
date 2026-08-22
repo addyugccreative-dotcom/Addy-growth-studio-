@@ -223,12 +223,18 @@
     if (leftMac && rightMac) {
       // 1. Entrance Animation (on mount, independent of scroll scrub)
       gsap.fromTo(leftMac, 
-        { x: -120, opacity: 0 }, 
-        { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.1 } // Slight delay so it fires roughly with phones appearing
+        { x: -150, scale: 0.85, opacity: 0 }, 
+        { 
+          x: 0, scale: 1, opacity: 1, duration: 0.9, ease: 'power2.out', 
+          scrollTrigger: { trigger: '.hero-scroll-sequence', start: 'top 80%' } 
+        }
       );
       gsap.fromTo(rightMac, 
-        { x: 120, opacity: 0 }, 
-        { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.1 }
+        { x: 150, scale: 0.85, opacity: 0 }, 
+        { 
+          x: 0, scale: 1, opacity: 1, duration: 0.9, ease: 'power2.out', 
+          scrollTrigger: { trigger: '.hero-scroll-sequence', start: 'top 80%' } 
+        }
       );
 
       // 2. 3D Hover Tilt Effect

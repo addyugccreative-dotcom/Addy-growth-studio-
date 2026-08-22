@@ -261,53 +261,81 @@ img { max-width: 100%; display: block; }
   object-fit: cover;
 }
 
-/* Macbook Videos */
+/* ══════════ MACBOOK MOCKUPS ══════════ */
 .hero-mac-card {
   position: absolute;
-  width: clamp(300px, 25vw, 500px);
-  aspect-ratio: 16/9;
+  top: 140px; /* ~60-80px below navbar */
+  width: clamp(280px, 24vw, 380px);
   z-index: 5;
-  opacity: 0;
-  will-change: transform, opacity;
-  transform: translate3d(0, -50vh, -200px) scale(0.5);
+  perspective: 1200px;
 }
+.hero-mac-card.left-mac { left: 50px; }
+.hero-mac-card.right-mac { right: 50px; }
+
 .hero-macbook-inner {
-  width: 100%;
-  height: 100%;
   position: relative;
-}
-.mac-screen {
   width: 100%;
-  height: 100%;
-  border: 8px solid #111;
+  aspect-ratio: 16/10;
+  background: #111;
   border-radius: 12px 12px 0 0;
-  background: #000;
-  overflow: hidden;
+  border: 4px solid #1a1a1a;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.mac-screen {
+  flex: 1;
   position: relative;
+  overflow: hidden;
+  background: #1a1a1a;
+  border-radius: 6px 6px 0 0;
 }
-.mac-screen video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.mac-base {
-  width: 116%;
-  height: 12px;
-  background: linear-gradient(to bottom, #e2e2e2 0%, #b3b3b3 100%);
-  position: absolute;
-  bottom: -12px;
-  left: -8%;
-  border-radius: 0 0 16px 16px;
-  box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2), 0 15px 30px rgba(124, 58, 237, 0.15);
-}
-.mac-base::before {
+.mac-screen video { width: 100%; height: 100%; object-fit: cover; }
+
+.mac-screen::before {
   content: '';
   position: absolute;
-  top: 0; left: 50%;
+  top: 0;
+  left: 50%;
   transform: translateX(-50%);
-  width: 15%; height: 4px;
-  background: #999;
+  width: 60px;
+  height: 14px;
+  background: #1a1a1a;
+  border-radius: 0 0 6px 6px;
+  z-index: 2;
+}
+
+.mac-base {
+  height: 16px;
+  background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%);
+  border-radius: 0 0 12px 12px;
+  position: relative;
+  box-shadow: inset 0 -3px 8px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.mac-base::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20%;
+  height: 4px;
+  background: #4b5563;
   border-radius: 0 0 4px 4px;
+}
+
+@media (max-width: 1280px) {
+  .hero-mac-card { width: clamp(240px, 22vw, 280px); top: 120px; }
+  .hero-mac-card.left-mac { left: 24px; }
+  .hero-mac-card.right-mac { right: 24px; }
+}
+
+@media (max-width: 768px) {
+  .hero-mac-card { display: none !important; }
 }
 
 /* Center Group: Boy and Logo */
