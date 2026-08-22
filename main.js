@@ -539,7 +539,7 @@
         clearInterval(interval);
         setTimeout(() => {
           preloader.classList.add('hidden');
-          initHeroArc();
+          initHeroScrollSequence();
         }, 150);
       }
     }, 25);
