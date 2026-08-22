@@ -103,52 +103,88 @@
     requestAnimationFrame(drawStars);
   }
 
-  // ═══ HERO CIRCULAR ARC 3D ANIMATION ═══
-  function initHeroArc() {
-    if (!heroArcStage) return;
+  function initHeroScrollSequence() {
+    const sequence = document.querySelector('.hero-scroll-sequence');
+    if (!sequence) return;
 
-    // Ensure all 9 videos autoplay continuously in loop without pause
-    const heroVideos = document.querySelectorAll('.hero-video-card video');
-    heroVideos.forEach(v => {
-      v.muted = true;
-      v.loop = true;
-      v.playsInline = true;
-      v.play().catch(() => {});
-    });
-
-    // Animate the videos coming forward from the back in circular arc
-    setTimeout(() => {
-      heroArcStage.classList.add('animated');
-    }, 1000);
-
-    // Subtle 3D mouse parallax tilt on the arc stage
-    let targetRotX = 0, targetRotY = 0, currentRotX = 0, currentRotY = 0;
+    const mobiles = document.querySelectorAll('.hero-mobile-card');
+    const macs = document.querySelectorAll('.hero-mac-card');
+    const boy = document.querySelector('.hero-boy');
+    const logo = document.querySelector('.hero-logo');
     
-    window.addEventListener('mousemove', (e) => {
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx;
-      const dy = (e.clientY - cy) / cy;
-      targetRotY = dx * 8; // max 8 deg tilt
-      targetRotX = -dy * 6; // max 6 deg tilt
-    }, { passive: true });
-
-    function renderArcTilt() {
-      if (heroArcTrack && heroArcStage.classList.contains('animated')) {
-        currentRotX += (targetRotX - currentRotX) * 0.05;
-        currentRotY += (targetRotY - currentRotY) * 0.05;
-        heroArcTrack.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg)`;
-      }
-      requestAnimationFrame(renderArcTilt);
-    }
-    renderArcTilt();
-
-    // Make sure videos resume playing if window is re-focused
-    window.addEventListener('focus', () => {
-      heroVideos.forEach(v => {
-        if (v.paused) v.play().catch(() => {});
-      });
+    // Ensure videos play
+    document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
+      v.muted = true; v.loop = true; v.playsInline = true;
+      v.play().catch(()=>{});
     });
+
+    let mouseX = 0, mouseY = 0;
+    let currentMouseX = 0, currentMouseY = 0;
+    window.addEventListener('mousemove', e => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, {passive:true});
+
+    // Mobile arc targets (bottom area)
+    // Ordered by: left far, right far, left mid, right mid, left inner, right inner
+    const mobileTargets = [
+      { x: -38, y: 5, rot: -20 },
+      { x: 38, y: 5, rot: 20 },
+      { x: -22, y: 15, rot: -10 },
+      { x: 22, y: 15, rot: 10 },
+      { x: -8, y: 20, rot: -4 },
+      { x: 8, y: 20, rot: 4 }
+    ];
+
+    function renderHeroScroll() {
+      const rect = sequence.getBoundingClientRect();
+      const scrollMax = rect.height - window.innerHeight;
+      let progress = 0;
+      if (rect.top < 0) {
+        progress = Math.min(1, -rect.top / scrollMax);
+      }
+      
+      // Smooth parallax
+      currentMouseX += (mouseX - currentMouseX) * 0.05;
+      currentMouseY += (mouseY - currentMouseY) * 0.05;
+      const px = currentMouseX * 15;
+      const py = currentMouseY * 15;
+      
+      // Step 1: Mobile Videos Arc (0.0 to 0.4)
+      mobiles.forEach((m, i) => {
+        const start = i * 0.05;
+        const p = Math.max(0, Math.min(1, (progress - start) / 0.15));
+        const target = mobileTargets[i];
+        
+        m.style.opacity = p;
+        m.style.transform = `translate3d(calc(${target.x * p}vw + ${px}px), calc(${(1-p)*40 + target.y}vh + ${py}px), 0) rotate(${target.rot * p}deg) scale(${0.5 + p*0.4})`;
+      });
+
+      // Step 2: MacBooks (0.4 to 0.6)
+      macs.forEach((mac, i) => {
+        const p = Math.max(0, Math.min(1, (progress - 0.4) / 0.2));
+        const isLeft = mac.classList.contains('left-mac');
+        const targetX = isLeft ? -30 : 30;
+        const targetY = -28; 
+        
+        mac.style.opacity = p;
+        mac.style.transform = `translate3d(calc(${targetX}vw + ${px*1.2}px), calc(${(1-p)*-20 + targetY}vh + ${py*1.2}px), 0) scale(${0.6 + p*0.4})`;
+      });
+
+      // Step 3: Boy and Logo (0.6 to 0.9)
+      const pThird = Math.max(0, Math.min(1, (progress - 0.6) / 0.25));
+      if (boy) {
+        boy.style.opacity = pThird;
+        boy.style.transform = `translate3d(calc(${-40 + (pThird * 25)}vw + ${px*0.5}px), calc(5vh + ${py*0.5}px), 200px) scale(${0.8 + pThird*0.2})`;
+      }
+      if (logo) {
+        logo.style.opacity = pThird;
+        logo.style.transform = `translate3d(calc(5vw + ${px*2}px), calc(-5vh + ${py*2}px), 250px) scale(${0.6 + pThird*0.4})`;
+      }
+      
+      requestAnimationFrame(renderHeroScroll);
+    }
+    requestAnimationFrame(renderHeroScroll);
   }
 
   // ═══ DUMMY PRODUCTS & MODAL ═══
