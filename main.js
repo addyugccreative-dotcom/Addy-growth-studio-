@@ -126,13 +126,14 @@
     }, {passive:true});
 
     // Mobile arc targets (bottom area)
+    // Shifted up by ~10vh to prevent hitting the bottom marquee, and tightened slightly
     const mobileTargets = [
-      { x: -38, y: 12, rot: -20 },
-      { x: 38, y: 12, rot: 20 },
-      { x: -22, y: 20, rot: -10 },
-      { x: 22, y: 20, rot: 10 },
-      { x: -8, y: 26, rot: -4 },
-      { x: 8, y: 26, rot: 4 }
+      { x: -34, y: 0, rot: -20 },
+      { x: 34, y: 0, rot: 20 },
+      { x: -20, y: 8, rot: -10 },
+      { x: 20, y: 8, rot: 10 },
+      { x: -7, y: 15, rot: -4 },
+      { x: 7, y: 15, rot: 4 }
     ];
 
     function renderHeroScroll() {
@@ -151,18 +152,27 @@
       
       // STAGE 1: Mobiles (0.00 to 1.0) - Only mobiles!
       mobiles.forEach((m, i) => {
-        // Stagger their appearances: pairs 0/1, 2/3, 4/5
-        // We stretch this over the entire 1200vh scroll sequence
+        // Strictly sequential pair appearances:
+        // Pair 0: 0.00 -> 0.33
+        // Pair 1: 0.33 -> 0.66
+        // Pair 2: 0.66 -> 1.00
         const pairIndex = Math.floor(i / 2);
-        const start = pairIndex * 0.2;
-        const end = start + 0.6; // Each pair takes a long time to fan out
+        const start = pairIndex * 0.333;
+        const end = start + 0.333;
         const p = Math.max(0, Math.min(1, (progress - start) / (end - start)));
         const target = mobileTargets[i];
         
-        m.style.opacity = p;
-        // Start from center, moving strictly outward and forward
-        // scale goes from 0.1 to 1.0. No vertical jumping (target.y is constant).
-        m.style.transform = `translate3d(calc(${target.x * p}vw + ${px}px), calc(${target.y}vh + ${py}px), 0) rotate(${target.rot * p}deg) scale(${0.1 + p*0.9})`;
+        // Fade in slightly as they begin to scale up
+        m.style.opacity = p > 0 ? Math.min(1, p * 4) : 0;
+        
+        // Start from absolute center point, move outward to final target
+        const startY = 15; // origin point in the middle
+        const currentX = target.x * p;
+        const currentY = startY + (target.y - startY) * p;
+        const currentRot = target.rot * p;
+        const currentScale = 0.1 + (p * 0.9);
+
+        m.style.transform = `translate3d(calc(${currentX}vw + ${px}px), calc(${currentY}vh + ${py}px), 0) rotate(${currentRot}deg) scale(${currentScale})`;
       });
 
       // MacBooks (Hidden for now as requested)
