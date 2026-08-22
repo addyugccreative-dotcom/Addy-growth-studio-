@@ -48,29 +48,104 @@
     <a href="#contact" class="mobile-cta">Start Project</a>
   </div>
 
-  <!-- ═══ HERO — SCROLL FRAME ANIMATION ═══ -->
-  <section id="hero-scroll-container">
-    <div class="hero-sticky">
-      <canvas id="heroCanvas"></canvas>
-      <div class="hero-overlay" id="heroOverlay">
+  <!-- ═══ HERO — 3D CIRCULAR ARC 9:16 VIDEOS ═══ -->
+  <section id="hero" class="hero-arc-section">
+    <!-- Ambient background glows -->
+    <div class="hero-arc-glow"></div>
 
-        <div class="hero-text-float right" id="heroText1" style="top:50%;right:5%;text-align:right;">
-          <h1 class="hero-h1" style="font-size:clamp(36px,5.5vw,72px);line-height:1.1;">Cinematic Ads &amp;<br>Premium Websites<br><span class="text-accent hero-accent-animate">for Modern Skincare</span></h1>
-        </div>
+    <!-- Center Stage Content -->
+    <div class="hero-center-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>Addy Growth Studio</span>
+      </div>
+      <h1 class="hero-h1 shimmer-heading">
+        Cinematic Ads &amp;<br>Premium Websites<br>
+        <span class="text-accent">for Modern Skincare</span>
+      </h1>
+      <p class="hero-sub">
+        We engineer high-converting 9:16 cinematic ads &amp; luxury websites that turn attention into recurring revenue.
+      </p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn-primary">Start Project</a>
+        <a href="#work" class="btn-secondary">Explore Work</a>
+      </div>
+    </div>
 
-        <div class="scroll-indicator" id="scrollIndicator">
-          <div class="scroll-mouse"><div class="scroll-dot"></div></div>
-          <span>Scroll to explore</span>
-        </div>
-
-        <div class="hero-marquee">
-          <div class="marquee-content">
-            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
-            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
-            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
-            <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+    <!-- 3D Circular Arc Video Carousel -->
+    <div class="hero-arc-stage" id="heroArcStage">
+      <div class="hero-arc-track" id="heroArcTrack">
+        <!-- 9 Video Cards in 9:16 Ratio -->
+        <div class="hero-video-card" data-index="0" style="--i:0;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-1.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
           </div>
         </div>
+        <div class="hero-video-card" data-index="1" style="--i:1;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-2.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
+          </div>
+        </div>
+        <div class="hero-video-card" data-index="2" style="--i:2;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-3.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
+          </div>
+        </div>
+        <div class="hero-video-card" data-index="3" style="--i:3;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-4.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
+          </div>
+        </div>
+        <div class="hero-video-card" data-index="4" style="--i:4;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-5.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
+          </div>
+        </div>
+        <div class="hero-video-card" data-index="5" style="--i:5;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-6.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
+          </div>
+        </div>
+        <div class="hero-video-card" data-index="6" style="--i:6;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-7.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
+          </div>
+        </div>
+        <div class="hero-video-card" data-index="7" style="--i:7;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-8.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
+          </div>
+        </div>
+        <div class="hero-video-card" data-index="8" style="--i:8;">
+          <div class="hero-video-inner">
+            <video src="/hero-videos/hero-9.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <div class="hero-video-shine"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator">
+      <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+      <span>Scroll to explore</span>
+    </div>
+
+    <!-- Hero Marquee Ticker -->
+    <div class="hero-marquee">
+      <div class="marquee-content">
+        <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+        <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+        <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+        <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
       </div>
     </div>
   </section>

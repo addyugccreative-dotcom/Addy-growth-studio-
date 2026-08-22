@@ -4,15 +4,7 @@
 (function () {
   'use strict';
 
-  const TOTAL_FRAMES = 192;
-  const FRAME_PATH = '/frames/';
-
-  // DOM
-  const canvas = document.getElementById('heroCanvas');
-  const ctx = canvas.getContext('2d');
-  const heroContainer = document.getElementById('hero-scroll-container');
-  const heroOverlay = document.getElementById('heroOverlay');
-  const scrollIndicator = document.getElementById('scrollIndicator');
+  // DOM elements
   const preloader = document.getElementById('preloader');
   const preloaderFill = document.getElementById('preloaderFill');
   const preloaderText = document.getElementById('preloaderText');
@@ -21,11 +13,10 @@
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
   const starsCanvas = document.getElementById('starsCanvas');
-  const starsCtx = starsCanvas.getContext('2d');
-
-  const images = [];
-  let currentFrame = 0;
-  let isReady = false;
+  const starsCtx = starsCanvas ? starsCanvas.getContext('2d') : null;
+  const heroArcStage = document.getElementById('heroArcStage');
+  const heroArcTrack = document.getElementById('heroArcTrack');
+  const scrollIndicator = document.getElementById('scrollIndicator');
 
   // ─── PRICING DATA ───
   const pricingData = {
@@ -74,6 +65,7 @@
   const STAR_COUNT = 180;
 
   function initStars() {
+    if (!starsCanvas || !starsCtx) return;
     starsCanvas.width = window.innerWidth;
     starsCanvas.height = window.innerHeight;
     stars.length = 0;
@@ -92,6 +84,7 @@
   }
 
   function drawStars() {
+    if (!starsCanvas || !starsCtx) return;
     starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
     const time = Date.now() * 0.001;
     for (const s of stars) {
@@ -104,53 +97,58 @@
       const a = s.alpha * (0.3 + 0.7 * Math.sin(time * s.speed + s.flicker));
       starsCtx.beginPath();
       starsCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      // Mix of soft lavender and white glow
       starsCtx.fillStyle = s.r > 1.2 ? `rgba(255,255,255,${Math.max(0.15, a)})` : `rgba(192,132,252,${Math.max(0.1, a)})`;
       starsCtx.fill();
     }
     requestAnimationFrame(drawStars);
   }
 
-  // ═══ FRAME LOADING ═══
-  function getFrameSrc(i) {
-    return `${FRAME_PATH}${String(i + 1).padStart(4, '0')}.jpg`;
-  }
+  // ═══ HERO CIRCULAR ARC 3D ANIMATION ═══
+  function initHeroArc() {
+    if (!heroArcStage) return;
 
-  function preloadImages() {
-    return new Promise((resolve) => {
-      let loaded = 0;
-      for (let i = 0; i < TOTAL_FRAMES; i++) {
-        const img = new Image();
-        img.src = getFrameSrc(i);
-        img.onload = img.onerror = () => {
-          loaded++;
-          const pct = Math.round((loaded / TOTAL_FRAMES) * 100);
-          preloaderFill.style.width = pct + '%';
-          preloaderText.textContent = `Loading ${pct}%`;
-          if (loaded === TOTAL_FRAMES) resolve();
-        };
-        images[i] = img;
-      }
+    // Ensure all 9 videos autoplay continuously in loop without pause
+    const heroVideos = document.querySelectorAll('.hero-video-card video');
+    heroVideos.forEach(v => {
+      v.muted = true;
+      v.loop = true;
+      v.playsInline = true;
+      v.play().catch(() => {});
     });
-  }
 
-  // ═══ CANVAS RENDER ═══
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    drawFrame(currentFrame);
-  }
+    // Animate the videos coming forward from the back in circular arc
+    setTimeout(() => {
+      heroArcStage.classList.add('animated');
+    }, 250);
 
-  function drawFrame(index) {
-    const img = images[index];
-    if (!img || !img.complete || !img.naturalWidth) return;
-    const cw = canvas.width, ch = canvas.height;
-    const ir = img.width / img.height, cr = cw / ch;
-    let dw, dh, dx, dy;
-    if (cr > ir) { dw = cw; dh = cw / ir; dx = 0; dy = (ch - dh) / 2; }
-    else { dh = ch; dw = ch * ir; dy = 0; dx = (cw - dw) / 2; }
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.drawImage(img, dx, dy, dw, dh);
+    // Subtle 3D mouse parallax tilt on the arc stage
+    let targetRotX = 0, targetRotY = 0, currentRotX = 0, currentRotY = 0;
+    
+    window.addEventListener('mousemove', (e) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx;
+      const dy = (e.clientY - cy) / cy;
+      targetRotY = dx * 8; // max 8 deg tilt
+      targetRotX = -dy * 6; // max 6 deg tilt
+    }, { passive: true });
+
+    function renderArcTilt() {
+      if (heroArcTrack && heroArcStage.classList.contains('animated')) {
+        currentRotX += (targetRotX - currentRotX) * 0.05;
+        currentRotY += (targetRotY - currentRotY) * 0.05;
+        heroArcTrack.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg)`;
+      }
+      requestAnimationFrame(renderArcTilt);
+    }
+    renderArcTilt();
+
+    // Make sure videos resume playing if window is re-focused
+    window.addEventListener('focus', () => {
+      heroVideos.forEach(v => {
+        if (v.paused) v.play().catch(() => {});
+      });
+    });
   }
 
   // ═══ DUMMY PRODUCTS & MODAL ═══
@@ -158,17 +156,13 @@
     const acronym = name.split(' ').map(w => w[0]).join('').substring(0,2);
     return `
       <div class="bottle-3d ${style}">
-        <div class="b-face b-front">
-          <div class="b-label">${acronym}</div>
-        </div>
+        <div class="b-face b-front"><div class="b-label">${acronym}</div></div>
         <div class="b-face b-back"></div>
         <div class="b-face b-left"></div>
         <div class="b-face b-right"></div>
         <div class="b-face b-top"></div>
         <div class="b-face b-bottom"></div>
-        <div class="b-cap">
-          <div class="b-face b-cap-front"></div>
-        </div>
+        <div class="b-cap"><div class="b-face b-cap-front"></div></div>
       </div>
     `;
   }
@@ -184,9 +178,7 @@
       const card = document.createElement('div');
       card.className = 'prod-card reveal in-view';
       card.innerHTML = `
-        <div class="prod-visual-area">
-          ${getBottleHTML(p.style, p.name)}
-        </div>
+        <div class="prod-visual-area">${getBottleHTML(p.style, p.name)}</div>
         <div class="prod-info">
           <span class="prod-cat">${p.category}</span>
           <h3 class="prod-name">${p.name}</h3>
@@ -216,6 +208,7 @@
   const modalInfo = document.getElementById('modalInfo');
 
   function openModal(product) {
+    if (!modal || !modalScene || !modalInfo) return;
     modalScene.innerHTML = getBottleHTML(product.style, product.name);
     
     const benefitsHTML = product.benefits.map(b => `
@@ -235,101 +228,93 @@
     `;
 
     modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // prevent bg scrolling
+    document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
+    if (!modal) return;
     modal.classList.remove('active');
     document.body.style.overflow = '';
   }
 
-  if(modalClose) modalClose.addEventListener('click', closeModal);
-  if(modal) modal.addEventListener('click', (e) => {
-    if(e.target === modal) closeModal();
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modal) modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
   });
 
+  // ═══ PRICING TABLE ═══
+  let activeTab = 'cinematic';
 
-  // ═══ SCROLL HANDLER ═══
+  function renderPricing(tab) {
+    const body = document.getElementById('pricingBody');
+    if(!body) return;
+    const data = pricingData[tab];
+    body.innerHTML = data.map((row) => `
+      <tr>
+        <td>${row.duration}</td>
+        <td><span class="price-per">${row.per}</span></td>
+        <td><span class="price-bundle">${row.bundles[0].price}</span><span class="price-save">${row.bundles[0].save}</span></td>
+        <td><span class="price-bundle">${row.bundles[1].price}</span><span class="price-save">${row.bundles[1].save}</span></td>
+        <td><span class="price-bundle">${row.bundles[2].price}</span><span class="price-save">${row.bundles[2].save}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  function initPricingTabs() {
+    const tabCinematic = document.getElementById('tabCinematic');
+    const tabUgc = document.getElementById('tabUgc');
+    const bg = document.getElementById('pricingTabBg');
+    if(!tabCinematic || !tabUgc || !bg) return;
+
+    function positionBg(el) {
+      bg.style.left = el.offsetLeft + 'px';
+      bg.style.width = el.offsetWidth + 'px';
+    }
+
+    tabCinematic.addEventListener('click', () => {
+      activeTab = 'cinematic';
+      tabCinematic.classList.add('active');
+      tabUgc.classList.remove('active');
+      positionBg(tabCinematic);
+      renderPricing('cinematic');
+    });
+
+    tabUgc.addEventListener('click', () => {
+      activeTab = 'ugc';
+      tabUgc.classList.add('active');
+      tabCinematic.classList.remove('active');
+      positionBg(tabUgc);
+      renderPricing('ugc');
+    });
+
+    renderPricing('cinematic');
+    requestAnimationFrame(() => positionBg(tabCinematic));
+    window.addEventListener('resize', () => positionBg(activeTab === 'cinematic' ? tabCinematic : tabUgc));
+  }
+
+  // ═══ SCROLL LOGIC ═══
+  let ticking = false;
+
   function onScroll() {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
 
     // Progress bar
-    const scrollPct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    navProgress.style.width = scrollPct + '%';
-
-    // Navbar bg
-    navbar.classList.toggle('scrolled', scrollTop > 60);
-
-    if (!isReady) return;
-
-    // Frame animation calculation
-    const cTop = heroContainer.offsetTop;
-    const cHeight = heroContainer.offsetHeight - window.innerHeight;
-    const frac = Math.max(0, Math.min(1, (scrollTop - cTop) / cHeight));
-    const frameIndex = Math.min(TOTAL_FRAMES - 1, Math.floor(frac * TOTAL_FRAMES));
-
-    if (frameIndex !== currentFrame) {
-      currentFrame = frameIndex;
-      drawFrame(currentFrame);
+    if (navProgress && docHeight > 0) {
+      const pct = (scrollTop / docHeight) * 100;
+      navProgress.style.width = pct + '%';
     }
 
-    // Hero Text Sequencing
-    function animateText(id, f, start, end, isFirst = false, isLast = false) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (f < start || f > end) {
-        el.style.opacity = 0;
-        el.style.pointerEvents = 'none';
-        return;
-      }
-      el.style.pointerEvents = 'auto';
-      const p = (f - start) / (end - start);
-      
-      let opacity = 1;
-      let yOffset = 0;
-      let blur = 0;
-      let scale = 1;
-      
-      if (p < 0.2 && !isFirst) {
-        const inP = p / 0.2;
-        opacity = inP;
-        yOffset = 40 * (1 - inP);
-        blur = 10 * (1 - inP);
-        scale = 0.95 + 0.05 * inP;
-      } else if (p > 0.8 && !isLast) {
-        const outP = (p - 0.8) / 0.2;
-        opacity = 1 - outP;
-        yOffset = -40 * outP;
-        blur = 10 * outP;
-        scale = 1 + 0.05 * outP;
-      }
-      
-      const parallax = (p - 0.5) * 60;
-      
-      let transform = '';
-      if (window.innerWidth <= 768) {
-        transform = el.classList.contains('bottom-center') 
-          ? `translate(-50%, ${yOffset + parallax}px) scale(${scale})`
-          : `translate(-50%, calc(-50% + ${yOffset + parallax}px)) scale(${scale})`;
-      } else {
-        transform = el.classList.contains('bottom-center')
-          ? `translate(-50%, ${yOffset + parallax}px) scale(${scale})`
-          : `translateY(calc(-50% + ${yOffset + parallax}px)) scale(${scale})`;
-      }
-      
-      el.style.opacity = opacity;
-      el.style.filter = `blur(${blur}px)`;
-      el.style.transform = transform;
+    // Navbar Scrolled State
+    if (navbar) {
+      if (scrollTop > 50) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
     }
 
-    animateText('heroText1', frac, 0.0, 0.3, true, true);
-
-    if (scrollIndicator) scrollIndicator.style.opacity = Math.max(0, 1 - frac * 8);
-
-    // Overlay darkness based on scroll
-    const ov = frac < 0.5 ? 0.3 + frac * 0.6 : 0.6 - (frac - 0.5) * 0.4;
-    heroOverlay.style.background = `radial-gradient(ellipse at center,rgba(5,5,8,${ov * 0.5}) 0%,rgba(5,5,8,${ov}) 60%,rgba(5,5,8,${ov + 0.1}) 100%)`;
+    // Hide scroll indicator as user scrolls down
+    if (scrollIndicator) {
+      scrollIndicator.style.opacity = Math.max(0, 1 - scrollTop / 250);
+    }
 
     // Horizontal Scroll Sections
     document.querySelectorAll('.hscroll-section').forEach(section => {
@@ -391,16 +376,12 @@
     // Benefits Section Scroll Animation
     const benefitsSection = document.getElementById('benefits');
     if (benefitsSection) {
-      const bRect = benefitsSection.getBoundingClientRect();
       const vh = window.innerHeight;
-      
-      // Calculate active scroll progress percentage for benefits section (sticky scroll pinning)
       const bTop = benefitsSection.offsetTop;
       const bHeight = benefitsSection.offsetHeight - vh;
       const currentScroll = window.scrollY;
       const p = bHeight > 0 ? Math.min(1, (currentScroll - bTop) / bHeight) : 0;
 
-      // Helper function to interpolate values
       function interpolate(val, start, end, fromVal, toVal) {
         if (val <= start) return fromVal;
         if (val >= end) return toVal;
@@ -419,7 +400,7 @@
         header.style.filter = `blur(${blur}px)`;
       }
 
-      // 2. Standing Addy Image Reveal (from bottom with neon blue blur/glow)
+      // 2. Standing Addy Image Reveal
       const imageWrap = benefitsSection.querySelector('.reveal-benefit-image');
       if (imageWrap) {
         const opacity = interpolate(p, -0.2, 0.25, 0, 1);
@@ -431,7 +412,7 @@
         imageWrap.style.filter = `blur(${blur}px) drop-shadow(0 0 ${glow}px rgba(168,85,247,0.5))`;
       }
 
-      // 3. 6 Cards Reveal Staggered Top-to-Bottom (Row by Row)
+      // 3. Benefit Cards Reveal
       const cards = benefitsSection.querySelectorAll('.reveal-benefit');
       cards.forEach(card => {
         const line = parseInt(card.dataset.benefitLine, 10) || 1;
@@ -456,133 +437,59 @@
     }
   }
 
-  let ticking = false;
   function handleScroll() {
-    if (!ticking) { requestAnimationFrame(() => { onScroll(); ticking = false; }); ticking = true; }
-  }
-
-  // ═══ PRICING TABLE ═══
-  let activeTab = 'cinematic';
-
-  function renderPricing(tab) {
-    const body = document.getElementById('pricingBody');
-    if(!body) return;
-    const data = pricingData[tab];
-    body.innerHTML = data.map((row) => `
-      <tr>
-        <td>${row.duration}</td>
-        <td><span class="price-per">${row.per}</span></td>
-        <td><span class="price-bundle">${row.bundles[0].price}</span><span class="price-save">${row.bundles[0].save}</span></td>
-        <td><span class="price-bundle">${row.bundles[1].price}</span><span class="price-save">${row.bundles[1].save}</span></td>
-        <td><span class="price-bundle">${row.bundles[2].price}</span><span class="price-save">${row.bundles[2].save}</span></td>
-      </tr>
-    `).join('');
-  }
-
-  function initPricingTabs() {
-    const tabCinematic = document.getElementById('tabCinematic');
-    const tabUgc = document.getElementById('tabUgc');
-    const bg = document.getElementById('pricingTabBg');
-    if(!tabCinematic || !tabUgc || !bg) return;
-
-    function positionBg(el) {
-      bg.style.left = el.offsetLeft + 'px';
-      bg.style.width = el.offsetWidth + 'px';
-    }
-
-    tabCinematic.addEventListener('click', () => {
-      activeTab = 'cinematic';
-      tabCinematic.classList.add('active');
-      tabUgc.classList.remove('active');
-      positionBg(tabCinematic);
-      renderPricing('cinematic');
-    });
-
-    tabUgc.addEventListener('click', () => {
-      activeTab = 'ugc';
-      tabUgc.classList.add('active');
-      tabCinematic.classList.remove('active');
-      positionBg(tabUgc);
-      renderPricing('ugc');
-    });
-
-    renderPricing('cinematic');
-    requestAnimationFrame(() => positionBg(tabCinematic));
-    window.addEventListener('resize', () => positionBg(activeTab === 'cinematic' ? tabCinematic : tabUgc));
-  }
-
-  // ═══ REVEAL OBSERVER ═══
-  function initRevealObserver() {
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { 
-        if (e.isIntersecting) { 
-          e.target.classList.add('in-view'); 
-          obs.unobserve(e.target); 
-        } 
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        onScroll();
+        ticking = false;
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-    document.querySelectorAll('.reveal').forEach((el) => obs.observe(el));
+      ticking = true;
+    }
+  }
+
+  // ═══ REVEAL ON SCROLL ═══
+  function initRevealObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   }
 
   // ═══ MOBILE MENU ═══
   function initMobileMenu() {
-    if(!hamburger || !mobileMenu) return;
+    if (!hamburger || !mobileMenu) return;
     hamburger.addEventListener('click', () => {
       hamburger.classList.toggle('active');
       mobileMenu.classList.toggle('open');
       document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
     });
-    document.querySelectorAll('.mobile-link,.mobile-cta').forEach((l) => {
-      l.addEventListener('click', () => { 
-        hamburger.classList.remove('active'); 
-        mobileMenu.classList.remove('open'); 
-        document.body.style.overflow = ''; 
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow = '';
       });
     });
   }
 
-  // ═══ SMOOTH SCROLL ═══
+  // ═══ SMOOTH SCROLL FOR NAV LINKS ═══
   function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach((a) => {
-      a.addEventListener('click', function (e) {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
         e.preventDefault();
-        const t = document.querySelector(this.getAttribute('href'));
-        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       });
     });
-  }
-
-  // ═══ INIT ═══
-  async function init() {
-    // Stars
-    initStars();
-    drawStars();
-    window.addEventListener('resize', () => { 
-      starsCanvas.width = window.innerWidth; 
-      starsCanvas.height = window.innerHeight; 
-      initStars(); 
-    });
-
-    // Preload frames
-    await preloadImages();
-    preloaderText.textContent = 'Ready';
-    setTimeout(() => preloader.classList.add('hidden'), 400);
-
-    // Canvas
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    isReady = true;
-    drawFrame(0);
-
-    // Scroll
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    onScroll();
-
-    // Init UI
-    initRevealObserver();
-    initMobileMenu();
-    initSmoothScroll();
-    initVideoControls();
   }
 
   // ─── VIDEO PLAY/PAUSE CONTROLS ───
@@ -598,20 +505,19 @@
       e.stopPropagation();
       if (video.paused) {
         video.play();
-        iconPause.style.display = '';
-        iconPlay.style.display = 'none';
+        if (iconPause) iconPause.style.display = '';
+        if (iconPlay) iconPlay.style.display = 'none';
         btn.setAttribute('aria-label', 'Pause video');
       } else {
         video.pause();
-        iconPause.style.display = 'none';
-        iconPlay.style.display = '';
+        if (iconPause) iconPause.style.display = 'none';
+        if (iconPlay) iconPlay.style.display = '';
         btn.setAttribute('aria-label', 'Play video');
       }
     }
 
     btn.addEventListener('click', togglePlay);
 
-    // Clicking anywhere on the video card also toggles play/pause
     const videoCard = video.closest('.premium-card-inner.video-card');
     if (videoCard) {
       videoCard.addEventListener('click', function(e) {
@@ -621,6 +527,52 @@
     }
   }
 
+  // ═══ FAST PRELOADER ═══
+  function initPreloader() {
+    if (!preloader) return;
+    let p = 0;
+    const interval = setInterval(() => {
+      p += 20;
+      if (preloaderFill) preloaderFill.style.width = Math.min(100, p) + '%';
+      if (preloaderText) preloaderText.textContent = `Loading ${Math.min(100, p)}%`;
+      if (p >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          preloader.classList.add('hidden');
+          initHeroArc();
+        }, 150);
+      }
+    }, 25);
+  }
+
+  // ═══ INIT ═══
+  function init() {
+    initStars();
+    drawStars();
+    window.addEventListener('resize', initStars);
+
+    // Products & Modal
+    renderProducts();
+    initProductTabs();
+
+    // Pricing
+    initPricingTabs();
+
+    // Scroll
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    onScroll();
+
+    // UI
+    initRevealObserver();
+    initMobileMenu();
+    initSmoothScroll();
+    initVideoControls();
+
+    // Preloader and Hero entrance
+    initPreloader();
+  }
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
