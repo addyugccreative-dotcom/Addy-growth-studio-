@@ -122,15 +122,31 @@
     
     gsap.registerPlugin(ScrollTrigger);
 
-    // HTML indices: 0/1 (LeftFar/RightFar), 2/3 (LeftMid/RightMid), 4/5 (LeftInner/RightInner)
-    const pair1 = [mobiles[4], mobiles[5]]; // Inner (Frame 1 + 2)
-    const pair2 = [mobiles[2], mobiles[3]]; // Mid (Frame 3 + 4)
-    const pair3 = [mobiles[0], mobiles[1]]; // Outer (Frame 5 + 6)
-    
-    console.log('Hero Mobile Frame Targets:');
-    console.log('Pair 1:', pair1);
-    console.log('Pair 2:', pair2);
-    console.log('Pair 3:', pair3);
+    // Pair 1 (Frame 1 + 2)
+    const pair1 = [mobiles[0], mobiles[1]]; 
+    // Pair 2 (Frame 3 + 4)
+    const pair2 = [mobiles[2], mobiles[3]]; 
+    // Pair 3 (Frame 5 + 6)
+    const pair3 = [mobiles[4], mobiles[5]]; 
+
+    // Initial resets explicitly requested: no scale, no rotation
+    gsap.set(mobiles, {
+      opacity: 0,
+      scale: 1,
+      rotateY: 0,
+      rotateZ: 0,
+      x: 0,
+      y: 0,
+      z: 0
+    });
+
+    // 3D Arc layout positions (pure x/y translation along an arc path, minimal Z)
+    // Left/Right symmetric offsets
+    const gap = 15; // 15vw gap from center to center
+    const arcHeight = 4; // y offset curve
+    const posCenter = { x: 7, y: 0, z: 0 }; 
+    const posMid = { x: 22, y: -4, z: -10 }; 
+    const posOuter = { x: 37, y: -10, z: -20 };
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -139,45 +155,63 @@
         end: '+=4000',
         scrub: 1,
         pin: true,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          console.log('Hero Scroll Progress (0-1):', self.progress.toFixed(3));
-        }
+        anticipatePin: 1
       }
     });
 
-    // Segment 1: Pair 1 (0% -> 33%)
+    // --- SEGMENT 1 (0% -> 33%) ---
+    // Pair 1 fades in at the center slots
     tl.to(pair1, {
       opacity: 1,
-      scale: 1,
-      x: (i) => i === 0 ? '-14vw' : '14vw',
-      z: 50,
-      rotateY: (i) => i === 0 ? 8 : -8,
-      rotateZ: (i) => i === 0 ? -4 : 4,
+      x: (i) => i === 0 ? -posCenter.x + 'vw' : posCenter.x + 'vw',
+      y: posCenter.y + 'vh',
+      z: posCenter.z,
       duration: 1,
       ease: 'none'
     }, 0);
 
-    // Segment 2: Pair 2 (33% -> 66%)
+    // --- SEGMENT 2 (33% -> 66%) ---
+    // Pair 2 fades in at the center slots
     tl.to(pair2, {
       opacity: 1,
-      scale: 1,
-      x: (i) => i === 0 ? '-28vw' : '28vw',
-      z: 0,
-      rotateY: (i) => i === 0 ? 15 : -15,
-      rotateZ: (i) => i === 0 ? -10 : 10,
+      x: (i) => i === 0 ? -posCenter.x + 'vw' : posCenter.x + 'vw',
+      y: posCenter.y + 'vh',
+      z: posCenter.z,
+      duration: 1,
+      ease: 'none'
+    }, 1);
+    // Pair 1 is pushed outward to mid slots
+    tl.to(pair1, {
+      x: (i) => i === 0 ? -posMid.x + 'vw' : posMid.x + 'vw',
+      y: posMid.y + 'vh',
+      z: posMid.z,
       duration: 1,
       ease: 'none'
     }, 1);
 
-    // Segment 3: Pair 3 (66% -> 100%)
+    // --- SEGMENT 3 (66% -> 100%) ---
+    // Pair 3 fades in at the center slots
     tl.to(pair3, {
       opacity: 1,
-      scale: 1,
-      x: (i) => i === 0 ? '-42vw' : '42vw',
-      z: -100,
-      rotateY: (i) => i === 0 ? 25 : -25,
-      rotateZ: (i) => i === 0 ? -16 : 16,
+      x: (i) => i === 0 ? -posCenter.x + 'vw' : posCenter.x + 'vw',
+      y: posCenter.y + 'vh',
+      z: posCenter.z,
+      duration: 1,
+      ease: 'none'
+    }, 2);
+    // Pair 2 is pushed outward to mid slots
+    tl.to(pair2, {
+      x: (i) => i === 0 ? -posMid.x + 'vw' : posMid.x + 'vw',
+      y: posMid.y + 'vh',
+      z: posMid.z,
+      duration: 1,
+      ease: 'none'
+    }, 2);
+    // Pair 1 is pushed outward to outer slots
+    tl.to(pair1, {
+      x: (i) => i === 0 ? -posOuter.x + 'vw' : posOuter.x + 'vw',
+      y: posOuter.y + 'vh',
+      z: posOuter.z,
       duration: 1,
       ease: 'none'
     }, 2);
