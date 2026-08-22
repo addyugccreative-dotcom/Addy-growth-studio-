@@ -149,41 +149,27 @@
       const px = currentMouseX * 10;
       const py = currentMouseY * 10;
       
-      // STAGE 1: Mobiles (0.00 to 0.35)
+      // STAGE 1: Mobiles (0.00 to 1.0) - Only mobiles!
       mobiles.forEach((m, i) => {
         // Stagger their appearances: pairs 0/1, 2/3, 4/5
+        // We stretch this over the entire 1200vh scroll sequence
         const pairIndex = Math.floor(i / 2);
-        const start = pairIndex * 0.08;
-        const end = start + 0.15;
+        const start = pairIndex * 0.2;
+        const end = start + 0.6; // Each pair takes a long time to fan out
         const p = Math.max(0, Math.min(1, (progress - start) / (end - start)));
         const target = mobileTargets[i];
         
         m.style.opacity = p;
         // Start from center, moving strictly outward and forward
-        m.style.transform = `translate3d(calc(${target.x * p}vw + ${px}px), calc(${target.y}vh + ${py}px), 0) rotate(${target.rot * p}deg) scale(${0.2 + p*0.7})`;
+        // scale goes from 0.1 to 1.0. No vertical jumping (target.y is constant).
+        m.style.transform = `translate3d(calc(${target.x * p}vw + ${px}px), calc(${target.y}vh + ${py}px), 0) rotate(${target.rot * p}deg) scale(${0.1 + p*0.9})`;
       });
 
-      // STAGE 2: MacBooks (0.35 to 0.65)
-      macs.forEach((mac, i) => {
-        const p = Math.max(0, Math.min(1, (progress - 0.35) / 0.3));
-        const isLeft = mac.classList.contains('left-mac');
-        const targetX = isLeft ? -30 : 30;
-        const targetY = -28; 
-        
-        mac.style.opacity = p;
-        mac.style.transform = `translate3d(calc(${targetX}vw + ${px*1.2}px), calc(${targetY}vh + ${py*1.2}px), 0) scale(${0.3 + p*0.5})`;
-      });
-
-      // STAGE 3: Boy and Logo (0.65 to 1.0)
-      const pThird = Math.max(0, Math.min(1, (progress - 0.65) / 0.3));
-      if (boy) {
-        boy.style.opacity = pThird;
-        boy.style.transform = `translate3d(calc(${-40 + (pThird * 15)}vw + ${px*0.5}px), calc(12vh + ${py*0.5}px), 200px) scale(${0.65 + pThird*0.25})`;
-      }
-      if (logo) {
-        logo.style.opacity = pThird;
-        logo.style.transform = `translate3d(calc(0vw + ${px*2}px), calc(-5vh + ${py*2}px), 250px) scale(${0.3 + pThird*0.5})`;
-      }
+      // MacBooks (Hidden for now as requested)
+      // macs.forEach(...) 
+      
+      // Boy and Logo (Hidden for now as requested)
+      // ...
       
       requestAnimationFrame(renderHeroScroll);
     }
