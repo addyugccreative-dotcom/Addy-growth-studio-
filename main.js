@@ -119,7 +119,7 @@
     // Animate the videos coming forward from the back in circular arc
     setTimeout(() => {
       heroArcStage.classList.add('animated');
-    }, 250);
+    }, 1000);
 
     // Subtle 3D mouse parallax tilt on the arc stage
     let targetRotX = 0, targetRotY = 0, currentRotX = 0, currentRotY = 0;

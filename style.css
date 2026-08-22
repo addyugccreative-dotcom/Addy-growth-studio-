@@ -110,25 +110,13 @@ img { max-width: 100%; display: block; }
   z-index: 1;
 }
 
-.hero-center-content {
-  position: relative;
+.hero-center-content-small {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 25;
   text-align: center;
-  max-width: 820px;
-  margin: 0 auto 30px;
-  padding: 24px 28px;
-  background: rgba(255, 255, 255, 0.68);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(124, 58, 237, 0.15);
-  border-radius: 32px;
-  box-shadow: 0 20px 60px rgba(124, 58, 237, 0.08), 0 1px 3px rgba(0,0,0,0.02);
-  transition: all 0.5s ease;
-}
-
-.hero-center-content:hover {
-  border-color: rgba(124, 58, 237, 0.35);
-  box-shadow: 0 25px 70px rgba(124, 58, 237, 0.14);
 }
 
 .hero-badge {
@@ -218,7 +206,7 @@ img { max-width: 100%; display: block; }
   transform-style: preserve-3d;
   will-change: transform, opacity, filter;
   opacity: 0;
-  transform: translate3d(0, 120px, -600px) scale(0.2) rotateY(0deg);
+  transform: translate3d(0, 100vh, -400px) scale(0.2) rotateY(0deg);
   filter: blur(15px);
   transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
               opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
@@ -226,6 +214,24 @@ img { max-width: 100%; display: block; }
               box-shadow 0.4s ease;
   transition-delay: calc(var(--i) * 0.08s);
   cursor: pointer;
+}
+
+.hero-video-card[data-index="0"],
+.hero-video-card[data-index="1"],
+.hero-video-card[data-index="2"],
+.hero-video-card[data-index="3"] {
+  transform: translate3d(-60vw, 100vh, -400px) scale(0.2) rotateY(42deg);
+}
+
+.hero-video-card[data-index="4"] {
+  transform: translate3d(0vw, -24px, -100px) scale(0.9) rotateY(0deg);
+}
+
+.hero-video-card[data-index="5"],
+.hero-video-card[data-index="6"],
+.hero-video-card[data-index="7"],
+.hero-video-card[data-index="8"] {
+  transform: translate3d(60vw, 100vh, -400px) scale(0.2) rotateY(-42deg);
 }
 
 /* Activated State — circular fanning arc forward */
@@ -274,26 +280,40 @@ img { max-width: 100%; display: block; }
 
 /* Hover Focus on Video Card */
 .hero-video-card:hover {
-  transform: translate3d(0, -35px, 140px) scale(1.22) rotateY(0deg) !important;
+  transform: translate3d(0, 0, 200px) scale(1.6) rotateY(0deg) !important;
   z-index: 100 !important;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease !important;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease !important;
 }
 
 .hero-video-inner {
   width: 100%;
   height: 100%;
-  border-radius: 18px;
+  border-radius: 36px;
   overflow: hidden;
   background: #000;
-  border: 2px solid rgba(124, 58, 237, 0.35);
-  box-shadow: 0 16px 40px rgba(124, 58, 237, 0.2), 0 4px 12px rgba(0,0,0,0.1);
+  border: 6px solid #1a1a1a;
+  box-shadow: inset 0 0 0 2px #333, 0 16px 40px rgba(124, 58, 237, 0.3);
   position: relative;
   transition: border-color 0.4s, box-shadow 0.4s;
 }
 
+/* iPhone Dynamic Island Notch */
+.hero-video-inner::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32%;
+  height: 22px;
+  background: #000;
+  border-radius: 12px;
+  z-index: 10;
+}
+
 .hero-video-card:hover .hero-video-inner {
-  border-color: rgba(168, 85, 247, 0.95);
-  box-shadow: 0 25px 60px rgba(124, 58, 237, 0.4), 0 0 30px rgba(168, 85, 247, 0.5);
+  border-color: #333;
+  box-shadow: inset 0 0 0 2px #555, 0 25px 60px rgba(124, 58, 237, 0.5), 0 0 30px rgba(168, 85, 247, 0.6);
 }
 
 .hero-video-inner video {
