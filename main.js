@@ -215,6 +215,56 @@
       duration: 1,
       ease: 'none'
     }, 2);
+
+    // ─── MACBOOK LOGIC ───
+    const leftMac = document.querySelector('.left-mac');
+    const rightMac = document.querySelector('.right-mac');
+
+    if (leftMac && rightMac) {
+      // 1. Entrance Animation (on mount, independent of scroll scrub)
+      gsap.fromTo(leftMac, 
+        { x: -120, opacity: 0 }, 
+        { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.1 } // Slight delay so it fires roughly with phones appearing
+      );
+      gsap.fromTo(rightMac, 
+        { x: 120, opacity: 0 }, 
+        { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.1 }
+      );
+
+      // 2. 3D Hover Tilt Effect
+      const applyTilt = (card, e) => {
+        // Only run on desktop where they are visible
+        if (window.innerWidth <= 768) return;
+        
+        const inner = card.querySelector('.hero-macbook-inner');
+        if (!inner) return;
+
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        // Calculate rotation (max ~10 degrees)
+        const rotateX = ((y - centerY) / centerY) * -10;
+        const rotateY = ((x - centerX) / centerX) * 10;
+        
+        inner.style.transition = 'none'; // remove transition for crisp follow
+        inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      };
+
+      const resetTilt = (card) => {
+        const inner = card.querySelector('.hero-macbook-inner');
+        if (!inner) return;
+        inner.style.transition = 'transform 0.4s ease-out';
+        inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      };
+
+      [leftMac, rightMac].forEach(mac => {
+        mac.addEventListener('mousemove', (e) => applyTilt(mac, e));
+        mac.addEventListener('mouseleave', () => resetTilt(mac));
+      });
+    }
   }
 
   // DUMMY PRODUCTS & MODAL
