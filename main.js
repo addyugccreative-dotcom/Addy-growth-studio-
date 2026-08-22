@@ -104,89 +104,78 @@
   }
 
   function initHeroScrollSequence() {
-    const sequence = document.querySelector('.hero-scroll-sequence');
-    if (!sequence) return;
+  const sequence = document.querySelector('.hero-scroll-sequence');
+  if (!sequence) return;
 
-    const mobiles = document.querySelectorAll('.hero-mobile-card');
-    const macs = document.querySelectorAll('.hero-mac-card');
-    const boy = document.querySelector('.hero-boy');
-    const logo = document.querySelector('.hero-logo');
-    
-    // Ensure videos play
-    document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
-      v.muted = true; v.loop = true; v.playsInline = true;
-      v.play().catch(()=>{});
-    });
+  const mobiles = document.querySelectorAll('.hero-mobile-card');
+  
+  // Ensure videos play
+  document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
+    v.muted = true; v.loop = true; v.playsInline = true;
+    v.play().catch(()=>{});
+  });
 
-    let mouseX = 0, mouseY = 0;
-    let currentMouseX = 0, currentMouseY = 0;
-    window.addEventListener('mousemove', e => {
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    }, {passive:true});
-
-    // Mobile arc targets (bottom area)
-    // Shifted up by ~10vh to prevent hitting the bottom marquee, and tightened slightly
-    const mobileTargets = [
-      { x: -34, y: 0, rot: -20 },
-      { x: 34, y: 0, rot: 20 },
-      { x: -20, y: 8, rot: -10 },
-      { x: 20, y: 8, rot: 10 },
-      { x: -7, y: 15, rot: -4 },
-      { x: 7, y: 15, rot: 4 }
-    ];
-
-    function renderHeroScroll() {
-      const rect = sequence.getBoundingClientRect();
-      const scrollMax = rect.height - window.innerHeight;
-      let progress = 0;
-      if (rect.top < 0) {
-        progress = Math.min(1, -rect.top / scrollMax);
-      }
-      
-      // Smooth parallax
-      currentMouseX += (mouseX - currentMouseX) * 0.05;
-      currentMouseY += (mouseY - currentMouseY) * 0.05;
-      const px = currentMouseX * 10;
-      const py = currentMouseY * 10;
-      
-      // STAGE 1: Mobiles (0.00 to 1.0) - Only mobiles!
-      mobiles.forEach((m, i) => {
-        // Strictly sequential pair appearances:
-        // Pair 0: 0.00 -> 0.33
-        // Pair 1: 0.33 -> 0.66
-        // Pair 2: 0.66 -> 1.00
-        const pairIndex = Math.floor(i / 2);
-        const start = pairIndex * 0.333;
-        const end = start + 0.333;
-        const p = Math.max(0, Math.min(1, (progress - start) / (end - start)));
-        const target = mobileTargets[i];
-        
-        // Fade in slightly as they begin to scale up
-        m.style.opacity = p > 0 ? Math.min(1, p * 4) : 0;
-        
-        // Start from absolute center point, move outward to final target
-        const startY = 15; // origin point in the middle
-        const currentX = target.x * p;
-        const currentY = startY + (target.y - startY) * p;
-        const currentRot = target.rot * p;
-        const currentScale = 0.1 + (p * 0.9);
-
-        m.style.transform = `translate3d(calc(${currentX}vw + ${px}px), calc(${currentY}vh + ${py}px), 0) rotate(${currentRot}deg) scale(${currentScale})`;
-      });
-
-      // MacBooks (Hidden for now as requested)
-      // macs.forEach(...) 
-      
-      // Boy and Logo (Hidden for now as requested)
-      // ...
-      
-      requestAnimationFrame(renderHeroScroll);
-    }
-    requestAnimationFrame(renderHeroScroll);
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+    console.error('GSAP not loaded!');
+    return;
   }
+  
+  gsap.registerPlugin(ScrollTrigger);
 
-  // ═══ DUMMY PRODUCTS & MODAL ═══
+  // Group pairs as requested (Inner, Mid, Outer)
+  const pair1 = [mobiles[4], mobiles[5]]; // Inner
+  const pair2 = [mobiles[2], mobiles[3]]; // Mid
+  const pair3 = [mobiles[0], mobiles[1]]; // Outer
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.hero-scroll-sequence',
+      start: 'top top',
+      end: '+=4000',
+      scrub: 1,
+      pin: true,
+      anticipatePin: 1
+    }
+  });
+
+  // Pair 1 (Inner pair)
+  tl.to(pair1, {
+    opacity: 1,
+    scale: 1,
+    x: (i) => i === 0 ? '-14vw' : '14vw',
+    z: 50,
+    rotateY: (i) => i === 0 ? 15 : -15,
+    rotateZ: (i) => i === 0 ? -6 : 6,
+    duration: 1,
+    ease: 'power2.out'
+  });
+
+  // Pair 2 (Mid pair)
+  tl.to(pair2, {
+    opacity: 1,
+    scale: 1,
+    x: (i) => i === 0 ? '-28vw' : '28vw',
+    z: 0,
+    rotateY: (i) => i === 0 ? 30 : -30,
+    rotateZ: (i) => i === 0 ? -14 : 14,
+    duration: 1,
+    ease: 'power2.out'
+  }, '-=0.8');
+
+  // Pair 3 (Outer pair)
+  tl.to(pair3, {
+    opacity: 1,
+    scale: 1,
+    x: (i) => i === 0 ? '-42vw' : '42vw',
+    z: -100,
+    rotateY: (i) => i === 0 ? 45 : -45,
+    rotateZ: (i) => i === 0 ? -22 : 22,
+    duration: 1,
+    ease: 'power2.out'
+  }, '-=0.8');
+}
+
+  // DUMMY PRODUCTS & MODAL
   function getBottleHTML(style, name) {
     const acronym = name.split(' ').map(w => w[0]).join('').substring(0,2);
     return `
