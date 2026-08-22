@@ -125,15 +125,14 @@
       mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
     }, {passive:true});
 
-    // Mobile arc targets (bottom area - clean smile arc)
-    // Ordered by: left far, right far, left mid, right mid, left inner, right inner
+    // Mobile arc targets (bottom area)
     const mobileTargets = [
-      { x: -38, y: 15, rot: -22 },
-      { x: 38, y: 15, rot: 22 },
-      { x: -25, y: 25, rot: -12 },
-      { x: 25, y: 25, rot: 12 },
-      { x: -10, y: 32, rot: -4 },
-      { x: 10, y: 32, rot: 4 }
+      { x: -38, y: 12, rot: -20 },
+      { x: 38, y: 12, rot: 20 },
+      { x: -22, y: 20, rot: -10 },
+      { x: 22, y: 20, rot: 10 },
+      { x: -8, y: 26, rot: -4 },
+      { x: 8, y: 26, rot: 4 }
     ];
 
     function renderHeroScroll() {
@@ -150,36 +149,40 @@
       const px = currentMouseX * 10;
       const py = currentMouseY * 10;
       
-      // Step 1: Mobile Videos Arc (0.0 to 0.3)
+      // STAGE 1: Mobiles (0.00 to 0.35)
       mobiles.forEach((m, i) => {
-        const start = i * 0.03; 
-        const p = Math.max(0, Math.min(1, (progress - start) / 0.15));
+        // Stagger their appearances: pairs 0/1, 2/3, 4/5
+        const pairIndex = Math.floor(i / 2);
+        const start = pairIndex * 0.08;
+        const end = start + 0.15;
+        const p = Math.max(0, Math.min(1, (progress - start) / (end - start)));
         const target = mobileTargets[i];
         
         m.style.opacity = p;
-        m.style.transform = `translate3d(calc(${target.x * p}vw + ${px}px), calc(${(1-p)*40 + target.y}vh + ${py}px), 0) rotate(${target.rot * p}deg) scale(${0.4 + p*0.6})`;
+        // Start from center, moving strictly outward and forward
+        m.style.transform = `translate3d(calc(${target.x * p}vw + ${px}px), calc(${target.y}vh + ${py}px), 0) rotate(${target.rot * p}deg) scale(${0.2 + p*0.7})`;
       });
 
-      // Step 2: MacBooks (0.3 to 0.5)
+      // STAGE 2: MacBooks (0.35 to 0.65)
       macs.forEach((mac, i) => {
-        const p = Math.max(0, Math.min(1, (progress - 0.3) / 0.2));
+        const p = Math.max(0, Math.min(1, (progress - 0.35) / 0.3));
         const isLeft = mac.classList.contains('left-mac');
-        const targetX = isLeft ? -35 : 35;
-        const targetY = -30; 
+        const targetX = isLeft ? -30 : 30;
+        const targetY = -28; 
         
         mac.style.opacity = p;
-        mac.style.transform = `translate3d(calc(${targetX}vw + ${px*1.2}px), calc(${(1-p)*-20 + targetY}vh + ${py*1.2}px), 0) scale(${0.4 + p*0.6})`;
+        mac.style.transform = `translate3d(calc(${targetX}vw + ${px*1.2}px), calc(${targetY}vh + ${py*1.2}px), 0) scale(${0.3 + p*0.5})`;
       });
 
-      // Step 3: Boy and Logo (0.5 to 0.75)
-      const pThird = Math.max(0, Math.min(1, (progress - 0.5) / 0.25));
+      // STAGE 3: Boy and Logo (0.65 to 1.0)
+      const pThird = Math.max(0, Math.min(1, (progress - 0.65) / 0.3));
       if (boy) {
         boy.style.opacity = pThird;
-        boy.style.transform = `translate3d(calc(${-35 + (pThird * 15)}vw + ${px*0.5}px), calc(10vh + ${py*0.5}px), 200px) scale(${0.7 + pThird*0.25})`;
+        boy.style.transform = `translate3d(calc(${-40 + (pThird * 15)}vw + ${px*0.5}px), calc(12vh + ${py*0.5}px), 200px) scale(${0.65 + pThird*0.25})`;
       }
       if (logo) {
         logo.style.opacity = pThird;
-        logo.style.transform = `translate3d(calc(12vw + ${px*2}px), calc(-5vh + ${py*2}px), 250px) scale(${0.5 + pThird*0.5})`;
+        logo.style.transform = `translate3d(calc(0vw + ${px*2}px), calc(-5vh + ${py*2}px), 250px) scale(${0.3 + pThird*0.5})`;
       }
       
       requestAnimationFrame(renderHeroScroll);

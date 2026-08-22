@@ -183,7 +183,7 @@ img { max-width: 100%; display: block; }
 
 ��/* P%P%P%P%P%P%P%P%P%P% HERO   SCROLL SEQUENCE P%P%P%P%P%P%P%P%P%P% */
 .hero-scroll-sequence {
-  height: 600vh;
+  height: 1200vh;
   position: relative;
   background: #ffffff;
 }
@@ -330,9 +330,10 @@ img { max-width: 100%; display: block; }
 }
 .hero-logo {
   position: absolute;
-  width: clamp(150px, 20vw, 280px);
-  left: 15%;
-  top: 35%;
+  width: clamp(200px, 22vw, 280px);
+  left: 50%;
+  top: 38%;
+  margin-left: calc(clamp(200px, 22vw, 280px) / -2); /* True centering base */
   opacity: 0;
   will-change: transform, opacity;
   transform: scale(0.5);
