@@ -104,7 +104,8 @@
       const a = s.alpha * (0.3 + 0.7 * Math.sin(time * s.speed + s.flicker));
       starsCtx.beginPath();
       starsCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      starsCtx.fillStyle = `rgba(77,208,225,${Math.max(0.1, a)})`;
+      // Mix of soft lavender and white glow
+      starsCtx.fillStyle = s.r > 1.2 ? `rgba(255,255,255,${Math.max(0.15, a)})` : `rgba(192,132,252,${Math.max(0.1, a)})`;
       starsCtx.fill();
     }
     requestAnimationFrame(drawStars);
@@ -427,7 +428,7 @@
         const glow = interpolate(p, -0.2, 0.25, 30, 0);
         imageWrap.style.opacity = opacity;
         imageWrap.style.transform = `translateY(${translateY}px)`;
-        imageWrap.style.filter = `blur(${blur}px) drop-shadow(0 0 ${glow}px rgba(77,208,225,0.4))`;
+        imageWrap.style.filter = `blur(${blur}px) drop-shadow(0 0 ${glow}px rgba(168,85,247,0.5))`;
       }
 
       // 3. 6 Cards Reveal Staggered Top-to-Bottom (Row by Row)
@@ -581,6 +582,43 @@
     initRevealObserver();
     initMobileMenu();
     initSmoothScroll();
+    initVideoControls();
+  }
+
+  // ─── VIDEO PLAY/PAUSE CONTROLS ───
+  function initVideoControls() {
+    const video = document.getElementById('hSalonVideo');
+    const btn = document.getElementById('videoPlayPause');
+    if (!video || !btn) return;
+
+    const iconPause = btn.querySelector('.icon-pause');
+    const iconPlay = btn.querySelector('.icon-play');
+
+    function togglePlay(e) {
+      e.stopPropagation();
+      if (video.paused) {
+        video.play();
+        iconPause.style.display = '';
+        iconPlay.style.display = 'none';
+        btn.setAttribute('aria-label', 'Pause video');
+      } else {
+        video.pause();
+        iconPause.style.display = 'none';
+        iconPlay.style.display = '';
+        btn.setAttribute('aria-label', 'Play video');
+      }
+    }
+
+    btn.addEventListener('click', togglePlay);
+
+    // Clicking anywhere on the video card also toggles play/pause
+    const videoCard = video.closest('.premium-card-inner.video-card');
+    if (videoCard) {
+      videoCard.addEventListener('click', function(e) {
+        if (e.target === btn || btn.contains(e.target)) return;
+        togglePlay(e);
+      });
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
