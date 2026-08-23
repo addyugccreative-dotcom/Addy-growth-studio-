@@ -381,8 +381,22 @@ function initHeroScrollSequence() {
   // ═══ SCROLL LOGIC ═══
   let ticking = false;
 
+  
+  let lastScrollTop = 0;
   function onScroll() {
     const scrollTop = window.scrollY;
+    
+    // Smart Header hide/show logic
+    const header = document.getElementById('header');
+    if (header) {
+      if (scrollTop > lastScrollTop && scrollTop > 80) {
+        header.classList.add('header-hidden');
+      } else {
+        header.classList.remove('header-hidden');
+      }
+    }
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
 
     // Progress bar
