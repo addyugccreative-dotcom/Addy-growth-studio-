@@ -103,155 +103,110 @@
     requestAnimationFrame(drawStars);
   }
 
-  function initHeroScrollSequence() {
-    const sequence = document.querySelector('.hero-scroll-sequence');
-    if (!sequence) return;
+  
+function initHeroScrollSequence() {
+  const sequence = document.querySelector('.hero-scroll-sequence');
+  if (!sequence) return;
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
 
-    const mobiles = document.querySelectorAll('.hero-mobile-card');
-    const leftMac = document.querySelector('.left-mac');
-    const rightMac = document.querySelector('.right-mac');
-    const logo = document.querySelector('.hero-logo');
-    const boy = document.querySelector('.hero-boy');
-    
-    // Ensure videos play immediately and stay on loop
-    document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
-      v.muted = true; v.loop = true; v.playsInline = true;
-      v.play().catch(()=>{});
-    });
+  const logo = document.querySelector('.hero-logo');
+  const boy = document.querySelector('.hero-boy');
+  const ringSystem = document.querySelector('.hero-ring-system');
+  const mobiles = document.querySelectorAll('.hero-mobile-card');
+  const leftMac = document.querySelector('.top-mac');
+  const rightMac = document.querySelector('.bottom-mac');
 
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-      console.error('GSAP not loaded!');
-      return;
+  document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
+    v.muted = true; v.loop = true; v.playsInline = true;
+    v.play().catch(()=>{});
+  });
+
+  // Stage 0: Initial states
+  gsap.set(logo, { opacity: 0, scale: 0.5, left: '50%', top: '50%', xPercent: -50, yPercent: -50, transformOrigin: 'center center' });
+  gsap.set(ringSystem, { left: '30%', top: '50%', xPercent: -50, yPercent: -50 });
+  gsap.set(mobiles, { opacity: 0, x: 0, y: 0, xPercent: -50, yPercent: -50, transformOrigin: 'center center' });
+  
+  // MacBooks: Top-right and bottom-right
+  gsap.set(leftMac, { opacity: 0, x: 150, scale: 0.85 }); 
+  gsap.set(rightMac, { opacity: 0, x: 150, scale: 0.85 }); 
+  
+  gsap.set(boy, { opacity: 0, y: 150, yPercent: 0, xPercent: 0 }); 
+
+  // Ambient continuous loops
+  gsap.to(ringSystem, { rotation: 360, duration: 30, repeat: -1, ease: 'none' });
+  gsap.to(mobiles, { rotation: -360, duration: 30, repeat: -1, ease: 'none' });
+
+  // 3D Tilt for MacBooks
+  const applyTilt = (card, e) => {
+    if (window.innerWidth <= 768) return;
+    const inner = card.querySelector('.hero-macbook-inner');
+    if (!inner) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+    inner.style.transition = 'none';
+    inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  };
+  const resetTilt = (card) => {
+    const inner = card.querySelector('.hero-macbook-inner');
+    if (!inner) return;
+    inner.style.transition = 'transform 0.4s ease-out';
+    inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+  };
+  [leftMac, rightMac].forEach(mac => {
+    mac.addEventListener('mousemove', (e) => applyTilt(mac, e));
+    mac.addEventListener('mouseleave', () => resetTilt(mac));
+  });
+
+  // Main Scrub Timeline
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.hero-scroll-sequence',
+      start: 'top top',
+      end: '+=8000',
+      scrub: 1,
+      pin: true,
+      anticipatePin: 1
     }
-    
-    gsap.registerPlugin(ScrollTrigger);
+  });
 
-    // Initial resets explicitly requested: no scale, no rotation for phones
-    gsap.set(mobiles, { opacity: 0, scale: 1, rotateY: 0, rotateZ: 0, x: 0, y: 0, z: 0 });
-    gsap.set(leftMac, { x: -150, scale: 0.85, opacity: 0 });
-    gsap.set(rightMac, { x: 150, scale: 0.85, opacity: 0 });
-    gsap.set(logo, { opacity: 0, xPercent: -50, yPercent: -50, x: 0, y: 0 });
-    gsap.set(boy, { opacity: 0, yPercent: -50, y: 40 });
+  // Stage 1 (0 -> 2) Logo zooms in
+  tl.addLabel('stage1', 0);
+  tl.to(logo, { opacity: 1, scale: 1.5, duration: 2, ease: 'power1.inOut' }, 'stage1');
 
-    const pair1 = [mobiles[0], mobiles[1]]; 
-    const pair2 = [mobiles[2], mobiles[3]]; 
-    const pair3 = [mobiles[4], mobiles[5]]; 
+  // Stage 2 (2 -> 3.5) Logo zooms out & left
+  tl.addLabel('stage2', 2);
+  tl.to(logo, { left: '30%', scale: 1, duration: 1.5, ease: 'power2.inOut' }, 'stage2');
 
-    const posCenter = { x: 7, y: 0, z: 0 }; 
-    const posMid = { x: 22, y: -4, z: -10 }; 
-    const posOuter = { x: 37, y: -10, z: -20 };
+  // Stage 3 (3.5 -> 5.5) Phones push out into ring
+  tl.addLabel('stage3', 3.5);
+  const radius = window.innerWidth < 768 ? window.innerWidth * 0.35 : window.innerWidth * 0.22;
+  tl.to(mobiles, {
+    opacity: 1,
+    x: (i) => Math.cos((i / 6) * Math.PI * 2 - Math.PI/2) * radius,
+    y: (i) => Math.sin((i / 6) * Math.PI * 2 - Math.PI/2) * radius,
+    duration: 2,
+    ease: 'power2.out',
+    stagger: 0.1
+  }, 'stage3');
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.hero-scroll-sequence',
-        start: 'top top',
-        end: '+=5000', // Extend scroll length for the new 3-stage sequence
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1
-      }
-    });
+  // Stage 4 (4.5 -> 6.5) MacBooks overlap with tail of ring
+  tl.addLabel('stage4', 4.5);
+  tl.to([leftMac, rightMac], { x: 0, opacity: 1, scale: 1, duration: 2, ease: 'power2.out' }, 'stage4');
 
-    // ─── STAGE 1: Logo Reveal (0% to 20% of timeline) ───
-    // Using explicit labels helps synchronize stages in a scrub timeline
-    tl.addLabel('stage1', 0);
-    tl.to(logo, { opacity: 1, xPercent: -50, yPercent: -50, x: 0, y: 0, duration: 1, ease: 'none' }, 'stage1');
-    tl.addLabel('stage1Complete', 1);
+  // Stage 5 (6.5 -> 8) Boy rises
+  tl.addLabel('stage5', 6.5);
+  tl.to(boy, { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' }, 'stage5');
 
-    // Pause briefly to let the logo hold
-    tl.addLabel('stage2', 1.5);
+  tl.to({}, { duration: 0.5 });
+}
 
-    // ─── STAGE 2: Phones + MacBooks Reveal (20% to 80% of timeline) ───
-    // MacBooks and Pair 1 come in together
-    tl.to(leftMac, { x: 0, scale: 1, opacity: 1, duration: 1, ease: 'power2.out' }, 'stage2');
-    tl.to(rightMac, { x: 0, scale: 1, opacity: 1, duration: 1, ease: 'power2.out' }, 'stage2');
-
-    tl.to(pair1, {
-      opacity: 1,
-      x: (i) => i === 0 ? -posCenter.x + 'vw' : posCenter.x + 'vw',
-      y: posCenter.y + 'vh',
-      z: posCenter.z,
-      duration: 1,
-      ease: 'none'
-    }, 'stage2');
-
-    tl.addLabel('stage2_phase2', 2.5);
-    tl.to(pair2, {
-      opacity: 1,
-      x: (i) => i === 0 ? -posCenter.x + 'vw' : posCenter.x + 'vw',
-      y: posCenter.y + 'vh',
-      z: posCenter.z,
-      duration: 1,
-      ease: 'none'
-    }, 'stage2_phase2');
-    tl.to(pair1, {
-      x: (i) => i === 0 ? -posMid.x + 'vw' : posMid.x + 'vw',
-      y: posMid.y + 'vh',
-      z: posMid.z,
-      duration: 1,
-      ease: 'none'
-    }, 'stage2_phase2');
-
-    tl.addLabel('stage2_phase3', 3.5);
-    tl.to(pair3, {
-      opacity: 1,
-      x: (i) => i === 0 ? -posCenter.x + 'vw' : posCenter.x + 'vw',
-      y: posCenter.y + 'vh',
-      z: posCenter.z,
-      duration: 1,
-      ease: 'none'
-    }, 'stage2_phase3');
-    tl.to(pair2, {
-      x: (i) => i === 0 ? -posMid.x + 'vw' : posMid.x + 'vw',
-      y: posMid.y + 'vh',
-      z: posMid.z,
-      duration: 1,
-      ease: 'none'
-    }, 'stage2_phase3');
-    tl.to(pair1, {
-      x: (i) => i === 0 ? -posOuter.x + 'vw' : posOuter.x + 'vw',
-      y: posOuter.y + 'vh',
-      z: posOuter.z,
-      duration: 1,
-      ease: 'none'
-    }, 'stage2_phase3');
-
-    tl.addLabel('stage3', 4.5);
-
-    // ─── STAGE 3: Boy Image Reveal (80% to 100% of timeline) ───
-    // Boy fades in and rises up
-    tl.to(boy, { opacity: 1, yPercent: -50, y: 0, duration: 1, ease: 'power2.out' }, 'stage3');
-
-    // ─── HOVER 3D TILT EFFECT FOR MACBOOKS (Unaffected by scroll scrub) ───
-    if (leftMac && rightMac) {
-      const applyTilt = (card, e) => {
-        if (window.innerWidth <= 768) return;
-        const inner = card.querySelector('.hero-macbook-inner');
-        if (!inner) return;
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
-        inner.style.transition = 'none';
-        inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      };
-      const resetTilt = (card) => {
-        const inner = card.querySelector('.hero-macbook-inner');
-        if (!inner) return;
-        inner.style.transition = 'transform 0.4s ease-out';
-        inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
-      };
-      [leftMac, rightMac].forEach(mac => {
-        mac.addEventListener('mousemove', (e) => applyTilt(mac, e));
-        mac.addEventListener('mouseleave', () => resetTilt(mac));
-      });
-    }
-  }
-
-  // DUMMY PRODUCTS & MODAL
+// DUMMY PRODUCTS & MODAL
   function getBottleHTML(style, name) {
     const acronym = name.split(' ').map(w => w[0]).join('').substring(0,2);
     return `
