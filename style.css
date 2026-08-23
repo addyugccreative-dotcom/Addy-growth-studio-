@@ -1216,3 +1216,140 @@ img { max-width: 100%; display: block; }
 section[id], div[id] {
   scroll-margin-top: 100px;
 }
+
+
+/* =========================================================
+   NEW WEBSITES 2x2 GRID & BROWSER MOCKUP
+   ========================================================= */
+.websites-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 60px 40px;
+}
+@media (max-width: 900px) {
+  .websites-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+.website-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.browser-mockup {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.browser-mockup:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 45px rgba(124, 58, 237, 0.1);
+}
+.browser-chrome {
+  background: #f8f8f8;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.traffic-lights {
+  display: flex;
+  gap: 6px;
+}
+.traffic-lights i {
+  width: 10px; height: 10px; border-radius: 50%; display: block;
+}
+.traffic-lights i:nth-child(1) { background: #ff5f56; }
+.traffic-lights i:nth-child(2) { background: #ffbd2e; }
+.traffic-lights i:nth-child(3) { background: #27c93f; }
+
+.address-bar {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ebebeb;
+  color: #666;
+  font-size: 11px;
+  padding: 4px 16px;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  pointer-events: none;
+}
+.browser-viewport {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: #fff;
+}
+.browser-viewport iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1440px;
+  height: 900px;
+  transform: scale(calc(100cqi / 1440));
+  transform-origin: top left;
+  border: none;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.website-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.website-brand {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f0728;
+  font-family: var(--font-display);
+}
+.website-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(124, 58, 237, 0.1);
+  padding: 4px 12px;
+  border-radius: 50px;
+  letter-spacing: 1px;
+}
+.website-core-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 4px;
+}
+.website-desc {
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+.website-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.website-link:hover {
+  color: var(--accent-hover);
+}
