@@ -59,6 +59,35 @@
       <!-- Scroll-driven Stage -->
       <div class="hero-scroll-stage" id="heroScrollStage">
         
+        <!-- 1. Background Atmosphere -->
+        <div class="hero-ambient-bg">
+          <div class="ambient-gradient"></div>
+          
+          <!-- Sparkles -->
+          <div class="ambient-sparkles">
+            <div class="sparkle" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
+            <div class="sparkle" style="top: 25%; left: 80%; animation-delay: 1.2s;"></div>
+            <div class="sparkle" style="top: 60%; left: 15%; animation-delay: 0.5s;"></div>
+            <div class="sparkle" style="top: 75%; left: 75%; animation-delay: 2.1s;"></div>
+            <div class="sparkle" style="top: 40%; left: 50%; animation-delay: 1.8s;"></div>
+            <div class="sparkle" style="top: 85%; left: 40%; animation-delay: 0.9s;"></div>
+          </div>
+          
+          <!-- Clouds (wrapped for scrub parting) -->
+          <div class="cloud-scrub-wrapper left-cloud" style="top: 10%; left: 10%;">
+            <img src="/cloude_1.png" class="ambient-cloud drift-1" style="transform: scale(0.9);" />
+          </div>
+          <div class="cloud-scrub-wrapper right-cloud" style="top: -5%; right: 5%;">
+            <img src="/cloude_2.png" class="ambient-cloud drift-2" style="transform: scale(1.1) scaleX(-1);" />
+          </div>
+          <div class="cloud-scrub-wrapper left-cloud" style="bottom: 5%; left: 5%;">
+            <img src="/cloude_2.png" class="ambient-cloud drift-3" style="transform: scale(0.8);" />
+          </div>
+          <div class="cloud-scrub-wrapper right-cloud" style="bottom: 10%; right: 20%;">
+            <img src="/cloude_1.png" class="ambient-cloud drift-4" style="transform: scale(1) scaleX(-1);" />
+          </div>
+        </div>
+
         <div class="hero-ring-system">
           <div class="hero-mobile-card" data-index="0"><div class="hero-iphone-inner"><video src="/hero-videos/new-hero-1.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
           <div class="hero-mobile-card" data-index="1"><div class="hero-iphone-inner"><video src="/hero-videos/new-hero-2.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
@@ -69,19 +98,32 @@
         </div>
 
         <img src="/logo.png" alt="Addy Growth Studio" class="hero-logo">
-        <img src="/addy-boy-hero.png" alt="Hero Boy" class="hero-boy">
 
-        <!-- 2 Website Videos in MacBook mockups -->
-        <div class="hero-mac-card top-mac">
-          <div class="hero-macbook-inner">
-            <div class="mac-screen"><video src="/hero-videos/website-1.mp4" autoplay loop muted playsinline preload="auto"></video></div>
-            <div class="mac-base"></div>
+        <!-- MacBooks and Tagline -->
+        <div class="hero-right-content">
+          <!-- Top Row: MacBooks -->
+          <div class="hero-mac-row">
+            <div class="hero-mac-card">
+              <div class="hero-macbook-inner">
+                <div class="mac-screen"><video src="/hero-videos/website-1.mp4" autoplay loop muted playsinline preload="auto"></video></div>
+                <div class="mac-base"></div>
+              </div>
+            </div>
+            <div class="hero-mac-card">
+              <div class="hero-macbook-inner">
+                <div class="mac-screen"><video src="/hero-videos/website-2.mp4" autoplay loop muted playsinline preload="auto"></video></div>
+                <div class="mac-base"></div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="hero-mac-card bottom-mac">
-          <div class="hero-macbook-inner">
-            <div class="mac-screen"><video src="/hero-videos/website-2.mp4" autoplay loop muted playsinline preload="auto"></video></div>
-            <div class="mac-base"></div>
+          
+          <!-- Bottom Row: Boy + Tagline -->
+          <div class="hero-bottom-row">
+            <img src="/addy-boy-hero.png" alt="Hero Boy" class="hero-boy-inline">
+            <div class="hero-tagline">
+              <h2 class="scrub-line-1" data-text="Skincare brands don't lose sales to bad products — they lose them to weak content.">Skincare brands don't lose sales to bad products — they lose them to weak content.</h2>
+              <p class="scrub-line-2" data-text="Addy Growth Studio — cinematic AI ads, UGC videos & premium websites built to convert.">Addy Growth Studio — cinematic AI ads, UGC videos & premium websites built to convert.</p>
+            </div>
           </div>
         </div>
       </div>

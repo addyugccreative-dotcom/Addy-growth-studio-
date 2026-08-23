@@ -111,12 +111,16 @@ function initHeroScrollSequence() {
   gsap.registerPlugin(ScrollTrigger);
 
   const logo = document.querySelector('.hero-logo');
-  const boy = document.querySelector('.hero-boy');
+  const boy = document.querySelector('.hero-boy-inline');
   const ringSystem = document.querySelector('.hero-ring-system');
   const mobiles = document.querySelectorAll('.hero-mobile-card');
   const macRow = document.querySelector('.hero-mac-row');
-  const tagline = document.querySelector('.hero-tagline');
   const macs = document.querySelectorAll('.hero-mac-card');
+  const leftClouds = document.querySelectorAll('.cloud-scrub-wrapper.left-cloud');
+  const rightClouds = document.querySelectorAll('.cloud-scrub-wrapper.right-cloud');
+  const ambientBg = document.querySelector('.hero-ambient-bg');
+  const scrub1 = document.querySelector('.scrub-line-1');
+  const scrub2 = document.querySelector('.scrub-line-2');
 
   document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
     v.muted = true; v.loop = true; v.playsInline = true;
@@ -129,11 +133,13 @@ function initHeroScrollSequence() {
   gsap.set(ringSystem, { left: anchorLeft, top: '50%', xPercent: -50, yPercent: -50 });
   gsap.set(mobiles, { opacity: 0, x: 0, y: 0, xPercent: -50, yPercent: -50, transformOrigin: 'center center' });
   
-  gsap.set(macRow, { opacity: 0, x: 100 }); 
-  gsap.set(tagline, { opacity: 0, y: 30 }); 
-  gsap.set(boy, { opacity: 0, y: 150, yPercent: 0, xPercent: 0 }); 
+  // MacBooks invis at load
+  gsap.set(macRow, { opacity: 0, y: 50, scale: 0.95 }); 
+  gsap.set(boy, { opacity: 0, y: 50 }); 
+  
+  // Tagline initial state is handled by CSS (0% background size)
 
-  // Ambient continuous loops
+  // Ambient continuous loops for ring
   gsap.to(ringSystem, { rotation: 360, duration: 30, repeat: -1, ease: 'none' });
   gsap.to(mobiles, { rotation: -360, duration: 30, repeat: -1, ease: 'none' });
 
@@ -168,24 +174,29 @@ function initHeroScrollSequence() {
     scrollTrigger: {
       trigger: '.hero-scroll-sequence',
       start: 'top top',
-      end: '+=8000',
+      end: '+=9000', // extra length for new stages
       scrub: 1,
       pin: true,
       anticipatePin: 1
     }
   });
 
-  // Stage 1 (0 -> 2) Logo zooms in
-  tl.addLabel('stage1', 0);
+  // Stage 0.5 (Starts immediately on scroll) -> Parting clouds
+  tl.addLabel('stage0', 0);
+  tl.to(leftClouds, { x: '-20vw', opacity: 0.1, duration: 1.5, ease: 'power1.inOut' }, 'stage0');
+  tl.to(rightClouds, { x: '20vw', opacity: 0.1, duration: 1.5, ease: 'power1.inOut' }, 'stage0');
+  tl.to('.ambient-sparkles', { opacity: 0.3, duration: 1.5 }, 'stage0');
+
+  // Stage 1 (0.5 -> 2.5) Logo zooms in
+  tl.addLabel('stage1', 0.5);
   tl.to(logo, { opacity: 1, scale: 1.5, duration: 2, ease: 'power1.inOut' }, 'stage1');
 
-  // Stage 2 (2 -> 3.5) Logo zooms out & left
-  tl.addLabel('stage2', 2);
+  // Stage 2 (2.5 -> 4) Logo zooms out & left
+  tl.addLabel('stage2', 2.5);
   tl.to(logo, { left: anchorLeft, scale: 0.65, duration: 1.5, ease: 'power2.inOut' }, 'stage2');
 
-  // Stage 3 (3.5 -> 5.5) Phones push out into tighter ring
-  tl.addLabel('stage3', 3.5);
-  // Smaller tight radius
+  // Stage 3 (4 -> 6) Phones push out into tighter ring
+  tl.addLabel('stage3', 4);
   const radius = window.innerWidth < 768 ? window.innerWidth * 0.25 : Math.min(window.innerWidth * 0.12, 160);
   tl.to(mobiles, {
     opacity: 1,
@@ -196,14 +207,22 @@ function initHeroScrollSequence() {
     stagger: 0.1
   }, 'stage3');
 
-  // Stage 4 (4.5 -> 6.5) MacBooks & Tagline overlap with tail of ring
-  tl.addLabel('stage4', 4.5);
-  tl.to(macRow, { x: 0, opacity: 1, duration: 2, ease: 'power2.out' }, 'stage4');
-  tl.to(tagline, { y: 0, opacity: 1, duration: 2, ease: 'power2.out' }, 'stage4+=0.2');
+  // Stage 4 (5.5 -> 7.5) MacBooks fade in (starts while ring forming)
+  tl.addLabel('stage4', 5.5);
+  tl.to(macRow, { y: 0, opacity: 1, scale: 1, duration: 2, ease: 'power2.out' }, 'stage4');
 
-  // Stage 5 (6.5 -> 8) Boy rises
+  // Stage 5 (6.5 -> 8.5) Boy and Tagline appear
   tl.addLabel('stage5', 6.5);
   tl.to(boy, { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' }, 'stage5');
+  
+  // Tagline text fill wipes left-to-right
+  tl.to(scrub1, { backgroundSize: '100% 100%', duration: 1.5, ease: 'none' }, 'stage5+=0.5');
+  tl.to(scrub2, { backgroundSize: '100% 100%', duration: 1.5, ease: 'none' }, 'stage5+=0.5');
+
+  // Stage 6 (8.5 -> 9.5) Clouds return to ambient
+  tl.addLabel('stage6', 8.5);
+  tl.to([leftClouds, rightClouds], { x: 0, opacity: 1, duration: 1 }, 'stage6');
+  tl.to('.ambient-sparkles', { opacity: 1, duration: 1 }, 'stage6');
 
   tl.to({}, { duration: 0.5 });
 }

@@ -215,6 +215,147 @@ img { max-width: 100%; display: block; }
   pointer-events: none;
 }
 
+/* ══════════ HERO STAGE 0 (AMBIENT ATMOSPHERE) ══════════ */
+.hero-ambient-bg {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+.ambient-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(167, 139, 250, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+}
+.ambient-sparkles {
+  position: absolute;
+  inset: 0;
+}
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 2px rgba(167, 139, 250, 0.8), 0 0 20px 5px rgba(192, 132, 252, 0.4);
+  animation: twinkle 3s infinite ease-in-out alternate;
+  opacity: 0;
+}
+@keyframes twinkle {
+  0% { opacity: 0.1; transform: scale(0.8); }
+  100% { opacity: 0.9; transform: scale(1.2); }
+}
+
+.cloud-scrub-wrapper {
+  position: absolute;
+  width: 40vw;
+  max-width: 600px;
+  opacity: 1; /* Scrubbed by GSAP */
+}
+.ambient-cloud {
+  width: 100%;
+  height: auto;
+  opacity: 0.8;
+  filter: blur(20px) drop-shadow(0 0 50px rgba(192, 132, 252, 0.5));
+}
+.drift-1 { animation: driftX 30s infinite alternate ease-in-out, bobY 12s infinite alternate ease-in-out; }
+.drift-2 { animation: driftXrev 35s infinite alternate ease-in-out, bobY 15s infinite alternate ease-in-out; }
+.drift-3 { animation: driftX 25s infinite alternate ease-in-out, bobY 18s infinite alternate ease-in-out; }
+.drift-4 { animation: driftXrev 40s infinite alternate ease-in-out, bobY 14s infinite alternate ease-in-out; }
+
+@keyframes driftX { from { transform: translateX(-5%) scale(0.9); } to { transform: translateX(10%) scale(1); } }
+@keyframes driftXrev { from { transform: translateX(5%) scale(1.1) scaleX(-1); } to { transform: translateX(-10%) scale(0.9) scaleX(-1); } }
+@keyframes bobY { from { margin-top: -3%; } to { margin-top: 3%; } }
+
+/* ══════════ RIGHT SIDE LAYOUT ══════════ */
+.hero-right-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50vw; /* Take up right half */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  padding-right: 4%;
+  gap: 20px;
+  z-index: 5;
+}
+
+.hero-mac-row {
+  display: flex;
+  gap: clamp(16px, 2vw, 24px);
+}
+.hero-mac-card {
+  width: clamp(180px, 20vw, 280px);
+  perspective: 1200px;
+}
+
+.hero-bottom-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.hero-boy-inline {
+  height: clamp(180px, 30vh, 320px);
+  object-fit: contain;
+  /* Animates in via GSAP */
+}
+
+.hero-tagline {
+  max-width: 450px;
+  text-align: left;
+  padding-bottom: 20px;
+}
+
+.scrub-line-1, .scrub-line-2 {
+  position: relative;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%; /* scrubbed by GSAP */
+}
+.scrub-line-1 {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.8vw, 24px);
+  font-weight: 800;
+  line-height: 1.35;
+  margin-bottom: 12px;
+  /* Unfilled state outline or muted text */
+  text-shadow: 0 0 1px rgba(0,0,0,0.1); /* fallback */
+  background-image: linear-gradient(90deg, #4c1d95, #6d28d9);
+  background-color: #d1d5db; /* gray background before fill */
+}
+.scrub-line-2 {
+  font-size: clamp(14px, 1.1vw, 16px);
+  font-weight: 500;
+  line-height: 1.5;
+  background-image: linear-gradient(90deg, #0f0728, #1a1a1a);
+  background-color: #e5e7eb;
+}
+.hero-arc-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120vw;
+  height: 120vh;
+  background: radial-gradient(circle at 40% 40%, rgba(192, 132, 252, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 60% 60%, rgba(216, 180, 254, 0.15) 0%, transparent 50%);
+  filter: blur(80px);
+  animation: cloudDrift 20s ease-in-out infinite;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
 .hero-mac-row {
   position: absolute;
   top: clamp(100px, 14vh, 160px);
