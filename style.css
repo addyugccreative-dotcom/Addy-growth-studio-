@@ -1485,3 +1485,26 @@ section[id], div[id] {
   opacity: 0.8;
   margin-top: 20px;
 }
+
+
+/* =========================================================
+   INSTAGRAM PROOF LINKS
+   ========================================================= */
+.proof-ig-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  vertical-align: middle;
+}
+.proof-ig-link:hover {
+  opacity: 0.7;
+  transform: translateY(-1px);
+}
+.ig-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+  margin-top: -1px;
+}
