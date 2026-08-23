@@ -111,14 +111,14 @@ function initHeroScrollSequence() {
   gsap.registerPlugin(ScrollTrigger);
 
   const logo = document.querySelector('.hero-logo');
-  const boy = document.querySelector('.hero-boy-inline');
+  const boy = document.querySelector('.hero-boy-right');
   const ringSystem = document.querySelector('.hero-ring-system');
   const mobiles = document.querySelectorAll('.hero-mobile-card');
   const macRow = document.querySelector('.hero-mac-row');
+  const tagline = document.querySelector('.hero-center-tagline');
   const macs = document.querySelectorAll('.hero-mac-card');
   const leftClouds = document.querySelectorAll('.cloud-scrub-wrapper.left-cloud');
   const rightClouds = document.querySelectorAll('.cloud-scrub-wrapper.right-cloud');
-  const ambientBg = document.querySelector('.hero-ambient-bg');
   const scrub1 = document.querySelector('.scrub-line-1');
   const scrub2 = document.querySelector('.scrub-line-2');
 
@@ -127,19 +127,30 @@ function initHeroScrollSequence() {
     v.play().catch(()=>{});
   });
 
-  const anchorLeft = 'clamp(150px, 22vw, 350px)'; // Safe edge spacing
+  const vw = window.innerWidth;
+  // Tighter radius
+  const radius = vw < 768 ? vw * 0.25 : Math.min(vw * 0.1, 140);
+  // Safe padding logic: radius (140) + frame half-width (50) + safe margin (30) = 220px min.
+  const anchorLeft = Math.max(vw * 0.15, 230) + 'px';
 
+  // Initial sets (Stage 0)
   gsap.set(logo, { opacity: 0, scale: 0.5, left: '50%', top: '50%', xPercent: -50, yPercent: -50, transformOrigin: 'center center' });
   gsap.set(ringSystem, { left: anchorLeft, top: '50%', xPercent: -50, yPercent: -50 });
   gsap.set(mobiles, { opacity: 0, x: 0, y: 0, xPercent: -50, yPercent: -50, transformOrigin: 'center center' });
   
   // MacBooks invis at load
   gsap.set(macRow, { opacity: 0, y: 50, scale: 0.95 }); 
+  
+  // Boy invis at load
   gsap.set(boy, { opacity: 0, y: 50 }); 
   
-  // Tagline initial state is handled by CSS (0% background size)
+  // Tagline invis at load (Bug 2 fix)
+  gsap.set(tagline, { opacity: 0, y: 30 }); 
+  
+  // Tagline scrub texts set back to 0% (if user refreshed mid-scroll)
+  gsap.set([scrub1, scrub2], { backgroundSize: '0% 100%' });
 
-  // Ambient continuous loops for ring
+  // Ambient continuous loops for ring (always playing)
   gsap.to(ringSystem, { rotation: 360, duration: 30, repeat: -1, ease: 'none' });
   gsap.to(mobiles, { rotation: -360, duration: 30, repeat: -1, ease: 'none' });
 
@@ -174,7 +185,7 @@ function initHeroScrollSequence() {
     scrollTrigger: {
       trigger: '.hero-scroll-sequence',
       start: 'top top',
-      end: '+=9000', // extra length for new stages
+      end: '+=9000',
       scrub: 1,
       pin: true,
       anticipatePin: 1
@@ -183,8 +194,8 @@ function initHeroScrollSequence() {
 
   // Stage 0.5 (Starts immediately on scroll) -> Parting clouds
   tl.addLabel('stage0', 0);
-  tl.to(leftClouds, { x: '-20vw', opacity: 0.1, duration: 1.5, ease: 'power1.inOut' }, 'stage0');
-  tl.to(rightClouds, { x: '20vw', opacity: 0.1, duration: 1.5, ease: 'power1.inOut' }, 'stage0');
+  tl.to(leftClouds, { x: '-25vw', opacity: 0.15, duration: 1.5, ease: 'power1.inOut' }, 'stage0');
+  tl.to(rightClouds, { x: '25vw', opacity: 0.15, duration: 1.5, ease: 'power1.inOut' }, 'stage0');
   tl.to('.ambient-sparkles', { opacity: 0.3, duration: 1.5 }, 'stage0');
 
   // Stage 1 (0.5 -> 2.5) Logo zooms in
@@ -197,7 +208,6 @@ function initHeroScrollSequence() {
 
   // Stage 3 (4 -> 6) Phones push out into tighter ring
   tl.addLabel('stage3', 4);
-  const radius = window.innerWidth < 768 ? window.innerWidth * 0.25 : Math.min(window.innerWidth * 0.12, 160);
   tl.to(mobiles, {
     opacity: 1,
     x: (i) => Math.cos((i / 6) * Math.PI * 2 - Math.PI/2) * radius,
@@ -207,13 +217,14 @@ function initHeroScrollSequence() {
     stagger: 0.1
   }, 'stage3');
 
-  // Stage 4 (5.5 -> 7.5) MacBooks fade in (starts while ring forming)
+  // Stage 4 (5.5 -> 7.5) MacBooks fade in
   tl.addLabel('stage4', 5.5);
   tl.to(macRow, { y: 0, opacity: 1, scale: 1, duration: 2, ease: 'power2.out' }, 'stage4');
 
   // Stage 5 (6.5 -> 8.5) Boy and Tagline appear
   tl.addLabel('stage5', 6.5);
   tl.to(boy, { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' }, 'stage5');
+  tl.to(tagline, { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' }, 'stage5');
   
   // Tagline text fill wipes left-to-right
   tl.to(scrub1, { backgroundSize: '100% 100%', duration: 1.5, ease: 'none' }, 'stage5+=0.5');

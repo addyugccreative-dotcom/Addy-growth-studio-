@@ -60,7 +60,7 @@ img { max-width: 100%; display: block; }
 
 /* ══════════ NAVIGATION + PROGRESS BAR ══════════ */
 #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 16px 0; transition: all 0.4s; }
-#navbar.scrolled { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 10px 0; box-shadow: 0 4px 25px rgba(124, 58, 237, 0.06); }
+#navbar.scrolled { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(5px); border-bottom: 1px solid var(--border); padding: 10px 0; box-shadow: 0 4px 25px rgba(124, 58, 237, 0.06); }
 .nav-progress { position: absolute; bottom: 0; left: 0; height: 2px; width: 0; background: linear-gradient(90deg, #7c3aed, #9333ea, #c084fc); transition: width 0.05s linear; z-index: 10; box-shadow: 0 0 12px var(--accent-glow); }
 .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
 .nav-logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 18px; color: #0f0728; }
@@ -270,20 +270,7 @@ img { max-width: 100%; display: block; }
 @keyframes bobY { from { margin-top: -3%; } to { margin-top: 3%; } }
 
 /* ══════════ RIGHT SIDE LAYOUT ══════════ */
-.hero-right-content {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50vw; /* Take up right half */
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-  padding-right: 4%;
-  gap: 20px;
-  z-index: 5;
-}
+
 
 .hero-mac-row {
   display: flex;
@@ -294,24 +281,57 @@ img { max-width: 100%; display: block; }
   perspective: 1200px;
 }
 
-.hero-bottom-row {
+
+
+
+
+
+
+
+.hero-center-tagline {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(300px, 45vw, 700px);
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.hero-right-column {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50vw;
+  height: 100vh;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: flex-end;
-  gap: 20px;
-  width: 100%;
-  justify-content: flex-end;
+  padding: 10vh 4% 0 0;
+  z-index: 5;
+  pointer-events: none;
 }
 
-.hero-boy-inline {
-  height: clamp(180px, 30vh, 320px);
+.hero-mac-row {
+  display: flex;
+  gap: clamp(16px, 2vw, 24px);
+  margin-bottom: auto; /* Push boy to bottom */
+}
+.hero-mac-card {
+  position: relative; /* Fix for Bug 3 - stops them stacking */
+  width: clamp(180px, 20vw, 280px);
+  perspective: 1200px;
+}
+
+.hero-boy-right {
+  position: relative;
+  height: clamp(350px, 45vh, 600px);
   object-fit: contain;
-  /* Animates in via GSAP */
-}
-
-.hero-tagline {
-  max-width: 450px;
-  text-align: left;
-  padding-bottom: 20px;
+  margin-right: 4%;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .scrub-line-1, .scrub-line-2 {
