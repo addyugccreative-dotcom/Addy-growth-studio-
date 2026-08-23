@@ -1,3 +1,33 @@
+
+  // Iframe precise scaling
+  function initIframeScaling() {
+    const containers = document.querySelectorAll('.browser-viewport');
+    
+    function scaleIframes() {
+      containers.forEach(container => {
+        const width = container.clientWidth;
+        const scale = width / 1920;
+        const iframe = container.querySelector('iframe');
+        if (iframe) {
+          iframe.style.transform = `scale(${scale})`;
+        }
+      });
+    }
+
+    // Attach onload fading
+    containers.forEach(container => {
+      const iframe = container.querySelector('iframe');
+      if (iframe) {
+        iframe.onload = () => {
+          iframe.style.opacity = '1';
+        };
+      }
+    });
+
+    scaleIframes();
+    window.addEventListener('resize', scaleIframes);
+  }
+
 /* ══════════════════════════════════════════════
    ADDY GROWTH STUDIO — Premium Script
    ══════════════════════════════════════════════ */
@@ -778,6 +808,7 @@ function initHeroScrollSequence() {
   }
 
   function init() {
+    initIframeScaling();
     initMockupTilt();
     initStars();
     drawStars();
