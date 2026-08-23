@@ -1420,3 +1420,68 @@ section[id], div[id] {
   background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.95) 50%, transparent 100%) !important;
   z-index: 2;
 }
+
+
+/* =========================================================
+   REAL CONVERSATIONS PROOF SECTION
+   ========================================================= */
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 60px;
+  margin-bottom: 32px;
+}
+@media (max-width: 768px) {
+  .proof-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+.proof-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.proof-mockup.iphone-mockup {
+  aspect-ratio: auto;
+  height: auto;
+  width: 100%;
+  max-width: 320px;
+  /* Allow natural stretch based on image */
+}
+.proof-mockup.iphone-mockup::before {
+  border-radius: 38px;
+}
+.proof-screen {
+  width: 100%;
+  background: #000;
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  /* Remove fixed padding/aspect ratio so it wraps the image tightly */
+}
+.proof-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 36px;
+  position: relative;
+  z-index: 2;
+}
+.proof-caption {
+  font-size: 14px;
+  color: var(--text-dim);
+  text-align: center;
+}
+.proof-caption strong {
+  font-weight: 700;
+}
+.proof-footer {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+  opacity: 0.8;
+  margin-top: 20px;
+}
