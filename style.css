@@ -1508,3 +1508,70 @@ section[id], div[id] {
   color: var(--accent);
   margin-top: -1px;
 }
+
+
+/* =========================================================
+   CONTACT FORM & SECONDARY CTAS
+   ========================================================= */
+.secondary-cta {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-decoration: underline;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.secondary-cta:hover {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.contact-form-container {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 40px rgba(124, 58, 237, 0.05);
+}
+@media (max-width: 600px) {
+  .contact-form-container {
+    padding: 24px;
+  }
+}
+.form-group {
+  margin-bottom: 24px;
+  text-align: left;
+}
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f0728;
+  margin-bottom: 8px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #faf8ff;
+  font-family: inherit;
+  font-size: 15px;
+  color: #333;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #999;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
+}

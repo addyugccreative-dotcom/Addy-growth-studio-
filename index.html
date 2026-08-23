@@ -35,7 +35,7 @@
         <a href="#pricing" class="nav-link">Pricing</a>
         <a href="#contact" class="nav-link">Contact</a>
       </div>
-      <a href="#contact" class="nav-cta">Start Project</a>
+      <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="nav-cta">DM on Instagram &rarr;</a>
       <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
@@ -47,7 +47,7 @@
     <a href="#pricing" class="mobile-link">Pricing</a>
     <a href="#process" class="mobile-link">Process</a>
     <a href="#contact" class="mobile-link">Contact</a>
-    <a href="#contact" class="mobile-cta">Start Project</a>
+    <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="mobile-cta">DM on Instagram &rarr;</a>
   </div>
 
   <!-- ═══ HERO — SCROLL SEQUENCE ═══ -->
@@ -442,19 +442,28 @@
           <div class="pricing-title">Cinematic Ads</div>
           <div class="pricing-price">From $99</div>
           <div class="pricing-desc">15s 1080p cinematic product video</div>
-          <a href="#contact" class="btn-primary">Get Custom Quote</a>
+          <div class="cta-wrapper" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+              <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="btn-primary">DM on Instagram &rarr;</a>
+              <a href="#contact" class="secondary-cta">or send a message instead</a>
+            </div>
         </div>
         <div class="pricing-card reveal" style="--delay:.2s">
           <div class="pricing-title">UGC Videos</div>
           <div class="pricing-price">From $79</div>
           <div class="pricing-desc">15s 1080p UGC testimonial video</div>
-          <a href="#contact" class="btn-primary">Get Custom Quote</a>
+          <div class="cta-wrapper" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+              <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="btn-primary">DM on Instagram &rarr;</a>
+              <a href="#contact" class="secondary-cta">or send a message instead</a>
+            </div>
         </div>
         <div class="pricing-card reveal" style="--delay:.3s">
           <div class="pricing-title">Combo Bundle</div>
           <div class="pricing-price">From $149</div>
           <div class="pricing-desc">Cinematic + UGC combined package</div>
-          <a href="#contact" class="btn-primary">Get Custom Quote</a>
+          <div class="cta-wrapper" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+              <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="btn-primary">DM on Instagram &rarr;</a>
+              <a href="#contact" class="secondary-cta">or send a message instead</a>
+            </div>
         </div>
       </div>
       <div class="pricing-note reveal" style="--delay:.4s">* DM or email for full pricing and custom quote within 24 hours.</div>
@@ -516,15 +525,52 @@
   </section>
 
   <!-- ═══ FINAL CTA ═══ -->
-  <section id="contact" class="section final-cta-section">
-    <div class="container">
-      <div class="reveal" style="text-align:center;">
-        <h2 class="section-title shimmer-heading" style="font-size:clamp(40px,6vw,68px);margin-bottom:24px;">Ready to <span class="text-accent">Elevate Your Brand?</span></h2>
-        <p style="font-size:clamp(16px,2vw,20px);color:var(--text-dim);margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.7;">Let's create ads and websites that make your skincare brand completely unforgettable.</p>
-        <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
-          <a href="mailto:hello@addygrowthstudio.com" class="btn-primary" style="font-size:16px;padding:18px 40px;">Book a Project</a>
-          <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="btn-secondary" style="font-size:16px;padding:18px 40px;">DM on Instagram →</a>
-        </div>
+  <section id="contact" class="section">
+    <div class="container" style="max-width: 600px;">
+      <div class="section-header reveal" style="text-align:center;">
+        <h2 class="section-title shimmer-heading">Let's Talk About Your Brand</h2>
+        <p class="section-desc">Fastest response via Instagram DM — or fill this out and we'll reply within 24 hours.</p>
+      </div>
+
+      <div class="reveal" style="text-align:center; margin-bottom: 40px; --delay: 0.1s;">
+        <a href="https://www.instagram.com/addy_growth_studio_/" target="_blank" class="btn-secondary" style="font-size:14px; padding:12px 24px; border-radius: 50px;">Prefer Instagram? DM us directly &rarr;</a>
+      </div>
+
+      <div class="contact-form-container reveal" style="--delay: 0.2s;" id="contactFormContainer">
+        <!-- Using a simple mailto fallback since no backend is specified, but handling with JS for the success state -->
+        <form id="contactForm">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="contactName" required placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label>Brand Name</label>
+            <input type="text" id="contactBrand" required placeholder="Your brand name">
+          </div>
+          <div class="form-group">
+            <label>Instagram or Website (Optional)</label>
+            <input type="text" id="contactLink" placeholder="@yourbrand or yourbrand.com">
+          </div>
+          <div class="form-group">
+            <label>What are you looking for?</label>
+            <select id="contactService" required>
+              <option value="" disabled selected>Select an option</option>
+              <option value="Ad Campaign">Ad Campaign</option>
+              <option value="Website">Website</option>
+              <option value="Both">Both</option>
+              <option value="Not sure yet">Not sure yet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Message (Optional)</label>
+            <textarea id="contactMessage" rows="4" placeholder="Tell us about your brand or goals"></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%;">Send It &rarr;</button>
+        </form>
+      </div>
+      <div id="contactSuccess" class="contact-success" style="display: none; text-align: center; padding: 40px; background: rgba(124, 58, 237, 0.05); border-radius: 20px; border: 1px solid rgba(124, 58, 237, 0.2);">
+        <h3 style="color: var(--accent); font-size: 24px; margin-bottom: 12px;">Thanks — we'll be in touch within 24 hours!</h3>
+        <p style="color: var(--text-dim);">We've received your inquiry and will review it shortly.</p>
       </div>
     </div>
   </section>

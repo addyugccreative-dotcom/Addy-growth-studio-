@@ -808,6 +808,17 @@ function initHeroScrollSequence() {
   }
 
   function init() {
+
+  // Contact Form Submission
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('contactFormContainer').style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    });
+  }
+
     initIframeScaling();
     initMockupTilt();
     initStars();
