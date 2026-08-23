@@ -114,23 +114,23 @@ function initHeroScrollSequence() {
   const boy = document.querySelector('.hero-boy');
   const ringSystem = document.querySelector('.hero-ring-system');
   const mobiles = document.querySelectorAll('.hero-mobile-card');
-  const leftMac = document.querySelector('.top-mac');
-  const rightMac = document.querySelector('.bottom-mac');
+  const macRow = document.querySelector('.hero-mac-row');
+  const tagline = document.querySelector('.hero-tagline');
+  const macs = document.querySelectorAll('.hero-mac-card');
 
   document.querySelectorAll('.hero-scroll-sequence video').forEach(v => {
     v.muted = true; v.loop = true; v.playsInline = true;
     v.play().catch(()=>{});
   });
 
-  // Stage 0: Initial states
+  const anchorLeft = 'clamp(150px, 22vw, 350px)'; // Safe edge spacing
+
   gsap.set(logo, { opacity: 0, scale: 0.5, left: '50%', top: '50%', xPercent: -50, yPercent: -50, transformOrigin: 'center center' });
-  gsap.set(ringSystem, { left: '30%', top: '50%', xPercent: -50, yPercent: -50 });
+  gsap.set(ringSystem, { left: anchorLeft, top: '50%', xPercent: -50, yPercent: -50 });
   gsap.set(mobiles, { opacity: 0, x: 0, y: 0, xPercent: -50, yPercent: -50, transformOrigin: 'center center' });
   
-  // MacBooks: Top-right and bottom-right
-  gsap.set(leftMac, { opacity: 0, x: 150, scale: 0.85 }); 
-  gsap.set(rightMac, { opacity: 0, x: 150, scale: 0.85 }); 
-  
+  gsap.set(macRow, { opacity: 0, x: 100 }); 
+  gsap.set(tagline, { opacity: 0, y: 30 }); 
   gsap.set(boy, { opacity: 0, y: 150, yPercent: 0, xPercent: 0 }); 
 
   // Ambient continuous loops
@@ -158,7 +158,7 @@ function initHeroScrollSequence() {
     inner.style.transition = 'transform 0.4s ease-out';
     inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
   };
-  [leftMac, rightMac].forEach(mac => {
+  macs.forEach(mac => {
     mac.addEventListener('mousemove', (e) => applyTilt(mac, e));
     mac.addEventListener('mouseleave', () => resetTilt(mac));
   });
@@ -181,11 +181,12 @@ function initHeroScrollSequence() {
 
   // Stage 2 (2 -> 3.5) Logo zooms out & left
   tl.addLabel('stage2', 2);
-  tl.to(logo, { left: '30%', scale: 1, duration: 1.5, ease: 'power2.inOut' }, 'stage2');
+  tl.to(logo, { left: anchorLeft, scale: 0.65, duration: 1.5, ease: 'power2.inOut' }, 'stage2');
 
-  // Stage 3 (3.5 -> 5.5) Phones push out into ring
+  // Stage 3 (3.5 -> 5.5) Phones push out into tighter ring
   tl.addLabel('stage3', 3.5);
-  const radius = window.innerWidth < 768 ? window.innerWidth * 0.35 : window.innerWidth * 0.22;
+  // Smaller tight radius
+  const radius = window.innerWidth < 768 ? window.innerWidth * 0.25 : Math.min(window.innerWidth * 0.12, 160);
   tl.to(mobiles, {
     opacity: 1,
     x: (i) => Math.cos((i / 6) * Math.PI * 2 - Math.PI/2) * radius,
@@ -195,9 +196,10 @@ function initHeroScrollSequence() {
     stagger: 0.1
   }, 'stage3');
 
-  // Stage 4 (4.5 -> 6.5) MacBooks overlap with tail of ring
+  // Stage 4 (4.5 -> 6.5) MacBooks & Tagline overlap with tail of ring
   tl.addLabel('stage4', 4.5);
-  tl.to([leftMac, rightMac], { x: 0, opacity: 1, scale: 1, duration: 2, ease: 'power2.out' }, 'stage4');
+  tl.to(macRow, { x: 0, opacity: 1, duration: 2, ease: 'power2.out' }, 'stage4');
+  tl.to(tagline, { y: 0, opacity: 1, duration: 2, ease: 'power2.out' }, 'stage4+=0.2');
 
   // Stage 5 (6.5 -> 8) Boy rises
   tl.addLabel('stage5', 6.5);
@@ -205,7 +207,6 @@ function initHeroScrollSequence() {
 
   tl.to({}, { duration: 0.5 });
 }
-
 // DUMMY PRODUCTS & MODAL
   function getBottleHTML(style, name) {
     const acronym = name.split(' ').map(w => w[0]).join('').substring(0,2);
