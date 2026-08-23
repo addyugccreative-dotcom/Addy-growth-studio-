@@ -274,62 +274,27 @@ img { max-width: 100%; display: block; }
 
 .hero-mac-row {
   display: flex;
-  gap: clamp(16px, 2vw, 24px);
+  gap: clamp(20px, 3vw, 40px); /* Strict minimum horizontal gap */
+  flex-wrap: nowrap;
+  width: 100%;
+  justify-content: flex-end;
+  margin-bottom: 40px; /* Strict minimum vertical gap before boy */
 }
 .hero-mac-card {
-  width: clamp(180px, 20vw, 280px);
+  position: relative; 
+  width: clamp(140px, 18vw, 260px);
+  flex: 0 1 auto;
   perspective: 1200px;
-}
-
-
-
-
-
-
-
-
-.hero-center-tagline {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: clamp(300px, 45vw, 700px);
-  text-align: center;
-  z-index: 20;
-  pointer-events: none;
-}
-
-.hero-right-column {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 10vh 4% 0 0;
   z-index: 5;
-  pointer-events: none;
-}
-
-.hero-mac-row {
-  display: flex;
-  gap: clamp(16px, 2vw, 24px);
-  margin-bottom: auto; /* Push boy to bottom */
-}
-.hero-mac-card {
-  position: relative; /* Fix for Bug 3 - stops them stacking */
-  width: clamp(180px, 20vw, 280px);
-  perspective: 1200px;
 }
 
 .hero-boy-right {
   position: relative;
-  height: clamp(350px, 45vh, 600px);
+  height: clamp(250px, 45vh, 500px); /* Bounded safely */
   object-fit: contain;
+  object-position: bottom right; /* Anchor to bottom */
   margin-right: 4%;
+  margin-top: auto; /* Push firmly to bottom of container */
   z-index: 10;
   pointer-events: auto;
 }
