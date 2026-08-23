@@ -1575,3 +1575,47 @@ section[id], div[id] {
   background: #ffffff;
   box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
 }
+
+
+/* =========================================================
+   UPDATED PRICING LAYOUT
+   ========================================================= */
+.section-tag-numbered {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.pricing-card-top {
+  width: 100%;
+}
+
+.pricing-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pricing-list li {
+  font-size: 13.5px;
+  color: #4a4a5e; /* muted dark gray */
+  line-height: 1.45; /* tight but comfortable */
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.pricing-list .check {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
