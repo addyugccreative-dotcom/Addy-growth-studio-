@@ -685,7 +685,86 @@ function initHeroScrollSequence() {
   }
 
   // ═══ INIT ═══
+  
+  // Mockup 3D Tilt Logic
+  function initMockupTilt() {
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const iphones = document.querySelectorAll('.niche-video-card');
+    const macbooks = document.querySelectorAll('.macbook-mockup');
+    
+    function applyTilt(el, e, maxTilt, targetSelector) {
+      if (isTouch) return;
+      const target = el.querySelector(targetSelector) || el;
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -maxTilt;
+      const rotateY = ((x - centerX) / centerX) * maxTilt;
+      
+      target.style.transition = 'none';
+      target.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      
+      // Shadow shift
+      if (target.classList.contains('iphone-mockup')) {
+         const shadowX = -rotateY * 2;
+         const shadowY = rotateX * 2 + 20;
+         target.style.boxShadow = `0 0 0 4px #000, 0 0 0 7px #d5d5d5, ${shadowX}px ${shadowY}px 40px rgba(0,0,0,0.2)`;
+      }
+      
+      // Mac brightness
+      if (target.classList.contains('macbook-mockup')) {
+         const screen = target.querySelector('.macbook-screen');
+         if (screen) {
+            const brightness = 1 + ((y / rect.height) * 0.1);
+            screen.style.filter = `brightness(${brightness})`;
+         }
+      }
+    }
+    
+    function resetTilt(el, targetSelector) {
+      if (isTouch) {
+        el.style.transform = 'scale(1)';
+        return;
+      }
+      const target = el.querySelector(targetSelector) || el;
+      target.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s ease';
+      target.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      
+      if (target.classList.contains('iphone-mockup')) {
+         target.style.boxShadow = `0 0 0 4px #000, 0 0 0 7px #d5d5d5, 0 20px 40px rgba(0,0,0,0.15)`;
+      }
+      if (target.classList.contains('macbook-mockup')) {
+         const screen = target.querySelector('.macbook-screen');
+         if (screen) screen.style.filter = 'brightness(1)';
+      }
+    }
+
+    iphones.forEach(card => {
+      if (isTouch) {
+         card.addEventListener('touchstart', () => { card.style.transform = 'scale(0.95)'; card.style.transition = 'transform 0.2s'; });
+         card.addEventListener('touchend', () => { card.style.transform = 'scale(1)'; });
+      } else {
+         card.addEventListener('mousemove', (e) => applyTilt(card, e, 8, '.iphone-mockup'));
+         card.addEventListener('mouseleave', () => resetTilt(card, '.iphone-mockup'));
+      }
+    });
+
+    macbooks.forEach(card => {
+      if (isTouch) {
+         card.addEventListener('touchstart', () => { card.style.transform = 'scale(0.95)'; card.style.transition = 'transform 0.2s'; });
+         card.addEventListener('touchend', () => { card.style.transform = 'scale(1)'; });
+      } else {
+         card.addEventListener('mousemove', (e) => applyTilt(card, e, 8, null));
+         card.addEventListener('mouseleave', () => resetTilt(card, null));
+      }
+    });
+  }
+
   function init() {
+    initMockupTilt();
     initStars();
     drawStars();
     window.addEventListener('resize', initStars);
