@@ -681,6 +681,58 @@ img { max-width: 100%; display: block; }
 .strategy-card h3 { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 16px; color: #0f0728; }
 .strategy-card p { font-size: 15px; color: var(--text-dim); line-height: 1.7; }
 
+/*  ? ? ? STRATEGY ENHANCEMENTS  ? ? ? */
+.strategy-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  width: 0%;
+  z-index: 100;
+  transition: width 0.1s linear;
+}
+
+.strategy-card {
+  --card-scale: 0.95;
+  transform: scale(var(--card-scale));
+  transition: filter 0.4s ease, opacity 0.4s ease, border-color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+  will-change: transform, filter, opacity;
+}
+.strategy-card:hover {
+  transform: scale(var(--card-scale)) translateY(-8px);
+}
+.strategy-card.strategy-exit {
+  filter: blur(3px);
+  opacity: 0.4;
+}
+
+/* Diagonal Shine */
+.strategy-card::after {
+  content: '';
+  position: absolute;
+  top: -150%; left: -150%;
+  width: 300%; height: 300%;
+  background: linear-gradient(135deg, transparent 40%, rgba(124, 58, 237, 0.08) 50%, transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.strategy-card.strategy-focused::after {
+  opacity: 1;
+  animation: strategyShine 4s infinite linear;
+}
+@keyframes strategyShine {
+  0% { transform: translate(-10%, -10%); }
+  100% { transform: translate(10%, 10%); }
+}
+
+.card-icon {
+  display: inline-block;
+  will-change: transform;
+}
+
+
 /* ══════════ PREMIUM WEBSITES CARDS ══════════ */
 .neon-hscroll .hscroll-track { align-items: center; height: 75vh; }
 .premium-card { height: 50vh; width: calc(50vh * 16 / 9); flex: 0 0 calc(50vh * 16 / 9); flex-shrink: 0; padding: 15px; display: flex; align-items: center; justify-content: center; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); opacity: 0.45; transform: scale(0.85); white-space: normal; cursor: pointer; }

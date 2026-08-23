@@ -409,15 +409,68 @@ function initHeroScrollSequence() {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight;
       const vh = window.innerHeight;
+      
+      let scrollFraction = 0;
       if (scrollTop >= sectionTop && scrollTop <= sectionTop + sectionHeight - vh) {
-        const scrollFraction = (scrollTop - sectionTop) / (sectionHeight - vh);
+        scrollFraction = (scrollTop - sectionTop) / (sectionHeight - vh);
         const maxScroll = Math.max(0, track.scrollWidth - window.innerWidth + 48);
         track.style.transform = `translate3d(-${scrollFraction * maxScroll}px, 0, 0)`;
       } else if (scrollTop < sectionTop) {
+        scrollFraction = 0;
         track.style.transform = `translate3d(0px, 0, 0)`;
       } else {
+        scrollFraction = 1;
         const maxScroll = Math.max(0, track.scrollWidth - window.innerWidth + 48);
         track.style.transform = `translate3d(-${maxScroll}px, 0, 0)`;
+      }
+      
+      // Strategy Enhancements
+      if (section.dataset.hscroll === 'strategy') {
+        const progress = section.querySelector('.strategy-progress-bar');
+        if (progress) progress.style.width = (scrollFraction * 100) + '%';
+        
+        const cards = track.querySelectorAll('.strategy-card');
+        const viewportCenter = window.innerWidth / 2;
+        
+        let closestCard = null;
+        let minDistance = Infinity;
+
+        cards.forEach((card) => {
+          const rect = card.getBoundingClientRect();
+          const cardCenter = rect.left + rect.width / 2;
+          const dist = Math.abs(cardCenter - viewportCenter);
+          
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestCard = card;
+          }
+          
+          if (rect.right < window.innerWidth * 0.15) {
+            card.classList.add('strategy-exit');
+          } else {
+            card.classList.remove('strategy-exit');
+          }
+          
+          const icon = card.querySelector('.card-icon');
+          if (icon && typeof gsap !== 'undefined') {
+             const iconOffset = (cardCenter - viewportCenter) * -0.15;
+             gsap.set(icon, { x: iconOffset });
+          }
+        });
+        
+        if (typeof gsap !== 'undefined') {
+          cards.forEach(card => {
+             const isFocused = card === closestCard;
+             const currentlyFocused = card.classList.contains('strategy-focused');
+             if (isFocused && !currentlyFocused) {
+                card.classList.add('strategy-focused');
+                gsap.to(card, { '--card-scale': 1.05, duration: 0.3, ease: 'power2.out' });
+             } else if (!isFocused && currentlyFocused) {
+                card.classList.remove('strategy-focused');
+                gsap.to(card, { '--card-scale': 0.95, duration: 0.3, ease: 'power2.out' });
+             }
+          });
+        }
       }
     });
 
@@ -636,6 +689,28 @@ function initHeroScrollSequence() {
     initStars();
     drawStars();
     window.addEventListener('resize', initStars);
+
+    // Icon Entrance Observer
+    if (typeof IntersectionObserver !== 'undefined' && typeof gsap !== 'undefined') {
+      const iconObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const icon = entry.target.querySelector('.card-icon');
+            if (icon && !icon.dataset.animated) {
+              icon.dataset.animated = 'true';
+              gsap.fromTo(icon, 
+                { rotationY: 90, opacity: 0 },
+                { rotationY: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.4)', delay: 0.08 }
+              );
+            }
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px' });
+      
+      document.querySelectorAll('.strategy-card').forEach(card => {
+        iconObserver.observe(card);
+      });
+    }
 
     // Products & Modal
     renderProducts();
