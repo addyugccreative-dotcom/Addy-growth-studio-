@@ -2286,21 +2286,63 @@ section[id], div[id] {
 /* --- HOVER WAVE TEXT ANIMATION --- */
 .hover-wave-char {
   display: inline-block;
-  position: relative; /* Fix Bug 1: Use top instead of transform to prevent WebKit background-clip detachment */
-}
-.wave-word {
-  display: inline-block;
-  white-space: nowrap; /* Fix Bug 2: Prevent mid-word line breaks */
+  will-change: transform;
 }
 .wave-applied {
-  cursor: default;
+  cursor: default; /* or pointer if it's a button */
 }
 .wave-applied:hover .hover-wave-char {
   animation: textWaveBounce 0.4s ease-in-out forwards;
   animation-delay: calc(var(--char-index) * 0.02s);
 }
 @keyframes textWaveBounce {
-  0% { top: 0px; }
-  50% { top: -4px; }
-  100% { top: 0px; }
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+
+
+/* --- FOOTER FIXES --- */
+.footer-top {
+  align-items: flex-start !important;
+}
+.footer-center {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 16px !important;
+}
+.footer-right {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 16px !important;
+}
+.footer-link {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+}
+.footer-ig {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-family: var(--font-display) !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  text-decoration: none !important;
+}
+.footer-social-label {
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .footer-top {
+    align-items: center !important;
+  }
+  .footer-center, .footer-right {
+    align-items: center !important;
+  }
 }
