@@ -70,8 +70,28 @@ img { max-width: 100%; display: block; }
 .nav-link:hover { color: var(--accent); }
 .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent3)); transition: width 0.3s; }
 .nav-link:hover::after { width: 100%; }
-.nav-cta { font-size: 14px; padding: 10px 24px; background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%); color: #ffffff; border-radius: 50px; font-weight: 600; transition: all 0.3s; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(124,58,237,0.3); }
-.nav-cta:hover { background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%); transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow-strong); }
+.nav-cta { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 8px; 
+  font-size: 14px; 
+  padding: 10px 24px; 
+  background: linear-gradient(135deg, #3b0764 0%, #7c3aed 100%); 
+  color: #ffffff; 
+  border-radius: 50px; 
+  font-weight: 600; 
+  transition: all 0.3s; 
+  border: none; 
+  cursor: pointer; 
+  box-shadow: 0 4px 20px rgba(124,58,237,0.3); 
+  position: relative; 
+  overflow: hidden; 
+}
+.nav-cta:hover { 
+  background: linear-gradient(135deg, #4c1d95 0%, #9333ea 100%); 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 30px var(--accent-glow-strong); 
+}
 .nav-hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
 .nav-hamburger span { width: 24px; height: 2px; background: #0f0728; transition: all 0.3s; border-radius: 2px; }
 .nav-hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -2037,5 +2057,32 @@ section[id], div[id] {
 }
 @keyframes shine-sweep {
   0% { left: -150%; }
+  100% { left: 150%; }
+}
+
+
+.nav-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    20deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 70%,
+    transparent 100%
+  );
+  z-index: 10;
+  pointer-events: none;
+  animation: auto-shine 3s infinite;
+}
+
+@keyframes auto-shine {
+  0% { left: -150%; }
+  26.66% { left: 150%; }
   100% { left: 150%; }
 }
