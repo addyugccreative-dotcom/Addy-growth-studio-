@@ -1880,25 +1880,29 @@ section[id], div[id] {
 /* CTA Marquee */
 .cta-marquee-wrapper {
   width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 40px;
+  margin-bottom: 40px;
   background: var(--accent);
   height: 60px;
   display: flex;
   align-items: center;
-  
-  margin: 60px 0 80px 0;
 }
 .cta-marquee-track {
   width: 100%;
   overflow: hidden;
-    display: flex;
+  display: flex;
   align-items: center;
 }
 .cta-marquee-content {
   display: flex;
   align-items: center;
   white-space: nowrap;
+  width: max-content;
   animation: marquee 35s linear infinite;
 }
 .cta-marquee-track:hover .cta-marquee-content {
@@ -1919,4 +1923,42 @@ section[id], div[id] {
   color: #ffffff;
   opacity: 1;
   padding: 0 4px;
+}
+
+/* Contact IG Block */
+.contact-ig-block {
+  text-align: center;
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.contact-ig-icon {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: transform 0.3s;
+}
+.contact-ig-icon:hover {
+  transform: scale(1.05);
+}
+.contact-ig-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.contact-ig-text {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #0f0728;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.contact-ig-text:hover {
+  color: var(--accent);
 }
