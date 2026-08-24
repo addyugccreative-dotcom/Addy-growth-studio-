@@ -1649,18 +1649,23 @@ section[id], div[id] {
    UPDATED PRICING CARDS
    ========================================================= */
 .pricing-card {
-  background: linear-gradient(135deg, var(--accent) 0%, #9961ff 100%);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  position: relative;
-  overflow: hidden;
-  transform-style: preserve-3d;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  box-shadow: 0 10px 35px rgba(124, 58, 237, 0.15);
-}
+    border: 1px solid transparent;
+    background: 
+      linear-gradient(135deg, #3b0764 0%, #7c3aed 70%, rgba(124, 58, 237, 0.1) 100%) padding-box,
+      linear-gradient(135deg, #d8b4fe 0%, transparent 80%) border-box;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+    box-shadow: 0 10px 40px rgba(124, 58, 237, 0.2);
+  }
 
 .pricing-card:hover {
-  box-shadow: 0 25px 50px rgba(124, 58, 237, 0.4);
-}
+    background: 
+      linear-gradient(135deg, #4c1d95 0%, #9333ea 70%, rgba(124, 58, 237, 0.2) 100%) padding-box,
+      linear-gradient(135deg, #ffffff 0%, rgba(216, 180, 254, 0.3) 100%) border-box;
+    box-shadow: 0 25px 60px rgba(124, 58, 237, 0.4);
+  }
 
 .card-gloss {
   position: absolute;
