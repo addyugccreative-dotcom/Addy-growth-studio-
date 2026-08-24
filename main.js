@@ -503,113 +503,14 @@ function initHeroScrollSequence() {
         });
         
         if (typeof gsap !== 'undefined') {
-          cards.forEach(card => {
-             const isFocused = card === closestCard;
-             const currentlyFocused = card.classList.contains('strategy-focused');
-             if (isFocused && !currentlyFocused) {
-                card.classList.add('strategy-focused');
-                gsap.to(card, { '--card-scale': 1.05, duration: 0.3, ease: 'power2.out' });
-             } else if (!isFocused && currentlyFocused) {
-                card.classList.remove('strategy-focused');
-                gsap.to(card, { '--card-scale': 0.95, duration: 0.3, ease: 'power2.out' });
-             }
-          });
-        }
-      }
-    });
-
-    // Premium Cards Neon Highlight
-    const premiumCards = document.querySelectorAll('.premium-card');
-    const viewportCenter = window.innerWidth / 2;
-    premiumCards.forEach(card => {
-      const rect = card.getBoundingClientRect();
-      const cardCenter = rect.left + rect.width / 2;
-      if (Math.abs(cardCenter - viewportCenter) < window.innerWidth * 0.25) {
-        card.classList.add('neon-highlight');
-      } else {
-        card.classList.remove('neon-highlight');
-      }
-    });
-
-    // Vertical Timeline Process
-    const vTimeline = document.getElementById('processVTimeline');
-    const vLineFill = document.getElementById('vLineFill');
-    if (vTimeline && vLineFill) {
-      const vh = window.innerHeight;
-      const tRect = vTimeline.getBoundingClientRect();
-      
-      let fillPct = 0;
-      if (tRect.top < vh * 0.75) {
-         fillPct = (vh * 0.75 - tRect.top) / (tRect.height * 0.8);
-      }
-      fillPct = Math.max(0, Math.min(1, fillPct));
-      vLineFill.style.height = `${fillPct * 100}%`;
-      
-      const steps = vTimeline.querySelectorAll('.v-step');
-      steps.forEach(step => {
-        const sRect = step.getBoundingClientRect();
-        if (sRect.top < vh * 0.8) {
-          step.classList.add('active');
-        } else {
-          step.classList.remove('active');
-        }
-      });
-    }
-
-    // Benefits Section Scroll Animation
-    const benefitsSection = document.getElementById('benefits');
-    if (benefitsSection) {
-      const vh = window.innerHeight;
-      const bTop = benefitsSection.offsetTop;
-      const bHeight = benefitsSection.offsetHeight - vh;
-      const currentScroll = window.scrollY;
-      const p = bHeight > 0 ? Math.min(1, (currentScroll - bTop) / bHeight) : 0;
-
-      function interpolate(val, start, end, fromVal, toVal) {
-        if (val <= start) return fromVal;
-        if (val >= end) return toVal;
-        const pct = (val - start) / (end - start);
-        return fromVal + (toVal - fromVal) * pct;
-      }
-
-      // 1. Heading Reveal
-      const header = benefitsSection.querySelector('.reveal-benefit-header');
-      if (header) {
-        const opacity = interpolate(p, -0.4, 0.05, 0, 1);
-        const translateY = interpolate(p, -0.4, 0.05, 30, 0);
-        const blur = interpolate(p, -0.4, 0.05, 8, 0);
-        header.style.opacity = opacity;
-        header.style.transform = `translateY(${translateY}px)`;
-        header.style.filter = `blur(${blur}px)`;
-      }
-
-      // 2. Standing Addy Image Reveal
-      const imageWrap = benefitsSection.querySelector('.reveal-benefit-image');
-      if (imageWrap) {
-        const opacity = interpolate(p, -0.2, 0.25, 0, 1);
-        const translateY = interpolate(p, -0.2, 0.25, 100, 0);
-        const blur = interpolate(p, -0.2, 0.25, 15, 0);
-        const glow = interpolate(p, -0.2, 0.25, 30, 0);
-        imageWrap.style.opacity = opacity;
-        imageWrap.style.transform = `translateY(${translateY}px)`;
-        imageWrap.style.filter = `blur(${blur}px) drop-shadow(0 0 ${glow}px rgba(168,85,247,0.5))`;
-      }
-
-      // 3. Benefit Cards Reveal
-      const cards = benefitsSection.querySelectorAll('.reveal-benefit');
-      cards.forEach(card => {
-        const line = parseInt(card.dataset.benefitLine, 10) || 1;
-        let start = 0.2;
-        let end = 0.5;
-        if (line === 2) {
-          start = 0.45;
-          end = 0.75;
-        } else if (line === 3) {
-          start = 0.7;
-          end = 1.0;
-        }
-
-        const opacity = interpolate(p, start, end, 0, 1);
+          
+        cards.forEach(card => {
+          const line = parseInt(card.dataset.benefitLine, 10) || 1;
+          let start = 0.2 + ((line - 1) * 0.1);
+          let end = 0.45 + ((line - 1) * 0.1);
+          
+          if(end > 1.0) end = 1.0; // clamp just in case
+const opacity = interpolate(p, start, end, 0, 1);
         const translateY = interpolate(p, start, end, 50, 0);
         const blur = interpolate(p, start, end, 8, 0);
         

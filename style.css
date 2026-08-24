@@ -2204,3 +2204,54 @@ section[id], div[id] {
   pointer-events: none;
   animation: auto-shine 3s infinite;
 }
+
+
+.benefit-column-header {
+  font-family: 'Bebas Neue', sans-serif;
+  color: var(--accent);
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  margin-bottom: -10px;
+  text-transform: uppercase;
+}
+.benefit-card.media-preview {
+  padding: 0 !important;
+  height: 180px;
+  overflow: hidden;
+  display: block;
+}
+.benefit-card.media-preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+}
+.benefit-card .benefit-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.benefit-card .card-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.benefit-card .benefit-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.benefit-card .benefit-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+/* Reduce padding to fit 5 cards nicely */
+.benefit-card {
+  padding: 20px 24px !important;
+  gap: 16px !important;
+}
+.benefits-col {
+  gap: 16px !important;
+}
