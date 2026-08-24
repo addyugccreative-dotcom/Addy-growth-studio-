@@ -2281,3 +2281,22 @@ section[id], div[id] {
   aspect-ratio: 16/9;
   flex: 0 0 auto !important;
 }
+
+
+/* --- HOVER WAVE TEXT ANIMATION --- */
+.hover-wave-char {
+  display: inline-block;
+  will-change: transform;
+}
+.wave-applied {
+  cursor: default; /* or pointer if it's a button */
+}
+.wave-applied:hover .hover-wave-char {
+  animation: textWaveBounce 0.4s ease-in-out forwards;
+  animation-delay: calc(var(--char-index) * 0.02s);
+}
+@keyframes textWaveBounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}

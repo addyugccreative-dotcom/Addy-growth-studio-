@@ -801,6 +801,43 @@ function initHeroScrollSequence() {
     });
   }
 
+  
+
+  // --- Letter Wave Hover Utility ---
+  function applyTextHoverWave(selector) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      if (el.classList.contains('wave-applied')) return;
+      el.classList.add('wave-applied');
+      
+      let charIndex = 0;
+      function wrapNodes(node) {
+        if (node.nodeType === 3) { // Text node
+          const text = node.textContent;
+          if (!text.trim()) return;
+          
+          const fragment = document.createDocumentFragment();
+          for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            if (char === ' ') {
+              fragment.appendChild(document.createTextNode(' '));
+            } else {
+              const span = document.createElement('span');
+              span.className = 'hover-wave-char';
+              span.style.setProperty('--char-index', charIndex++);
+              span.textContent = char;
+              fragment.appendChild(span);
+            }
+          }
+          node.replaceWith(fragment);
+        } else if (node.nodeType === 1) { // Element node
+          Array.from(node.childNodes).forEach(wrapNodes);
+        }
+      }
+      wrapNodes(el);
+    });
+  }
+
   function init() {
 
   // FAQ Accordion
@@ -902,6 +939,8 @@ function initHeroScrollSequence() {
     initMobileMenu();
     initSmoothScroll();
     initVideoControls();
+    applyTextHoverWave('.section-title');
+    /* applyTextHoverWave('.m-btn'); if buttons need it too */
 
     // Preloader and Hero entrance
     initPreloader();
