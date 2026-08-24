@@ -2286,17 +2286,21 @@ section[id], div[id] {
 /* --- HOVER WAVE TEXT ANIMATION --- */
 .hover-wave-char {
   display: inline-block;
-  will-change: transform;
+  position: relative; /* Fix Bug 1: Use top instead of transform to prevent WebKit background-clip detachment */
+}
+.wave-word {
+  display: inline-block;
+  white-space: nowrap; /* Fix Bug 2: Prevent mid-word line breaks */
 }
 .wave-applied {
-  cursor: default; /* or pointer if it's a button */
+  cursor: default;
 }
 .wave-applied:hover .hover-wave-char {
   animation: textWaveBounce 0.4s ease-in-out forwards;
   animation-delay: calc(var(--char-index) * 0.02s);
 }
 @keyframes textWaveBounce {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-  100% { transform: translateY(0); }
+  0% { top: 0px; }
+  50% { top: -4px; }
+  100% { top: 0px; }
 }

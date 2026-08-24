@@ -817,18 +817,36 @@ function initHeroScrollSequence() {
           if (!text.trim()) return;
           
           const fragment = document.createDocumentFragment();
-          for (let i = 0; i < text.length; i++) {
-            const char = text[i];
-            if (char === ' ') {
-              fragment.appendChild(document.createTextNode(' '));
-            } else {
+          const words = text.split(' '); // Fix Bug 2: Split by word first
+          
+          words.forEach((word, wordIdx) => {
+            if (word.length === 0) {
+              if (wordIdx < words.length - 1) fragment.appendChild(document.createTextNode(' '));
+              return;
+            }
+            
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'wave-word'; // Wrapper to prevent line breaks inside the word
+            
+            for (let i = 0; i < word.length; i++) {
               const span = document.createElement('span');
               span.className = 'hover-wave-char';
               span.style.setProperty('--char-index', charIndex++);
-              span.textContent = char;
-              fragment.appendChild(span);
+              span.textContent = word[i];
+              
+              // Safe WebKit clip inheritance inside wrapper
+              span.style.color = 'inherit';
+              span.style.WebkitTextFillColor = 'inherit';
+              
+              wordSpan.appendChild(span);
             }
-          }
+            
+            fragment.appendChild(wordSpan);
+            if (wordIdx < words.length - 1) {
+              fragment.appendChild(document.createTextNode(' '));
+            }
+          });
+          
           node.replaceWith(fragment);
         } else if (node.nodeType === 1) { // Element node
           Array.from(node.childNodes).forEach(wrapNodes);
