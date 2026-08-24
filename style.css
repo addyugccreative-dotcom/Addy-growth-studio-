@@ -1882,21 +1882,17 @@ section[id], div[id] {
   width: 100vw;
   margin-left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(90deg, #fbf7ff, #ffffff, #fbf7ff);
+  background: var(--accent);
   height: 60px;
   display: flex;
   align-items: center;
-  border-top: 1px solid rgba(124, 58, 237, 0.1);
-  border-bottom: 1px solid rgba(124, 58, 237, 0.1);
-  margin-top: 40px;
-  margin-bottom: 20px;
+  
+  margin: 60px 0 80px 0;
 }
 .cta-marquee-track {
   width: 100%;
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  display: flex;
+    display: flex;
   align-items: center;
 }
 .cta-marquee-content {
@@ -1912,17 +1908,15 @@ section[id], div[id] {
   font-family: 'Bebas Neue', sans-serif !important;
   font-size: 26px;
   letter-spacing: 0.04em;
-  color: var(--accent);
+  color: #ffffff;
   padding: 0 16px;
   text-transform: uppercase;
   font-weight: 400;
 }
-.cta-marquee-content .m-text:nth-of-type(even) {
-  color: #a78bfa; /* light lavender */
-}
+
 .cta-marquee-content .m-dot {
-  font-size: 10px;
-  color: var(--accent);
-  opacity: 0.5;
+  font-size: 16px;
+  color: #ffffff;
+  opacity: 1;
   padding: 0 4px;
 }
