@@ -1739,12 +1739,14 @@ section[id], div[id] {
 }
 
 .pricing-title {
-  font-size: 26px !important;
-  font-weight: 800 !important;
-  color: #ffffff !important;
-  letter-spacing: 0.05em !important;
-  margin-bottom: 24px;
-}
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 34px !important;
+    font-weight: 400 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.02em !important;
+    color: #ffffff !important;
+    margin-bottom: 24px;
+  }
 
 .pricing-list li {
   color: rgba(255, 255, 255, 0.88) !important;
