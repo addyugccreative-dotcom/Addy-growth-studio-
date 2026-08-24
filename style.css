@@ -857,7 +857,7 @@ img { max-width: 100%; display: block; }
 
 /* ══════════ BENEFITS SECTION ══════════ */
 .benefits-sticky-section { position: relative; height: 250vh; background: transparent; }
-.benefits-sticky-container { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: transparent; z-index: 2; width: 100%; }
+.benefits-sticky-container { position: sticky; top: 0; min-height: 100vh; height: auto; display: flex; align-items: center; justify-content: center; overflow: visible; padding: 40px 0; background: transparent; z-index: 2; width: 100%; }
 .benefits-layout { display: grid; grid-template-columns: 1fr 320px 1fr; gap: 40px; align-items: center; margin-top: 56px; position: relative; }
 .benefits-col { display: flex; flex-direction: column; gap: 24px; }
 .left-col { text-align: right; align-items: stretch; }
@@ -2247,11 +2247,36 @@ section[id], div[id] {
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.4;
 }
-/* Reduce padding to fit 5 cards nicely */
-.benefit-card {
-  padding: 20px 24px !important;
-  gap: 16px !important;
+
+
+/* --- BULLET CARD SIZING FIX --- */
+.benefit-card:not(.media-preview) {
+  height: auto !important;
+  min-height: min-content !important;
+  padding: 20px 24px !important; /* Proper internal padding */
+  flex: 0 0 auto !important; /* Size independently based on content */
+  align-items: center !important;
 }
+
 .benefits-col {
-  gap: 16px !important;
+  height: auto !important;
+  flex: 0 0 auto !important;
+  gap: 16px !important; /* Vertical gap between stacked cards */
+  justify-content: flex-start !important;
+}
+
+.benefit-card .benefit-sub {
+  font-size: 13px !important; /* Slightly reduced subheading to ensure fit */
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+}
+
+.benefit-card.media-preview {
+  /* Media preview stays fixed/consistent */
+  height: 180px !important;
+  aspect-ratio: 16/9;
+  flex: 0 0 auto !important;
 }
