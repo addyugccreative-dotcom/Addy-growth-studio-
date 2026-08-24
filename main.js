@@ -809,6 +809,29 @@ function initHeroScrollSequence() {
 
   function init() {
 
+  // FAQ Accordion
+  const faqItems = document.querySelectorAll('.faq-question');
+  faqItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const isExpanded = item.getAttribute('aria-expanded') === 'true';
+      
+      // Close all other accordions
+      faqItems.forEach(otherItem => {
+        otherItem.setAttribute('aria-expanded', 'false');
+        const otherAnswer = otherItem.nextElementSibling;
+        otherAnswer.style.maxHeight = null;
+      });
+      
+      // Toggle current accordion
+      if (!isExpanded) {
+        item.setAttribute('aria-expanded', 'true');
+        const answer = item.nextElementSibling;
+        answer.style.maxHeight = answer.scrollHeight + "px";
+      }
+    });
+  });
+
+
   // Pricing Cards 3D Tilt
   const pricingCards = document.querySelectorAll('.pricing-card');
   pricingCards.forEach(card => {
