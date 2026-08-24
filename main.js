@@ -842,14 +842,14 @@ function initHeroScrollSequence() {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
       
-      const rotateX = ((y - centerY) / centerY) * -8;
-      const rotateY = ((x - centerX) / centerX) * 8;
+      const rotateX = ((y - centerY) / centerY) * -4;
+      const rotateY = ((x - centerX) / centerX) * 4;
       
-      card.style.transform = `translateY(-6px) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      card.style.transform = `scale(1.04) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
     
     card.addEventListener('mouseleave', () => {
-      card.style.transform = `translateY(0) perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+      card.style.transform = `scale(1) perspective(1000px) rotateX(0deg) rotateY(0deg)`;
     });
   });
 
