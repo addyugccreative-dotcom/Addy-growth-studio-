@@ -2229,6 +2229,7 @@ section[id], div[id] {
 }
 .benefit-card .benefit-text {
   display: flex;
+  text-align: left !important;
   flex-direction: column;
   gap: 4px;
 }
