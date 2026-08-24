@@ -31,7 +31,7 @@
 /* ══════════════════════════════════════════════
    ADDY GROWTH STUDIO — Premium Script
    ══════════════════════════════════════════════ */
-(function () {
+;(function () {
   'use strict';
 
   // DOM elements
