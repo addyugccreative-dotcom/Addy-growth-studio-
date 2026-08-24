@@ -811,48 +811,45 @@ function initHeroScrollSequence() {
       el.classList.add('wave-applied');
       
       let charIndex = 0;
-      function wrapNodes(node) {
+      function processNode(node) {
         if (node.nodeType === 3) { // Text node
-          const text = node.textContent;
-          if (!text.trim()) return;
+          const text = node.nodeValue;
+          if (!text || text.length === 0) return;
           
           const fragment = document.createDocumentFragment();
-          const words = text.split(' '); // Fix Bug 2: Split by word first
+          // Split by whitespace boundaries, keeping the exact whitespace strings
+          const tokens = text.split(/(\s+)/);
           
-          words.forEach((word, wordIdx) => {
-            if (word.length === 0) {
-              if (wordIdx < words.length - 1) fragment.appendChild(document.createTextNode(' '));
-              return;
-            }
+          tokens.forEach(token => {
+            if (!token) return;
             
-            const wordSpan = document.createElement('span');
-            wordSpan.className = 'wave-word'; // Wrapper to prevent line breaks inside the word
-            
-            for (let i = 0; i < word.length; i++) {
-              const span = document.createElement('span');
-              span.className = 'hover-wave-char';
-              span.style.setProperty('--char-index', charIndex++);
-              span.textContent = word[i];
+            if (/^\s+$/.test(token)) {
+              // It's just whitespace, keep it exactly as a text node
+              fragment.appendChild(document.createTextNode(token));
+            } else {
+              // It's a word, wrap it to prevent mid-word line breaks
+              const wordSpan = document.createElement('span');
+              wordSpan.className = 'wave-word';
               
-              // Safe WebKit clip inheritance inside wrapper
-              span.style.color = 'inherit';
-              span.style.WebkitTextFillColor = 'inherit';
-              
-              wordSpan.appendChild(span);
-            }
-            
-            fragment.appendChild(wordSpan);
-            if (wordIdx < words.length - 1) {
-              fragment.appendChild(document.createTextNode(' '));
+              for (let i = 0; i < token.length; i++) {
+                const charSpan = document.createElement('span');
+                charSpan.className = 'hover-wave-char';
+                charSpan.style.setProperty('--char-index', charIndex++);
+                charSpan.textContent = token[i];
+                wordSpan.appendChild(charSpan);
+              }
+              fragment.appendChild(wordSpan);
             }
           });
           
           node.replaceWith(fragment);
         } else if (node.nodeType === 1) { // Element node
-          Array.from(node.childNodes).forEach(wrapNodes);
+          // Recurse into children
+          Array.from(node.childNodes).forEach(processNode);
         }
       }
-      wrapNodes(el);
+      
+      Array.from(el.childNodes).forEach(processNode);
     });
   }
 
