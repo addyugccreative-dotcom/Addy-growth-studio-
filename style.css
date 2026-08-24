@@ -1619,3 +1619,86 @@ section[id], div[id] {
   font-size: 14px;
   flex-shrink: 0;
 }
+
+
+/* =========================================================
+   UPDATED PRICING CARDS
+   ========================================================= */
+.pricing-card {
+  background: linear-gradient(135deg, var(--accent) 0%, #9961ff 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 10px 35px rgba(124, 58, 237, 0.15);
+}
+
+.pricing-card:hover {
+  box-shadow: 0 25px 50px rgba(124, 58, 237, 0.4);
+}
+
+.card-gloss {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-shine-sweep {
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pricing-card:hover .card-shine-sweep {
+  animation: sweep-card-shine 0.8s forwards;
+}
+
+@keyframes sweep-card-shine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+.pricing-card-top, .cta-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+.pricing-title {
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.05em !important;
+  margin-bottom: 24px;
+}
+
+.pricing-list li {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.pricing-list .check {
+  color: #dfc8ff !important;
+}
+
+.pricing-card .btn-primary.card-btn {
+  background: #ffffff !important;
+  color: var(--accent) !important;
+}
+
+.pricing-card .btn-primary.card-btn:hover {
+  background: #f0e6ff !important;
+  color: var(--accent) !important;
+}
+
+.pricing-card .secondary-cta {
+  color: #dfc8ff !important;
+}
+
+.pricing-card .secondary-cta:hover {
+  color: #ffffff !important;
+}
