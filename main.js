@@ -716,7 +716,7 @@ function initHeroScrollSequence() {
         clearInterval(interval);
         setTimeout(() => {
           preloader.classList.add('hidden');
-          initHeroScrollSequence();
+          document.getElementById('hero').classList.add('visible');
         }, 150);
       }
     }, 25);

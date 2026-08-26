@@ -52,99 +52,65 @@
   </div>
 
   <!-- ═══ HERO — SCROLL SEQUENCE ═══ -->
-  <section id="hero" class="hero-scroll-sequence">
-    <div class="hero-sticky-container">
-      <!-- Ambient background glows -->
-      <div class="hero-clouds"></div>
+  <section id="hero" class="static-hero-section">
+  <div class="static-hero-content">
+    
+    <!-- 1. Centered Text Block -->
+    <div class="static-hero-text">
+      <h1 class="static-hero-title">Skincare brands don't lose sales to bad products &mdash; they lose them to weak content.</h1>
+      <p class="static-hero-subtitle">Addy Growth Studio &mdash; cinematic AI ads, UGC videos & premium websites built to convert.</p>
+    </div>
 
-      <!-- Scroll-driven Stage -->
-      <div class="hero-scroll-stage" id="heroScrollStage">
-        
-        <!-- 1. Background Atmosphere -->
-        <div class="hero-ambient-bg">
-          <div class="ambient-gradient"></div>
-          
-          <!-- Sparkles -->
-          <div class="ambient-sparkles">
-            <div class="sparkle" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
-            <div class="sparkle" style="top: 25%; left: 80%; animation-delay: 1.2s;"></div>
-            <div class="sparkle" style="top: 60%; left: 15%; animation-delay: 0.5s;"></div>
-            <div class="sparkle" style="top: 75%; left: 75%; animation-delay: 2.1s;"></div>
-            <div class="sparkle" style="top: 40%; left: 50%; animation-delay: 1.8s;"></div>
-            <div class="sparkle" style="top: 85%; left: 40%; animation-delay: 0.9s;"></div>
-          </div>
-          
-          <!-- Clouds (wrapped for scrub parting) -->
-          <div class="cloud-scrub-wrapper left-cloud" style="top: 10%; left: 10%;">
-            <img src="/cloude_1.png" class="ambient-cloud drift-1" style="transform: scale(0.9);" />
-          </div>
-          <div class="cloud-scrub-wrapper right-cloud" style="top: -5%; right: 5%;">
-            <img src="/cloude_2.png" class="ambient-cloud drift-2" style="transform: scale(1.1) scaleX(-1);" />
-          </div>
-          <div class="cloud-scrub-wrapper left-cloud" style="bottom: 5%; left: 5%;">
-            <img src="/cloude_2.png" class="ambient-cloud drift-3" style="transform: scale(0.8);" />
-          </div>
-          <div class="cloud-scrub-wrapper right-cloud" style="bottom: 10%; right: 20%;">
-            <img src="/cloude_1.png" class="ambient-cloud drift-4" style="transform: scale(1) scaleX(-1);" />
-          </div>
-        </div>
+    <!-- 2. Centered Visual Orbit System -->
+    <div class="static-hero-orbit">
+      <img src="/logo.png" alt="Addy Growth Studio" class="static-hero-logo">
+      <img src="/addy-boy-hero.png" alt="Hero Boy" class="static-hero-boy">
+      
+      <!-- Orbiting Phones -->
+      <div class="static-mobile-card pos-1"><div class="static-iphone-inner"><video src="/hero-videos/new-hero-1.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
+      <div class="static-mobile-card pos-2"><div class="static-iphone-inner"><video src="/hero-videos/new-hero-2.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
+      <div class="static-mobile-card pos-3"><div class="static-iphone-inner"><video src="/hero-videos/new-hero-3.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
+      <div class="static-mobile-card pos-4"><div class="static-iphone-inner"><video src="/hero-videos/new-hero-4.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
+      <div class="static-mobile-card pos-5"><div class="static-iphone-inner"><video src="/hero-videos/new-hero-5.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
+      <div class="static-mobile-card pos-6"><div class="static-iphone-inner"><video src="/hero-videos/new-hero-6.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
+    </div>
 
-        <div class="hero-ring-system">
-          <div class="hero-mobile-card" data-index="0"><div class="hero-iphone-inner"><video src="/hero-videos/new-hero-1.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
-          <div class="hero-mobile-card" data-index="1"><div class="hero-iphone-inner"><video src="/hero-videos/new-hero-2.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
-          <div class="hero-mobile-card" data-index="2"><div class="hero-iphone-inner"><video src="/hero-videos/new-hero-3.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
-          <div class="hero-mobile-card" data-index="3"><div class="hero-iphone-inner"><video src="/hero-videos/new-hero-4.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
-          <div class="hero-mobile-card" data-index="4"><div class="hero-iphone-inner"><video src="/hero-videos/new-hero-5.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
-          <div class="hero-mobile-card" data-index="5"><div class="hero-iphone-inner"><video src="/hero-videos/new-hero-6.mp4" autoplay loop muted playsinline preload="auto"></video></div></div>
-        </div>
-
-        <img src="/logo.png" alt="Addy Growth Studio" class="hero-logo">
-
-        <!-- Tagline Center -->
-        <div class="hero-center-tagline">
-          <h2 class="scrub-line-1">Skincare brands don't lose sales to bad products — they lose them to weak content.</h2>
-          <p class="scrub-line-2">Addy Growth Studio — cinematic AI ads, UGC videos & premium websites built to convert.</p>
-        </div>
-
-        <!-- Right Content: MacBooks Top, Boy Bottom -->
-        <div class="hero-right-column">
-          <div class="hero-mac-row">
-            <div class="hero-mac-card">
-              <div class="hero-macbook-inner">
-                <div class="mac-screen"><video src="/hero-videos/website-1.mp4" autoplay loop muted playsinline preload="auto"></video></div>
-                <div class="mac-base"></div>
-              </div>
-            </div>
-            <div class="hero-mac-card">
-              <div class="hero-macbook-inner">
-                <div class="mac-screen"><video src="/hero-videos/website-2.mp4" autoplay loop muted playsinline preload="auto"></video></div>
-                <div class="mac-base"></div>
-              </div>
-            </div>
+    <!-- 3. MacBook Row -->
+    <div class="static-hero-macs">
+      <!-- MacBook 1 -->
+      <div class="static-mac-container">
+        <div class="static-mac-inner">
+          <div class="static-mac-screen">
+            <iframe src="https://famiuk-addysite.vercel.app/" title="Live Website Preview" scrolling="no" tabindex="-1"></iframe>
           </div>
-          <img src="/addy-boy-hero.png" alt="Hero Boy" class="hero-boy-right">
+          <div class="static-mac-base"></div>
         </div>
       </div>
-
-      <!-- Scroll Indicator -->
-      <div class="scroll-indicator" id="scrollIndicator">
-        <div class="scroll-mouse"><div class="scroll-dot"></div></div>
-        <span>Scroll to animate</span>
-      </div>
-
-    <!-- Hero Marquee Ticker -->
-    <div class="hero-marquee">
-      <div class="marquee-content">
-        <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
-        <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
-        <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
-        <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+      <!-- MacBook 2 -->
+      <div class="static-mac-container">
+        <div class="static-mac-inner">
+          <div class="static-mac-screen">
+            <iframe src="https://grangettes-switzerland-addysite.vercel.app/" title="Live Website Preview" scrolling="no" tabindex="-1"></iframe>
+          </div>
+          <div class="static-mac-base"></div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- ═══ STRATEGY — HORIZONTAL SCROLL ═══ -->
-  <section id="why" class="hscroll-section" data-hscroll="strategy">
+  <!-- Hero Marquee Ticker -->
+  <div class="hero-marquee">
+    <div class="marquee-content">
+      <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+      <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+      <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+      <span>AI UGC &bull; Skincare Ads &bull; Premium Websites &bull; Conversion Focused &bull; Clinical Results &bull;</span>
+    </div>
+  </div>
+</section>
+
+    <!-- ✦✦✦ STRATEGY - HORIZONTAL SCROLL ✦✦✦ -->
+    <section id="why" class="hscroll-section" data-hscroll="strategy">
       <div class="hscroll-sticky">
         <div class="strategy-progress-bar"></div>
       <div class="hscroll-header reveal">
