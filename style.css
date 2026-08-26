@@ -2611,3 +2611,39 @@ section[id], div[id] {
     right: 20px;
   }
 }
+
+
+/* =========================================================
+   MOBILE VIDEO SHOWCASE - HORIZONTAL SCROLL OVERRIDE
+   ========================================================= */
+@media (max-width: 1024px) {
+  .niche-frame {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px !important;
+    padding: 16px !important;
+    padding-bottom: 24px !important;
+    scrollbar-width: none;
+  }
+  
+  .niche-frame::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .niche-frame .niche-video-card {
+    flex: 0 0 calc(50% - 8px) !important;
+    scroll-snap-align: center; /* Center snap feels better on mobile */
+    width: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .niche-frame .niche-video-card {
+    flex: 0 0 calc(50% - 8px) !important; 
+    /* Ensures exactly two frames are showcased together horizontally on any mobile screen */
+  }
+}
