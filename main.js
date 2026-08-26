@@ -854,6 +854,7 @@ function initHeroScrollSequence() {
   }
 
   function init() {
+  initRocketScroll();
 
   // FAQ Accordion
   const faqItems = document.querySelectorAll('.faq-question');
@@ -965,3 +966,45 @@ function initHeroScrollSequence() {
   else init();
 })();
 
+
+
+function initRocketScroll() {
+  const rocketBtn = document.getElementById('rocketBtn');
+  const clipRect = document.getElementById('rocketClipRect');
+  if (!rocketBtn || !clipRect) return;
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    // Calculate scrollable height correctly
+    const docHeight = document.body.scrollHeight;
+    const winHeight = window.innerHeight;
+    const maxScroll = docHeight - winHeight;
+    
+    let scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0;
+    scrollPercent = Math.max(0, Math.min(1, scrollPercent));
+    
+    // y goes from 24 (empty) to 0 (full)
+    const yPos = 24 - (24 * scrollPercent);
+    clipRect.setAttribute('y', yPos);
+    
+    // Update glow intensity (max at bottom)
+    rocketBtn.style.setProperty('--rocket-glow', scrollPercent.toString());
+
+    // Show button after scrolling past hero (approx winHeight * 0.8)
+    if (scrollY > winHeight * 0.8) {
+      rocketBtn.classList.add('visible');
+    } else {
+      rocketBtn.classList.remove('visible');
+    }
+  });
+
+  rocketBtn.addEventListener('click', () => {
+    rocketBtn.classList.add('launching');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Reset animation class after reaching top (approx 1s)
+    setTimeout(() => {
+      rocketBtn.classList.remove('launching');
+    }, 1000);
+  });
+}

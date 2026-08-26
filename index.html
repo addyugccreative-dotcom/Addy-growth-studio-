@@ -726,6 +726,25 @@
       }, 2000);
     });
   </script>
+
+  <!-- SCROLL TO TOP ROCKET -->
+  <button id="rocketBtn" class="rocket-btn" aria-label="Scroll to top">
+    <svg class="rocket-svg" viewBox="0 0 24 24" width="48" height="48">
+      <defs>
+        <clipPath id="rocket-clip">
+          <rect id="rocketClipRect" x="0" y="24" width="24" height="24" />
+        </clipPath>
+        <linearGradient id="rocketGrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stop-color="#4c1d95" />
+          <stop offset="100%" stop-color="#c084fc" />
+        </linearGradient>
+      </defs>
+      <!-- Unfilled / Outline Rocket -->
+      <path class="rocket-outline" d="M12 2 C12 2, 6 7.5, 6 15 C6 17.5, 8 19, 9 20 L7.5 22.5 L12 21 L16.5 22.5 L15 20 C16 19, 18 17.5, 18 15 C18 7.5, 12 2, 12 2 Z M12 8 A 2.5 2.5 0 1 1 12 13 A 2.5 2.5 0 1 1 12 8 Z" fill="#ffffff" stroke="#c084fc" stroke-width="1" />
+      <!-- Filled Rocket -->
+      <path class="rocket-filled" clip-path="url(#rocket-clip)" d="M12 2 C12 2, 6 7.5, 6 15 C6 17.5, 8 19, 9 20 L7.5 22.5 L12 21 L16.5 22.5 L15 20 C16 19, 18 17.5, 18 15 C18 7.5, 12 2, 12 2 Z M12 8 A 2.5 2.5 0 1 1 12 13 A 2.5 2.5 0 1 1 12 8 Z" fill="url(#rocketGrad)" />
+    </svg>
+  </button>
 </body>
 
 </html>
