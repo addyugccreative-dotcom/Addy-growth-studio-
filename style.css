@@ -3120,3 +3120,10 @@ section[id], div[id] {
     margin: 0 !important;
   }
 }
+
+.yt-player-wrapper iframe {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 16px;
+}

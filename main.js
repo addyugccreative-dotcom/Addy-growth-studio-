@@ -1151,3 +1151,97 @@ function initHeroInfiniteScroll() {
 
   requestAnimationFrame(smoothScroll);
 }
+
+
+// ==========================================
+// YOUTUBE AUTOPLAY & MODAL LOGIC
+// ==========================================
+const ytScript = document.createElement('script');
+ytScript.src = "https://www.youtube.com/iframe_api";
+const firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(ytScript, firstScriptTag);
+
+window.ytPlayers = {};
+
+window.onYouTubeIframeAPIReady = function() {
+  // API is ready, but we won't initialize players until they are near/in the viewport to preserve lazy-loading
+};
+
+const ytObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const videoId = entry.target.dataset.ytId;
+    
+    if (entry.isIntersecting) {
+      // Lazy load the player if it doesn't exist yet
+      if (!window.ytPlayers[videoId]) {
+        // Create the player. Using autoplay:1 ensures it starts playing as soon as it's ready since it's already in view!
+        window.ytPlayers[videoId] = new YT.Player('yt-player-' + videoId, {
+          videoId: videoId,
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            mute: 1,
+            loop: 1,
+            playlist: videoId,
+            playsinline: 1,
+            modestbranding: 1
+          }
+        });
+      } else {
+        // Player already exists, just play it
+        if (typeof window.ytPlayers[videoId].playVideo === 'function') {
+          window.ytPlayers[videoId].playVideo();
+        }
+      }
+    } else {
+      // Scrolled out of view -> Pause
+      if (window.ytPlayers[videoId] && typeof window.ytPlayers[videoId].pauseVideo === 'function') {
+        window.ytPlayers[videoId].pauseVideo();
+      }
+    }
+  });
+}, { threshold: 0.5 });
+
+setTimeout(() => {
+  document.querySelectorAll('.yt-card').forEach(card => ytObserver.observe(card));
+}, 1000);
+
+window.openYtModal = function(videoId) {
+  const modal = document.getElementById('ytModal');
+  const iframe = document.getElementById('yt-modal-iframe');
+  
+  if (window.ytPlayers[videoId] && typeof window.ytPlayers[videoId].pauseVideo === 'function') {
+    window.ytPlayers[videoId].pauseVideo();
+  }
+  
+  iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&mute=0&controls=1&loop=1&playlist=" + videoId + "&playsinline=1";
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeYtModal = function() {
+  const modal = document.getElementById('ytModal');
+  const iframe = document.getElementById('yt-modal-iframe');
+  iframe.src = "";
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+};
+
+window.toggleYtMute = function(btn, videoId) {
+  event.stopPropagation();
+  const player = window.ytPlayers[videoId];
+  if (!player || typeof player.isMuted !== 'function') return;
+  
+  const iconMuted = btn.querySelector('.icon-muted');
+  const iconUnmuted = btn.querySelector('.icon-unmuted');
+  
+  if (player.isMuted()) {
+    player.unMute();
+    iconMuted.style.display = 'none';
+    iconUnmuted.style.display = 'block';
+  } else {
+    player.mute();
+    iconMuted.style.display = 'block';
+    iconUnmuted.style.display = 'none';
+  }
+};
