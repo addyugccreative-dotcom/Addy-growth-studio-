@@ -1067,6 +1067,7 @@ function initHeroAmbientFX() {
 }
 
 function initHeroInfiniteScroll() {
+  if (window.innerWidth > 1024) return; // Desktop/Laptop abort
   const row = document.getElementById('heroPhoneRow');
   if (!row) return;
 
