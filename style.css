@@ -2636,8 +2636,8 @@ section[id], div[id] {
   
   .niche-frame .niche-video-card {
     flex: 0 0 calc(50% - 8px) !important;
-    scroll-snap-align: center; /* Center snap feels better on mobile */
-    width: auto !important;
+    scroll-snap-align: start; /* Center snap feels better on mobile */
+    
   }
 }
 
