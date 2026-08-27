@@ -1018,18 +1018,25 @@ function initNicheAutoScroll() {
   if (!nicheFrames.length) return;
 
   nicheFrames.forEach(frame => {
+    // Clone children for seamless loop
+    const children = Array.from(frame.children);
+    children.forEach(child => {
+      const clone = child.cloneNode(true);
+      frame.appendChild(clone);
+    });
+
     let isInteracting = false;
-    let scrollSpeed = 0.8; 
+    let scrollSpeed = 0.6; 
     let currentScroll = frame.scrollLeft;
     let resumeTimeout;
 
     const smoothScroll = () => {
-      if (window.innerWidth <= 1024 && !isInteracting) {
+      if (!isInteracting) {
         currentScroll += scrollSpeed;
         
-        const maxScroll = frame.scrollWidth - frame.clientWidth;
-        if (currentScroll >= maxScroll - 1) {
-          currentScroll = 0;
+        const maxScroll = frame.scrollWidth / 2;
+        if (currentScroll >= maxScroll) {
+          currentScroll -= maxScroll;
         }
         frame.scrollLeft = currentScroll;
       }

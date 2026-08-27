@@ -3100,3 +3100,23 @@ section[id], div[id] {
     font-size: 11px !important;
   }
 }
+
+
+/* DESKTOP HORIZONTAL SCROLL FOR NICHE FRAMES */
+@media (min-width: 1025px) {
+  .niche-frame.iphone-frame-container {
+    display: flex !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    gap: 32px !important;
+  }
+  .niche-frame.iphone-frame-container::-webkit-scrollbar {
+    display: none;
+  }
+  .niche-frame.iphone-frame-container .niche-video-card {
+    flex: 0 0 240px !important; 
+    margin: 0 !important;
+  }
+}
