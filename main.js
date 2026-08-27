@@ -854,6 +854,7 @@ function initHeroScrollSequence() {
   }
 
   function init() {
+  initNicheAutoScroll();
   initRocketScroll();
 
   // FAQ Accordion
@@ -1006,5 +1007,41 @@ function initRocketScroll() {
     setTimeout(() => {
       rocketBtn.classList.remove('launching');
     }, 1000);
+  });
+}
+
+
+function initNicheAutoScroll() {
+  const nicheFrames = document.querySelectorAll('.niche-frame.iphone-frame-container');
+  if (!nicheFrames.length) return;
+
+  nicheFrames.forEach(frame => {
+    let isInteracting = false;
+    let scrollSpeed = 0.8; // px per frame for 60-120fps
+
+    // High performance smooth scroll loop
+    const smoothScroll = () => {
+      if (window.innerWidth <= 1024 && !isInteracting) {
+        frame.scrollLeft += scrollSpeed;
+        
+        // Check if we hit the end
+        const maxScroll = frame.scrollWidth - frame.clientWidth;
+        if (frame.scrollLeft >= maxScroll - 1) {
+          // Reset to start seamlessly
+          frame.scrollLeft = 0;
+        }
+      }
+      requestAnimationFrame(smoothScroll);
+    };
+
+    // Pause on touch
+    frame.addEventListener('touchstart', () => { isInteracting = true; }, {passive: true});
+    frame.addEventListener('touchend', () => { 
+      // Resume after a slight delay
+      setTimeout(() => { isInteracting = false; }, 1000);
+    }, {passive: true});
+    
+    // Start animation loop
+    requestAnimationFrame(smoothScroll);
   });
 }

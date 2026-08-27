@@ -833,7 +833,10 @@ img { max-width: 100%; display: block; }
 /* ══════════ WORK — VIDEO FRAMES ══════════ */
 .niche-block { margin-bottom: 80px; }
 .niche-label { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 24px; color: var(--accent); }
-.niche-frame { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 24px; background: #ffffff; border: 1px solid var(--border); border-radius: 32px; transition: all 0.4s; box-shadow: 0 10px 35px rgba(124, 58, 237, 0.06); }
+.niche-frame {
+    will-change: scroll-position, transform;
+    transform: translateZ(0);
+    -webkit-overflow-scrolling: touch; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 24px; background: #ffffff; border: 1px solid var(--border); border-radius: 32px; transition: all 0.4s; box-shadow: 0 10px 35px rgba(124, 58, 237, 0.06); }
 .niche-frame:hover { border-color: var(--border-hover); background: #faf7ff; box-shadow: 0 15px 45px rgba(124,58,237,0.14); }
 
 .niche-video-card { position: relative; }
@@ -2621,7 +2624,7 @@ section[id], div[id] {
     display: flex !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
-    scroll-snap-type: x mandatory;
+    /* scroll-snap removed for smooth auto-scroll */
     flex-wrap: nowrap !important;
     -webkit-overflow-scrolling: touch;
     gap: 16px !important;
@@ -2636,7 +2639,7 @@ section[id], div[id] {
   
   .niche-frame .niche-video-card {
     flex: 0 0 calc(50% - 8px) !important;
-    scroll-snap-align: start; /* Center snap feels better on mobile */
+    /* scroll-snap-align removed */ /* Center snap feels better on mobile */
     
   }
 }
