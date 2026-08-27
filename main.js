@@ -854,6 +854,8 @@ function initHeroScrollSequence() {
   }
 
   function init() {
+  initHeroAmbientFX();
+  initHeroInfiniteScroll();
   initNicheAutoScroll();
   initRocketScroll();
 
@@ -1044,4 +1046,74 @@ function initNicheAutoScroll() {
     // Start animation loop
     requestAnimationFrame(smoothScroll);
   });
+}
+
+
+function initHeroAmbientFX() {
+  const container = document.querySelector('.hero-particles');
+  if (!container) return;
+  for (let i = 0; i < 25; i++) {
+    const star = document.createElement('div');
+    star.className = 'star-particle';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = (Math.random() * 10) + 's, ' + (Math.random() * 10) + 's';
+    
+    const size = Math.random() * 3 + 2; // 2px to 5px
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    container.appendChild(star);
+  }
+}
+
+function initHeroInfiniteScroll() {
+  const row = document.getElementById('heroPhoneRow');
+  if (!row) return;
+
+  // Duplicate items for infinite loop
+  const children = Array.from(row.children);
+  children.forEach(child => {
+    const clone = child.cloneNode(true);
+    row.appendChild(clone);
+  });
+
+  let isInteracting = false;
+  let scrollSpeed = 0.6; 
+  let resumeTimeout;
+
+  const smoothScroll = () => {
+    if (!isInteracting) {
+      row.scrollLeft += scrollSpeed;
+      
+      // If we scrolled past the midpoint (the end of the original set), instantly jump back to 0
+      // Since it's exactly duplicated, the jump is completely invisible!
+      if (row.scrollLeft >= row.scrollWidth / 2) {
+        row.scrollLeft -= (row.scrollWidth / 2);
+      }
+    }
+    requestAnimationFrame(smoothScroll);
+  };
+
+  const pauseScroll = () => {
+    isInteracting = true;
+    clearTimeout(resumeTimeout);
+  };
+
+  const resumeScroll = () => {
+    clearTimeout(resumeTimeout);
+    resumeTimeout = setTimeout(() => {
+      isInteracting = false;
+    }, 2000); // 2 second delay before resuming
+  };
+
+  row.addEventListener('touchstart', pauseScroll, {passive: true});
+  row.addEventListener('touchend', resumeScroll, {passive: true});
+  row.addEventListener('mouseenter', pauseScroll);
+  row.addEventListener('mouseleave', resumeScroll);
+  
+  // Also pause if user is scrolling with wheel
+  row.addEventListener('wheel', pauseScroll, {passive: true});
+  row.addEventListener('wheel', resumeScroll, {passive: true});
+
+  requestAnimationFrame(smoothScroll);
 }
