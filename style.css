@@ -1541,31 +1541,24 @@ section[id], div[id] {
   gap: 20px;
 }
 .proof-mockup.iphone-mockup {
-  aspect-ratio: auto;
-  height: auto;
-  width: 100%;
-  max-width: 320px;
-  /* Allow natural stretch based on image */
+    aspect-ratio: 9 / 19.5 !important;
+    height: auto;
+    width: 100%;
+    max-width: 280px;
+    max-height: 60vh;
 }
 .proof-mockup.iphone-mockup::before {
   border-radius: 38px;
 }
 .proof-screen {
-  width: 100%;
-  background: #000;
-  border-radius: 36px;
-  overflow: hidden;
-  position: relative;
-  /* Remove fixed padding/aspect ratio so it wraps the image tightly */
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
 }
-.proof-screen img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 36px;
-  position: relative;
-  z-index: 2;
-}
+.proof-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .proof-caption {
   font-size: 14px;
   color: var(--text-dim);
@@ -2648,5 +2641,40 @@ section[id], div[id] {
   .niche-frame .niche-video-card {
     flex: 0 0 calc(50% - 8px) !important; 
     /* Ensures exactly two frames are showcased together horizontally on any mobile screen */
+  }
+}
+
+
+/* =========================================================
+   MOBILE PROOF SECTION HORIZONTAL SCROLL OVERRIDE
+   ========================================================= */
+@media (max-width: 1024px) {
+  .proof-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    gap: 20px !important;
+    padding: 16px !important;
+    padding-bottom: 24px !important;
+    scrollbar-width: none;
+    will-change: scroll-position, transform;
+    transform: translateZ(0);
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .proof-grid::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .proof-card {
+    flex: 0 0 100% !important; /* Show one phone completely per frame */
+    max-width: 100% !important;
+    justify-content: center;
+  }
+  
+  .proof-mockup.iphone-mockup {
+    max-width: 260px !important; /* Make it smaller to fit entirely on mobile screen */
+    max-height: 55vh !important;
   }
 }
