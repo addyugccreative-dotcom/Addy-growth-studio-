@@ -2689,60 +2689,32 @@ section[id], div[id] {
 }
 
 
+
+
+
 /* =========================================================
-   MOBILE STRATEGY CARDS HORIZONTAL SCROLL OVERRIDE
+   MOBILE STRATEGY CARDS SIZING FIX
    ========================================================= */
 @media (max-width: 1024px) {
-  /* Disable vertical scroll-jacking on mobile and switch to native horizontal swipe */
-  .hscroll-section {
-    height: auto !important;
-    padding: 60px 0 !important;
-  }
-  .hscroll-sticky {
-    position: relative !important;
-    height: auto !important;
-    overflow: visible !important;
-  }
-  .hscroll-track {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    /* scroll-snap-type removed for smooth auto-scroll */
-    transform: none !important; /* Disables the JS scroll-jacking translate3d */
-    margin-left: 0 !important;
-    padding: 0 16px 24px 16px !important;
-    gap: 16px !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .hscroll-track::-webkit-scrollbar {
-    display: none;
-  }
-  
   .strategy-card {
-    width: calc(50vw - 24px) !important; /* Show exactly 2 side-by-side */
-    flex: 0 0 calc(50vw - 24px) !important;
-    /* scroll-snap-align removed for smooth auto-scroll */
+    width: 44vw !important; /* Show 2 side-by-side */
     padding: 24px 16px !important;
-    white-space: normal !important;
   }
-  
   .strategy-card h3 {
     font-size: 16px !important;
     margin-bottom: 8px !important;
   }
-  
   .strategy-card p {
     font-size: 12px !important;
     line-height: 1.5 !important;
   }
-  
   .card-icon {
     font-size: 28px !important;
     margin-bottom: 12px !important;
   }
-
-  .strategy-progress-bar {
-    display: none !important;
+}
+@media (max-width: 480px) {
+  .strategy-card {
+    width: 44vw !important; 
   }
 }

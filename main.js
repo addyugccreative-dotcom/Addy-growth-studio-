@@ -1012,7 +1012,7 @@ function initRocketScroll() {
 
 
 function initNicheAutoScroll() {
-  const nicheFrames = document.querySelectorAll('.niche-frame.iphone-frame-container, .proof-grid, .hscroll-track');
+  const nicheFrames = document.querySelectorAll('.niche-frame.iphone-frame-container, .proof-grid');
   if (!nicheFrames.length) return;
 
   nicheFrames.forEach(frame => {
