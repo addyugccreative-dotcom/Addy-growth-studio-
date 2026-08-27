@@ -1019,31 +1019,50 @@ function initNicheAutoScroll() {
 
   nicheFrames.forEach(frame => {
     let isInteracting = false;
-    let scrollSpeed = 0.8; // px per frame for 60-120fps
+    let scrollSpeed = 0.8; 
+    let currentScroll = frame.scrollLeft;
+    let resumeTimeout;
 
-    // High performance smooth scroll loop
     const smoothScroll = () => {
       if (window.innerWidth <= 1024 && !isInteracting) {
-        frame.scrollLeft += scrollSpeed;
+        currentScroll += scrollSpeed;
         
-        // Check if we hit the end
         const maxScroll = frame.scrollWidth - frame.clientWidth;
-        if (frame.scrollLeft >= maxScroll - 1) {
-          // Reset to start seamlessly
-          frame.scrollLeft = 0;
+        if (currentScroll >= maxScroll - 1) {
+          currentScroll = 0;
         }
+        frame.scrollLeft = currentScroll;
       }
       requestAnimationFrame(smoothScroll);
     };
 
-    // Pause on touch
-    frame.addEventListener('touchstart', () => { isInteracting = true; }, {passive: true});
-    frame.addEventListener('touchend', () => { 
-      // Resume after a slight delay
-      setTimeout(() => { isInteracting = false; }, 1000);
-    }, {passive: true});
+    const pauseScroll = () => {
+      isInteracting = true;
+      clearTimeout(resumeTimeout);
+    };
+
+    const resumeScroll = () => {
+      currentScroll = frame.scrollLeft;
+      clearTimeout(resumeTimeout);
+      resumeTimeout = setTimeout(() => {
+        currentScroll = frame.scrollLeft;
+        isInteracting = false;
+      }, 2500);
+    };
+
+    frame.addEventListener('touchstart', pauseScroll, {passive: true});
+    frame.addEventListener('touchend', resumeScroll, {passive: true});
+    frame.addEventListener('mouseenter', pauseScroll);
+    frame.addEventListener('mouseleave', resumeScroll);
+    frame.addEventListener('wheel', pauseScroll, {passive: true});
+    frame.addEventListener('wheel', resumeScroll, {passive: true});
     
-    // Start animation loop
+    frame.addEventListener('scroll', () => {
+      if (isInteracting) {
+         currentScroll = frame.scrollLeft;
+      }
+    }, {passive: true});
+
     requestAnimationFrame(smoothScroll);
   });
 }
@@ -1079,18 +1098,19 @@ function initHeroInfiniteScroll() {
   });
 
   let isInteracting = false;
-  let scrollSpeed = 0.6; 
+  let scrollSpeed = 0.8; 
+  let currentScroll = row.scrollLeft;
   let resumeTimeout;
 
   const smoothScroll = () => {
     if (!isInteracting) {
-      row.scrollLeft += scrollSpeed;
+      currentScroll += scrollSpeed;
       
-      // If we scrolled past the midpoint (the end of the original set), instantly jump back to 0
-      // Since it's exactly duplicated, the jump is completely invisible!
-      if (row.scrollLeft >= row.scrollWidth / 2) {
-        row.scrollLeft -= (row.scrollWidth / 2);
+      const maxScroll = row.scrollWidth / 2;
+      if (currentScroll >= maxScroll) {
+        currentScroll -= maxScroll; // seamlessly jump back
       }
+      row.scrollLeft = currentScroll;
     }
     requestAnimationFrame(smoothScroll);
   };
@@ -1101,20 +1121,26 @@ function initHeroInfiniteScroll() {
   };
 
   const resumeScroll = () => {
+    currentScroll = row.scrollLeft;
     clearTimeout(resumeTimeout);
     resumeTimeout = setTimeout(() => {
+      currentScroll = row.scrollLeft;
       isInteracting = false;
-    }, 2000); // 2 second delay before resuming
+    }, 2500); 
   };
 
   row.addEventListener('touchstart', pauseScroll, {passive: true});
   row.addEventListener('touchend', resumeScroll, {passive: true});
   row.addEventListener('mouseenter', pauseScroll);
   row.addEventListener('mouseleave', resumeScroll);
-  
-  // Also pause if user is scrolling with wheel
   row.addEventListener('wheel', pauseScroll, {passive: true});
   row.addEventListener('wheel', resumeScroll, {passive: true});
+  
+  row.addEventListener('scroll', () => {
+    if (isInteracting) {
+       currentScroll = row.scrollLeft;
+    }
+  }, {passive: true});
 
   requestAnimationFrame(smoothScroll);
 }
