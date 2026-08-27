@@ -68,6 +68,9 @@ img { max-width: 100%; display: block; }
 /* ══════════ NAVIGATION + PROGRESS BAR ══════════ */
 #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 16px 0; transition: all 0.4s; }
 #navbar.scrolled { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(5px); border-bottom: 1px solid var(--border); padding: 10px 0; box-shadow: 0 4px 25px rgba(124, 58, 237, 0.06); }
+#navbar.nav-hidden {
+  transform: translateY(-100%);
+}
 .nav-progress { position: absolute; bottom: 0; left: 0; height: 2px; width: 0; background: linear-gradient(90deg, #7c3aed, #9333ea, #c084fc); transition: width 0.05s linear; z-index: 10; box-shadow: 0 0 12px var(--accent-glow); }
 .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
 .nav-logo { 
