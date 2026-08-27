@@ -1018,22 +1018,54 @@ function initNicheAutoScroll() {
   if (!nicheFrames.length) return;
 
   nicheFrames.forEach(frame => {
-    // Clone children for seamless loop
     const children = Array.from(frame.children);
-    children.forEach(child => {
+    children.forEach((child, index) => {
+      // Original setup
+      if (child.classList.contains('yt-card')) {
+         const origId = child.dataset.ytId + '-orig-' + index + '-' + Math.random().toString(36).substr(2, 5);
+         child.dataset.instanceId = origId;
+         const playerDiv = child.querySelector('.yt-player-wrapper div');
+         if (playerDiv) playerDiv.id = 'yt-player-' + origId;
+         const muteBtn = child.querySelector('.yt-mute-btn');
+         if (muteBtn) {
+           muteBtn.onclick = (e) => toggleYtMute(muteBtn, origId);
+           muteBtn.removeAttribute('onclick');
+         }
+         const overlay = child.querySelector('.yt-click-overlay');
+         if (overlay) {
+           overlay.onclick = () => openYtModal(child.dataset.ytId);
+           overlay.removeAttribute('onclick');
+         }
+      }
+
+      // Clone setup
       const clone = child.cloneNode(true);
+      if (clone.classList.contains('yt-card')) {
+         const cloneId = clone.dataset.ytId + '-clone-' + index + '-' + Math.random().toString(36).substr(2, 5);
+         clone.dataset.instanceId = cloneId;
+         const playerDivClone = clone.querySelector('.yt-player-wrapper div');
+         if (playerDivClone) playerDivClone.id = 'yt-player-' + cloneId;
+         const muteBtnClone = clone.querySelector('.yt-mute-btn');
+         if (muteBtnClone) {
+           muteBtnClone.onclick = (e) => toggleYtMute(muteBtnClone, cloneId);
+           muteBtnClone.removeAttribute('onclick');
+         }
+         const overlayClone = clone.querySelector('.yt-click-overlay');
+         if (overlayClone) {
+           overlayClone.onclick = () => openYtModal(clone.dataset.ytId);
+           overlayClone.removeAttribute('onclick');
+         }
+      }
       frame.appendChild(clone);
     });
 
     let isInteracting = false;
     let scrollSpeed = 0.6; 
     let currentScroll = frame.scrollLeft;
-    let resumeTimeout;
 
     const smoothScroll = () => {
       if (!isInteracting) {
         currentScroll += scrollSpeed;
-        
         const maxScroll = frame.scrollWidth / 2;
         if (currentScroll >= maxScroll) {
           currentScroll -= maxScroll;
@@ -1043,18 +1075,10 @@ function initNicheAutoScroll() {
       requestAnimationFrame(smoothScroll);
     };
 
-    const pauseScroll = () => {
-      isInteracting = true;
-      clearTimeout(resumeTimeout);
-    };
-
+    const pauseScroll = () => { isInteracting = true; };
     const resumeScroll = () => {
+      isInteracting = false;
       currentScroll = frame.scrollLeft;
-      clearTimeout(resumeTimeout);
-      resumeTimeout = setTimeout(() => {
-        currentScroll = frame.scrollLeft;
-        isInteracting = false;
-      }, 2500);
     };
 
     frame.addEventListener('touchstart', pauseScroll, {passive: true});
@@ -1062,7 +1086,6 @@ function initNicheAutoScroll() {
     frame.addEventListener('mouseenter', pauseScroll);
     frame.addEventListener('mouseleave', resumeScroll);
     frame.addEventListener('wheel', pauseScroll, {passive: true});
-    frame.addEventListener('wheel', resumeScroll, {passive: true});
     
     frame.addEventListener('scroll', () => {
       if (isInteracting) {
@@ -1164,57 +1187,72 @@ firstScriptTag.parentNode.insertBefore(ytScript, firstScriptTag);
 window.ytPlayers = {};
 
 window.onYouTubeIframeAPIReady = function() {
-  // API is ready, but we won't initialize players until they are near/in the viewport to preserve lazy-loading
+  // Wait for observers to trigger loading
 };
 
-const ytObserver = new IntersectionObserver((entries) => {
+// 1. Load Observer: Loads iframe when within 200px of viewport
+const ytLoadObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
+    const instanceId = entry.target.dataset.instanceId;
     const videoId = entry.target.dataset.ytId;
-    
     if (entry.isIntersecting) {
-      // Lazy load the player if it doesn't exist yet
-      if (!window.ytPlayers[videoId]) {
-        // Create the player. Using autoplay:1 ensures it starts playing as soon as it's ready since it's already in view!
-        window.ytPlayers[videoId] = new YT.Player('yt-player-' + videoId, {
+      if (!window.ytPlayers[instanceId]) {
+        // Initialize Player
+        window.ytPlayers[instanceId] = new YT.Player('yt-player-' + instanceId, {
           videoId: videoId,
-          playerVars: {
-            autoplay: 1,
-            controls: 0,
-            mute: 1,
-            loop: 1,
-            playlist: videoId,
-            playsinline: 1,
-            modestbranding: 1
+          playerVars: { autoplay: 0, controls: 0, mute: 1, loop: 1, playlist: videoId, playsinline: 1, modestbranding: 1 },
+          events: {
+            'onReady': function(e) {
+              e.target.setPlaybackQuality('hd1080');
+              if (entry.target.dataset.isIntersecting === 'true') {
+                e.target.playVideo();
+              }
+            }
           }
         });
-      } else {
-        // Player already exists, just play it
-        if (typeof window.ytPlayers[videoId].playVideo === 'function') {
-          window.ytPlayers[videoId].playVideo();
-        }
+      }
+    }
+  });
+}, { rootMargin: '200px' });
+
+// 2. Play Observer: Plays only when 50% visible, pauses when not
+const ytPlayObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const instanceId = entry.target.dataset.instanceId;
+    const player = window.ytPlayers[instanceId];
+    if (entry.isIntersecting) {
+      entry.target.dataset.isIntersecting = 'true';
+      if (player && typeof player.playVideo === 'function') {
+        player.playVideo();
       }
     } else {
-      // Scrolled out of view -> Pause
-      if (window.ytPlayers[videoId] && typeof window.ytPlayers[videoId].pauseVideo === 'function') {
-        window.ytPlayers[videoId].pauseVideo();
+      entry.target.dataset.isIntersecting = 'false';
+      if (player && typeof player.pauseVideo === 'function') {
+        player.pauseVideo();
       }
     }
   });
 }, { threshold: 0.5 });
 
 setTimeout(() => {
-  document.querySelectorAll('.yt-card').forEach(card => ytObserver.observe(card));
+  document.querySelectorAll('.yt-card').forEach(card => {
+    ytLoadObserver.observe(card);
+    ytPlayObserver.observe(card);
+  });
 }, 1000);
 
 window.openYtModal = function(videoId) {
   const modal = document.getElementById('ytModal');
   const iframe = document.getElementById('yt-modal-iframe');
   
-  if (window.ytPlayers[videoId] && typeof window.ytPlayers[videoId].pauseVideo === 'function') {
-    window.ytPlayers[videoId].pauseVideo();
-  }
+  // Pause all playing videos
+  Object.values(window.ytPlayers).forEach(player => {
+    if (player && typeof player.pauseVideo === 'function') {
+      player.pauseVideo();
+    }
+  });
   
-  iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&mute=0&controls=1&loop=1&playlist=" + videoId + "&playsinline=1";
+  iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&mute=0&controls=1&loop=1&playlist=" + videoId + "&playsinline=1&vq=hd1080";
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 };
@@ -1227,9 +1265,9 @@ window.closeYtModal = function() {
   document.body.style.overflow = '';
 };
 
-window.toggleYtMute = function(btn, videoId) {
-  event.stopPropagation();
-  const player = window.ytPlayers[videoId];
+window.toggleYtMute = function(btn, instanceId) {
+  if (event) event.stopPropagation();
+  const player = window.ytPlayers[instanceId];
   if (!player || typeof player.isMuted !== 'function') return;
   
   const iconMuted = btn.querySelector('.icon-muted');

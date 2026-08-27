@@ -3127,3 +3127,33 @@ section[id], div[id] {
   object-fit: cover !important;
   border-radius: 16px;
 }
+
+
+/* STRICT FIX: EXACT 9:16 FRAME FILLING & CLIPPING */
+.yt-player-wrapper {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  border-radius: 16px !important;
+  z-index: 1 !important;
+}
+.yt-player-wrapper iframe {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+.niche-video-inner {
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
