@@ -3024,3 +3024,76 @@ section[id], div[id] {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+
+
+/* =========================================================
+   MOBILE FOOTER FIXES
+   ========================================================= */
+@media (max-width: 768px) {
+  /* Reduce excessive padding in the footer itself */
+  .new-footer {
+    padding: 32px 0 24px 0 !important;
+  }
+  
+  .footer-top {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px 16px !important;
+    margin-bottom: 24px !important;
+    align-items: start !important;
+  }
+  
+  /* Brand/Tagline Row spans both columns */
+  .footer-left {
+    grid-column: 1 / -1 !important;
+    text-align: left !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important; /* tight gap between brand and tagline */
+  }
+  
+  .footer-brand {
+    justify-content: flex-start !important;
+    gap: 8px !important;
+  }
+  .footer-brand img {
+    height: 24px !important; /* slightly smaller logo */
+  }
+  .nav-wordmark {
+    font-size: 16px !important;
+  }
+  
+  .footer-tagline {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    max-width: 90% !important; /* prevent stretching too wide */
+  }
+  
+  /* Left column: Menu Links */
+  .footer-center {
+    grid-column: 1 !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    gap: 12px !important;
+  }
+  
+  /* Right column: Social Icons */
+  .footer-right {
+    grid-column: 2 !important;
+    align-items: flex-end !important;
+    text-align: right !important;
+    gap: 12px !important;
+  }
+  
+  /* Reduce copyright spacing */
+  .footer-bottom {
+    padding-top: 16px !important;
+    margin-top: 0 !important;
+    border-top: 1px solid rgba(124, 58, 237, 0.1) !important;
+    text-align: center !important;
+  }
+  .footer-bottom p {
+    font-size: 11px !important;
+  }
+}
