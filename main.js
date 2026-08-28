@@ -1293,7 +1293,12 @@ const localPlayObserver = new IntersectionObserver((entries) => {
     const video = entry.target.querySelector('video');
     if (!video) return;
     if (entry.isIntersecting) {
-      video.play().catch(e => console.warn('Local Autoplay prevented:', e));
+      video.play().catch(e => {
+        console.error('CRITICAL: Local video autoplay failed!', e);
+        if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+            console.error('-> REASON: The video file was not found (404). File: ' + video.src);
+        }
+      });
     } else {
       video.pause();
     }
@@ -1323,7 +1328,12 @@ window.openLocalModal = function(src) {
   video.muted = false;
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  video.play().catch(e => console.warn('Modal Autoplay prevented:', e));
+  video.play().catch(e => {
+    console.error('CRITICAL: Modal video playback failed!', e);
+    if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+        console.error('-> REASON: The video file was not found (404). File: ' + video.src);
+    }
+  });
 };
 
 window.closeLocalModal = function() {
