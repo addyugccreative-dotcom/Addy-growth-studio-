@@ -1311,11 +1311,15 @@ setTimeout(() => {
   });
 }, 1000);
 
-window.openLocalModal = function(src) {
-  const modal = document.getElementById('localModal');
-  const video = document.getElementById('local-modal-video');
+window.currentModalVideoParent = null;
+window.currentModalVideo = null;
+
+window.openLocalModal = function(btn) {
+  const card = btn.closest('.local-video-card');
+  const video = card.querySelector('video');
+  if (!video) return;
   
-  // Pause all playing videos
+  // Pause all playing videos to save CPU/GPU
   document.querySelectorAll('.local-video-card video').forEach(v => v.pause());
   if (window.ytPlayers) {
     Object.values(window.ytPlayers).forEach(player => {
@@ -1323,25 +1327,64 @@ window.openLocalModal = function(src) {
     });
   }
   
-  video.src = src;
-  video.volume = 1;
+  const modal = document.getElementById('localModal');
+  const modalContent = modal.querySelector('.yt-modal-content');
+  
+  // Save original parent
+  window.currentModalVideoParent = video.parentElement;
+  window.currentModalVideo = video;
+  
+  // Move the Exact Same Video Node to the Modal (Zero Lag/Buffering)
+  modalContent.appendChild(video);
+  
+  // Force 9:16 contain mode
+  video.style.objectFit = 'contain';
+  video.style.borderRadius = '16px';
+  video.controls = true;
   video.muted = false;
-  modal.style.display = 'flex';
+  video.style.pointerEvents = 'auto'; // allow user to click controls
+  
+  // GPU Accelerated Animation
+  modal.style.visibility = 'visible';
+  modal.style.opacity = '1';
+  modal.style.pointerEvents = 'auto';
+  modalContent.style.transform = 'scale(1)';
   document.body.style.overflow = 'hidden';
-  video.play().catch(e => {
-    console.error('CRITICAL: Modal video playback failed!', e);
-    if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
-        console.error('-> REASON: The video file was not found (404). File: ' + video.src);
-    }
-  });
+  
+  video.play().catch(e => console.warn('Modal Autoplay prevented:', e));
 };
 
 window.closeLocalModal = function() {
   const modal = document.getElementById('localModal');
-  const video = document.getElementById('local-modal-video');
-  video.pause();
-  video.src = "";
-  modal.style.display = 'none';
+  const modalContent = modal.querySelector('.yt-modal-content');
+  
+  if (window.currentModalVideo && window.currentModalVideoParent) {
+    const video = window.currentModalVideo;
+    video.pause();
+    
+    // Restore styling
+    video.style.objectFit = 'cover';
+    video.style.borderRadius = '0px';
+    video.controls = false;
+    video.muted = true;
+    video.style.pointerEvents = 'none'; // reset overlay mechanics
+    
+    // Move back to the card
+    window.currentModalVideoParent.appendChild(video);
+  }
+  
+  window.currentModalVideo = null;
+  window.currentModalVideoParent = null;
+  
+  // Animate out
+  modal.style.opacity = '0';
+  modal.style.pointerEvents = 'none';
+  modalContent.style.transform = 'scale(0.9)';
+  
+  setTimeout(() => {
+    modal.style.visibility = 'hidden';
+  }, 300);
+  
   document.body.style.overflow = '';
 };
 
