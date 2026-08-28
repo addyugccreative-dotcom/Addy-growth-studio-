@@ -1283,3 +1283,73 @@ window.toggleYtMute = function(btn, instanceId) {
     iconUnmuted.style.display = 'none';
   }
 };
+
+
+// ==========================================
+// LOCAL VIDEO AUTOPLAY & MODAL LOGIC
+// ==========================================
+const localPlayObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const video = entry.target.querySelector('video');
+    if (!video) return;
+    if (entry.isIntersecting) {
+      video.play().catch(e => console.warn('Local Autoplay prevented:', e));
+    } else {
+      video.pause();
+    }
+  });
+}, { threshold: 0.5 });
+
+setTimeout(() => {
+  document.querySelectorAll('.local-video-card').forEach(card => {
+    localPlayObserver.observe(card);
+  });
+}, 1000);
+
+window.openLocalModal = function(src) {
+  const modal = document.getElementById('localModal');
+  const video = document.getElementById('local-modal-video');
+  
+  // Pause all playing videos
+  document.querySelectorAll('.local-video-card video').forEach(v => v.pause());
+  if (window.ytPlayers) {
+    Object.values(window.ytPlayers).forEach(player => {
+      if (player && typeof player.pauseVideo === 'function') player.pauseVideo();
+    });
+  }
+  
+  video.src = src;
+  video.volume = 1;
+  video.muted = false;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  video.play().catch(e => console.warn('Modal Autoplay prevented:', e));
+};
+
+window.closeLocalModal = function() {
+  const modal = document.getElementById('localModal');
+  const video = document.getElementById('local-modal-video');
+  video.pause();
+  video.src = "";
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+};
+
+window.toggleLocalMute = function(btn, event) {
+  if (event) event.stopPropagation();
+  const video = btn.closest('.local-video-card').querySelector('video');
+  if (!video) return;
+  
+  const iconMuted = btn.querySelector('.icon-muted');
+  const iconUnmuted = btn.querySelector('.icon-unmuted');
+  
+  if (video.muted) {
+    video.muted = false;
+    iconMuted.style.display = 'none';
+    iconUnmuted.style.display = 'block';
+  } else {
+    video.muted = true;
+    iconMuted.style.display = 'block';
+    iconUnmuted.style.display = 'none';
+  }
+};
