@@ -1176,113 +1176,7 @@ function initHeroInfiniteScroll() {
 }
 
 
-// ==========================================
-// YOUTUBE AUTOPLAY & MODAL LOGIC
-// ==========================================
-const ytScript = document.createElement('script');
-ytScript.src = "https://www.youtube.com/iframe_api";
-const firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(ytScript, firstScriptTag);
 
-window.ytPlayers = {};
-
-window.onYouTubeIframeAPIReady = function() {
-  // Wait for observers to trigger loading
-};
-
-// 1. Load Observer: Loads iframe when within 200px of viewport
-const ytLoadObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    const instanceId = entry.target.dataset.instanceId;
-    const videoId = entry.target.dataset.ytId;
-    if (entry.isIntersecting) {
-      if (!window.ytPlayers[instanceId]) {
-        // Initialize Player
-        window.ytPlayers[instanceId] = new YT.Player('yt-player-' + instanceId, {
-          videoId: videoId,
-          playerVars: { autoplay: 0, controls: 0, mute: 1, loop: 1, playlist: videoId, playsinline: 1, modestbranding: 1 },
-          events: {
-            'onReady': function(e) {
-              e.target.setPlaybackQuality('hd1080');
-              if (entry.target.dataset.isIntersecting === 'true') {
-                e.target.playVideo();
-              }
-            }
-          }
-        });
-      }
-    }
-  });
-}, { rootMargin: '200px' });
-
-// 2. Play Observer: Plays only when 50% visible, pauses when not
-const ytPlayObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    const instanceId = entry.target.dataset.instanceId;
-    const player = window.ytPlayers[instanceId];
-    if (entry.isIntersecting) {
-      entry.target.dataset.isIntersecting = 'true';
-      if (player && typeof player.playVideo === 'function') {
-        player.playVideo();
-      }
-    } else {
-      entry.target.dataset.isIntersecting = 'false';
-      if (player && typeof player.pauseVideo === 'function') {
-        player.pauseVideo();
-      }
-    }
-  });
-}, { threshold: 0.5 });
-
-setTimeout(() => {
-  document.querySelectorAll('.yt-card').forEach(card => {
-    ytLoadObserver.observe(card);
-    ytPlayObserver.observe(card);
-  });
-}, 1000);
-
-window.openYtModal = function(videoId) {
-  const modal = document.getElementById('ytModal');
-  const iframe = document.getElementById('yt-modal-iframe');
-  
-  // Pause all playing videos
-  Object.values(window.ytPlayers).forEach(player => {
-    if (player && typeof player.pauseVideo === 'function') {
-      player.pauseVideo();
-    }
-  });
-  
-  iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&mute=0&controls=1&loop=1&playlist=" + videoId + "&playsinline=1&vq=hd1080";
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-};
-
-window.closeYtModal = function() {
-  const modal = document.getElementById('ytModal');
-  const iframe = document.getElementById('yt-modal-iframe');
-  iframe.src = "";
-  modal.style.display = 'none';
-  document.body.style.overflow = '';
-};
-
-window.toggleYtMute = function(btn, instanceId) {
-  if (event) event.stopPropagation();
-  const player = window.ytPlayers[instanceId];
-  if (!player || typeof player.isMuted !== 'function') return;
-  
-  const iconMuted = btn.querySelector('.icon-muted');
-  const iconUnmuted = btn.querySelector('.icon-unmuted');
-  
-  if (player.isMuted()) {
-    player.unMute();
-    iconMuted.style.display = 'none';
-    iconUnmuted.style.display = 'block';
-  } else {
-    player.mute();
-    iconMuted.style.display = 'block';
-    iconUnmuted.style.display = 'none';
-  }
-};
 
 
 
@@ -1290,17 +1184,6 @@ window.toggleYtMute = function(btn, instanceId) {
 // LOCAL VIDEO AUTOPLAY & MODAL LOGIC
 // ==========================================
 
-// Preload observer (500px margin) for aggressive pre-buffering
-const localPreloadObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const video = entry.target.querySelector('video');
-      if (video && video.getAttribute('preload') !== 'auto') {
-        video.setAttribute('preload', 'auto');
-      }
-    }
-  });
-}, { rootMargin: '500px', threshold: 0 });
 
 const localPlayObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -1420,4 +1303,75 @@ window.toggleLocalMute = function(btn, event) {
     iconMuted.style.display = 'block';
     iconUnmuted.style.display = 'none';
   }
+};
+
+
+// ==========================================
+// LITE YOUTUBE CLICK-TO-LOAD LOGIC
+// ==========================================
+window.activeLiteYtWrapper = null;
+window.activeLiteYtOverlay = null;
+
+window.loadLiteYtVideo = function(overlay) {
+    const card = overlay.closest('.lite-yt-card');
+    const videoId = card.dataset.ytId;
+    const wrapper = card.querySelector('.lite-yt-wrapper');
+    
+    // Stop any existing active video in the row
+    if (window.activeLiteYtWrapper && window.activeLiteYtWrapper !== wrapper) {
+        window.activeLiteYtWrapper.innerHTML = '';
+        if (window.activeLiteYtOverlay) {
+            window.activeLiteYtOverlay.style.display = 'flex';
+        }
+    }
+    
+    // Inject lightweight iframe
+    wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&controls=1&modestbranding=1&loop=1&playlist=${videoId}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none; object-fit:cover;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    
+    overlay.style.display = 'none';
+    window.activeLiteYtWrapper = wrapper;
+    window.activeLiteYtOverlay = overlay;
+};
+
+window.openLiteYtModal = function(btn, event) {
+    if (event) event.stopPropagation();
+    const card = btn.closest('.lite-yt-card');
+    const videoId = card.dataset.ytId;
+    
+    // Stop inline video if playing
+    if (window.activeLiteYtWrapper) {
+        window.activeLiteYtWrapper.innerHTML = '';
+        if (window.activeLiteYtOverlay) {
+            window.activeLiteYtOverlay.style.display = 'flex';
+        }
+        window.activeLiteYtWrapper = null;
+        window.activeLiteYtOverlay = null;
+    }
+    
+    const modal = document.getElementById('liteModal');
+    const modalContent = modal.querySelector('.yt-modal-content');
+    
+    modalContent.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1&controls=1&modestbranding=1" style="width:100%; height:100%; border:none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    modal.style.pointerEvents = 'auto';
+    modalContent.style.transform = 'scale(1)';
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeLiteYtModal = function() {
+    const modal = document.getElementById('liteModal');
+    const modalContent = modal.querySelector('.yt-modal-content');
+    
+    modal.style.opacity = '0';
+    modal.style.pointerEvents = 'none';
+    modalContent.style.transform = 'scale(0.9)';
+    
+    setTimeout(() => {
+        modal.style.visibility = 'hidden';
+        modalContent.innerHTML = ''; // Destroy iframe
+    }, 300);
+    
+    document.body.style.overflow = '';
 };
