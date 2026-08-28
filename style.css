@@ -3157,3 +3157,17 @@ section[id], div[id] {
   box-sizing: border-box !important;
   overflow: hidden !important;
 }
+
+
+/* CRITICAL PERFORMANCE OPTIMIZATIONS */
+.niche-frame.iphone-frame-container {
+    will-change: scroll-position;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+#localModal .yt-modal-content {
+    will-change: transform;
+}
+.niche-video-card, .local-video-card, .yt-card {
+    will-change: transform;
+}
