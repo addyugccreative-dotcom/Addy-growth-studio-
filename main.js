@@ -1285,9 +1285,23 @@ window.toggleYtMute = function(btn, instanceId) {
 };
 
 
+
 // ==========================================
 // LOCAL VIDEO AUTOPLAY & MODAL LOGIC
 // ==========================================
+
+// Preload observer (500px margin) for aggressive pre-buffering
+const localPreloadObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const video = entry.target.querySelector('video');
+      if (video && video.getAttribute('preload') !== 'auto') {
+        video.setAttribute('preload', 'auto');
+      }
+    }
+  });
+}, { rootMargin: '500px', threshold: 0 });
+
 const localPlayObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     const video = entry.target.querySelector('video');
@@ -1308,6 +1322,7 @@ const localPlayObserver = new IntersectionObserver((entries) => {
 setTimeout(() => {
   document.querySelectorAll('.local-video-card').forEach(card => {
     localPlayObserver.observe(card);
+    localPreloadObserver.observe(card);
   });
 }, 1000);
 
