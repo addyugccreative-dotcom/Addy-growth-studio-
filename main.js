@@ -457,14 +457,14 @@ function initHeroScrollSequence() {
       let scrollFraction = 0;
       if (scrollTop >= sectionTop && scrollTop <= sectionTop + sectionHeight - vh) {
         scrollFraction = (scrollTop - sectionTop) / (sectionHeight - vh);
-        const maxScroll = Math.max(0, track.scrollWidth - window.innerWidth + 48);
+        const maxScroll = Math.max(0, track.scrollWidth - window.innerWidth + 120);
         track.style.transform = `translate3d(-${scrollFraction * maxScroll}px, 0, 0)`;
       } else if (scrollTop < sectionTop) {
         scrollFraction = 0;
         track.style.transform = `translate3d(0px, 0, 0)`;
       } else {
         scrollFraction = 1;
-        const maxScroll = Math.max(0, track.scrollWidth - window.innerWidth + 48);
+        const maxScroll = Math.max(0, track.scrollWidth - window.innerWidth + 120);
         track.style.transform = `translate3d(-${maxScroll}px, 0, 0)`;
       }
       

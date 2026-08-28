@@ -3187,3 +3187,19 @@ section[id], div[id] {
     position: absolute;
     z-index: 10;
 }
+
+/* Strategy Card Numbers */
+.card-number {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 64px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.15);
+  margin-bottom: 12px;
+  line-height: 1;
+  transform: translateY(10px);
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+.strategy-card:hover .card-number {
+  color: rgba(255, 255, 255, 0.4);
+  transform: translateY(0px);
+}
