@@ -3241,7 +3241,7 @@ section[id], div[id] {
   padding: 0 48px;
   font-family: var(--font-serif);
   font-size: 26px;
-  color: #ffffff;
+  color: var(--text);
   opacity: 0.85;
   white-space: nowrap;
   transition: opacity 0.3s;
