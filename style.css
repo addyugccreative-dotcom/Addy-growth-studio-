@@ -107,7 +107,9 @@ img { max-width: 100%; display: block; }
 .nav-link:hover { -webkit-text-fill-color: var(--accent); }
 .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent3)); transition: width 0.3s; }
 .nav-link:hover::after { width: 100%; }
-.nav-cta { 
+.nav-cta {
+  color: #ffffff !important;
+ 
   display: inline-flex; 
   align-items: center; 
   gap: 8px; 
@@ -1007,7 +1009,9 @@ img { max-width: 100%; display: block; }
   .hero-stats-row { justify-content: center; }
   .hero-h1 { font-size: 36px; }
   
-  .nav-links, .nav-cta { display: none; }
+  .nav-links, .nav-cta {
+  color: #ffffff !important;
+ display: none; }
   .nav-hamburger { display: flex; }
   
   .niche-frame { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; border-radius: 20px; }
