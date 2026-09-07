@@ -1,3 +1,4 @@
+import Lenis from 'lenis';
 
   // Iframe precise scaling
   function initIframeScaling() {
@@ -139,6 +140,61 @@ function initHeroScrollSequence() {
   if (!sequence) return;
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
+
+// ==========================================
+// PERFORMANCE OPTIMIZATIONS (160 FPS SMOOTH)
+// ==========================================
+gsap.config({ force3D: true });
+gsap.ticker.fps(120); // Try to push for max FPS
+gsap.ticker.lagSmoothing(1000, 16);
+
+// Initialize Lenis Smooth Scroll
+const lenis = new Lenis({
+  duration: 1.2,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // ultra smooth easing
+  direction: 'vertical',
+  gestureDirection: 'vertical',
+  smooth: true,
+  mouseMultiplier: 1,
+  smoothTouch: false,
+  touchMultiplier: 2,
+  infinite: false,
+});
+
+// Integrate Lenis with GSAP ScrollTrigger
+lenis.on('scroll', ScrollTrigger.update);
+
+gsap.ticker.add((time)=>{
+  lenis.raf(time * 1000);
+});
+gsap.ticker.lagSmoothing(0);
+
+// Lazy Load Videos via IntersectionObserver for instant page load
+const videoObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const video = entry.target;
+      if (video.dataset.src) {
+        video.src = video.dataset.src;
+        video.removeAttribute('data-src');
+        video.load();
+        // Keep it muted and playing if it's an ambient video
+        if (video.hasAttribute('autoplay')) {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+          }
+        }
+      }
+      observer.unobserve(video);
+    }
+  });
+}, { rootMargin: '400px 0px' }); // Load slightly before it comes into view
+
+document.querySelectorAll('video[data-src]').forEach(video => {
+  videoObserver.observe(video);
+});
+
 
   // Strategy Horizontal Scroll (GSAP)
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {

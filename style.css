@@ -3314,3 +3314,12 @@ section[id], div[id] {
 }
 
 
+
+/* PERFORMANCE ENHANCEMENTS */
+img, video, iframe {
+  content-visibility: auto;
+}
+.section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px;
+}
