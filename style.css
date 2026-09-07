@@ -724,8 +724,8 @@ img { max-width: 100%; display: block; }
 }
 
 /* ══════════ HORIZONTAL SCROLL ══════════ */
-.hscroll-section { height: 300vh; position: relative; background: transparent; }
-.hscroll-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; background: transparent; }
+.hscroll-section { position: relative; background: transparent; }
+.hscroll-sticky { height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; background: transparent; width: 100vw; }
 .hscroll-header { padding: 0 24px; max-width: 1200px; margin: 0 auto 64px; width: 100%; }
 .hscroll-header .section-header { text-align: left; margin: 0; }
 .hscroll-track { display: flex; gap: 24px; padding: 0 24px; width: max-content; will-change: transform; margin-left: max(0px, calc((100vw - 1200px) / 2)); }
@@ -3309,6 +3309,4 @@ section[id], div[id] {
   }
 }
 
-body {
-  overflow-x: hidden;
-}
+

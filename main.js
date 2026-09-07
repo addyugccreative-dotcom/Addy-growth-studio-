@@ -140,6 +140,64 @@ function initHeroScrollSequence() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
 
+  // Strategy Horizontal Scroll (GSAP)
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    const hscrollSections = document.querySelectorAll('.hscroll-section');
+    hscrollSections.forEach(section => {
+      const track = section.querySelector('.hscroll-track');
+      if (!track) return;
+      
+      // Calculate how far to move so the last card is exactly on the right edge
+      const maxScroll = () => Math.max(0, track.scrollWidth - window.innerWidth + 120);
+      
+      gsap.to(track, {
+        x: () => -maxScroll(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          pin: ".hscroll-sticky",
+          start: "top top",
+          end: () => "+=" + track.scrollWidth,
+          scrub: 1,
+          invalidateOnRefresh: true,
+          onUpdate: self => {
+            if (section.dataset.hscroll === 'strategy') {
+              const progress = section.querySelector('.strategy-progress-bar');
+              if (progress) progress.style.width = (self.progress * 100) + '%';
+              
+              // Apply scale effects
+              const cards = track.querySelectorAll('.strategy-card');
+              const viewportCenter = window.innerWidth / 2;
+              let closestCard = null;
+              let minDistance = Infinity;
+              cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(cardCenter - viewportCenter);
+                if (distance < minDistance) {
+                  minDistance = distance;
+                  closestCard = card;
+                }
+              });
+              cards.forEach(card => {
+                 const isFocused = card === closestCard;
+                 const currentlyFocused = card.classList.contains('strategy-focused');
+                 if (isFocused && !currentlyFocused) {
+                    card.classList.add('strategy-focused');
+                    gsap.to(card, { '--card-scale': 1.05, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
+                 } else if (!isFocused && currentlyFocused) {
+                    card.classList.remove('strategy-focused');
+                    gsap.to(card, { '--card-scale': 0.95, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
+                 }
+              });
+            }
+          }
+        }
+      });
+    });
+  }
+
+
   const logo = document.querySelector('.hero-logo');
   const boy = document.querySelector('.hero-boy-right');
   const ringSystem = document.querySelector('.hero-ring-system');
