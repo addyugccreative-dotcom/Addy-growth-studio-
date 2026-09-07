@@ -3288,3 +3288,27 @@ section[id], div[id] {
     padding: 0 30px;
   }
 }
+
+/* FULL FRAME MARQUEE OVERRIDE */
+.niche-frame.iphone-frame-container {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 24px 0 !important;
+    width: 100vw !important;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw !important;
+    margin-right: -50vw !important;
+    /* Add a little padding so it doesn't touch the very edge when stopped, but since it scrolls it's fine */
+}
+@media (min-width: 1025px) {
+  .niche-frame.iphone-frame-container {
+    gap: 16px !important; /* Reduce left and right side gap between frames */
+  }
+}
+
+body {
+  overflow-x: hidden;
+}
