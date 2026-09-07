@@ -1014,7 +1014,7 @@ function initRocketScroll() {
 
 
 function initNicheAutoScroll() {
-  const nicheFrames = document.querySelectorAll('.niche-frame.iphone-frame-container, .proof-grid');
+  const nicheFrames = document.querySelectorAll('.niche-frame.iphone-frame-container');
   if (!nicheFrames.length) return;
 
   nicheFrames.forEach(frame => {
